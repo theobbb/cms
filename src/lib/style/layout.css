@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+@plugin '@iconify/tailwind4';
+
+@theme {
+	--spacing-gap: 1rem;
+	--spacing-gap-y: 0.7rem;
+
+	--color-bg: rgb(204, 204, 204);
+	--color-text: rgb(25, 25, 25);
+	--color-text-2: rgba(0, 0, 0, 0.472);
+
+	--spacing-header: 0rem;
+	--spacing-section: 0rem;
+	--spacing-inner-section: 0rem;
+
+	--color-danger: rgb(187, 66, 66);
+
+	--color-active: oklch(80.9% 0.105 251.813);
+}
+
+html {
+	font-family: 'Temp';
+
+	background-color: var(--color-bg);
+	color: var(--color-text);
+
+	--spacing-header: calc(var(--spacing-gap-y) * 3);
+	--spacing-section: calc(100svh - var(--spacing-header));
+	--spacing-inner-section: calc(var(--spacing-section) - 2 * var(--spacing-gap-y));
+}
+
+section {
+	height: var(--spacing-section);
+}
+
+body:has(dialog[open]) {
+	overflow: hidden;
+}
+
+.grid-12 {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: var(--spacing-gap);
+}
+
+.text-2 {
+	color: var(--color-text-2);
+}
+
+a:hover {
+	text-decoration: underline;
+}
+a.active {
+	color: black;
+	font-weight: 500;
+}
+a.active::before {
+	content: '<';
+	position: absolute;
+	transform: translate(-130%, 5%);
+}
+a.active::after {
+	content: '>';
+	position: absolute;
+	transform: translate(30%, 5%);
+}
+
+.dev {
+	color: oklch(64.6% 0.222 41.116);
+}
+
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+	/*backdrop-filter: blur(5px);*/ /* Dim the background */
+}
+
+/* Remove input autocomplete yellow */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	/* Use a box shadow to cover the yellow (replace 'white' with your background color) */
+	-webkit-box-shadow: 0 0 0px 1000px var(--color-background) inset !important;
+
+	/* Set the text color to match your design */
+	-webkit-text-fill-color: var(--color-font-color) !important;
+
+	/* This delay prevents the yellow background from reappearing */
+	transition: background-color 0s ease-in-out 500s;
+}

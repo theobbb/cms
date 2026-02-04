@@ -1,0 +1,24 @@
+<script lang="ts">
+	import '$lib/style/layout.css';
+	import '$lib/style/fonts.css';
+	import favicon from '$lib/assets/favicon.svg';
+	import { init_toaster } from '$lib/logic/toaster.svelte';
+	import Toaster from '$lib/components/toaster/toaster.svelte';
+	import { init_editor } from '$lib/logic/editor.svelte';
+	import DialogConfirm from '$lib/components/dialog-confirm.svelte';
+
+	let { children } = $props();
+
+	init_toaster();
+</script>
+
+<div class="text-base/5">
+	{@render children()}
+	<Toaster />
+	<DialogConfirm />
+</div>
+
+<svelte:head>
+	<link rel="icon" href={favicon} />
+	<!-- <link rel="icon" href="data:," /> -->
+</svelte:head>
