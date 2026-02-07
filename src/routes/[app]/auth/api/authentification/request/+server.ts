@@ -32,8 +32,8 @@ export async function POST({ request, params, cookies, locals: { app }, url }) {
 			options: {
 				challenge: challenge,
 				rp: {
-					name: 'Your App',
-					id: 'localhost'
+					name: app.title,
+					id: url.hostname
 				},
 				user: {
 					id: user.id, // Already a string, no need for base64
@@ -68,7 +68,7 @@ export async function POST({ request, params, cookies, locals: { app }, url }) {
 			challenge,
 			timeout: 60000,
 			userVerification: 'preferred',
-			rpId: 'localhost' // Must match the registration ID
+			rpId: url.hostname // Must match the registration ID
 			// allowCredentials: passkeys.map((pk) => ({
 			// 	id: pk.credential_id,
 			// 	type: 'public-key',

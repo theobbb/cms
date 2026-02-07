@@ -20,7 +20,7 @@ export async function POST({ params, request, cookies, locals: { pocketbase, app
 		try {
 			const verified = await server.verifyRegistration(credential, {
 				challenge: expected_challenge,
-				origin: 'http://localhost:5173'
+				origin: url.origin
 			});
 
 			cookies.delete('registration_challenge', { path: '/' + params.app });
@@ -56,7 +56,7 @@ export async function POST({ params, request, cookies, locals: { pocketbase, app
 	};
 	const expected = {
 		challenge: expected_challenge,
-		origin: 'http://localhost:5173',
+		origin: url.origin,
 		userVerified: true // should be set if `userVerification` was set to `required` in the authentication options (default)
 	};
 
