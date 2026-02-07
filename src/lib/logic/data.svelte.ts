@@ -27,13 +27,13 @@ class DataStore {
 	 * Fetch a single page (only page 1 is cached)
 	 */
 	async fetch_chunk(
-		collection: string,
+		collection_name: string,
 		page_num: number,
 		base_query: RecordListOptions,
 		search_key: string = ''
 	): Promise<PaginationResult<any>> {
 		const query = build_query(base_query, search_key);
-		const cache_key = this.#get_cache_key(collection, query);
+		const cache_key = this.#get_cache_key(collection_name, query);
 
 		// Only use cache for page 1
 		if (page_num === 1) {
@@ -41,8 +41,19 @@ class DataStore {
 			if (cached) return cached;
 		}
 
+		const collection = page.data.collections[collection_name];
+
+		const relations = collection.fields
+			.filter((field) => field.type == 'relation')
+			.map((field) => field.name)
+			.join(',');
+		//console.log(relations);
+		const query_expanded = { ...query, expand: relations };
+
 		// Fetch from server
-		const result = await this.#pocketbase.collection(collection).getList(page_num, PER_PAGE, query);
+		const result = await this.#pocketbase
+			.collection(collection_name)
+			.getList(page_num, PER_PAGE, query_expanded);
 
 		// Only cache page 1
 		if (page_num === 1) {

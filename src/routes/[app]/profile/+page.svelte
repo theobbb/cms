@@ -33,13 +33,15 @@
 	}
 </script>
 
-<div class="mx-auto my-24 max-w-md space-y-4">
+<div class="mx-auto my-24 max-w-sm space-y-4">
 	<div class="">
 		{user?.email}
 	</div>
 	<form onsubmit={rename}>
 		<Input class="w-full" label="Username" name="name" value={user?.name} />
-		<div class="mt-2 text-right"><Button type="submit">Modifier</Button></div>
+		<div class="mt-2- text-right">
+			<Button class="w-full border-t-0" size="lg" type="submit">Modifier</Button>
+		</div>
 	</form>
 
 	<form class="" method="POST" action="/{page.params.app}/auth/signout">

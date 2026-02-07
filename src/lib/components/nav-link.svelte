@@ -18,12 +18,12 @@
 <div class="block">
 	<a
 		class={[
-			'-mx-1.5 flex items-center gap-2 truncate px-1.5 py-0.5 whitespace-nowrap',
+			'-mx-1.5 flex items-center gap-1.5 truncate px-1.5 py-0.5 whitespace-nowrap',
 			active ? 'bg-active' : 'hover:bg-active/30'
 		]}
 		{href}
 	>
-		<span class="icon-[ri--folder-2-line] shrink-0"></span>
+		<div class="icon-[ri--folder-2-line] shrink-0"></div>
 		{name}
 	</a>
 </div>

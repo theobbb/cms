@@ -16,7 +16,7 @@
 	const sizes = {
 		sm: 'flex-1 max-w-3xs',
 		md: 'flex-2 max-w-xs',
-		lg: 'flex-3 max-w-md',
+		lg: 'flex-3 max-w-lg',
 		full: 'flex-3'
 	};
 </script>

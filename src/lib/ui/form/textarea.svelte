@@ -9,13 +9,17 @@
 		label,
 		placeholder,
 		value = $bindable(),
-		rows = 8,
+		rows = 6,
 		ref = $bindable(null),
 		class: class_override,
+		min,
+		max,
 		...props
 	}: HTMLTextareaAttributes & {
 		label?: string;
 		ref?: any;
+		min?: number;
+		max?: number;
 	} = $props();
 
 	const props_id = $props.id();
@@ -37,7 +41,6 @@
 		<Label {id} required={Boolean(required)} {label} linked />
 	{/if}
 	<textarea
-		{...props}
 		{oninput}
 		class={[
 			'border  px-2.5 py-1.5 placeholder-text/50  outline-none',
@@ -49,6 +52,8 @@
 		{name}
 		{required}
 		{placeholder}
+		minlength={min}
+		maxlength={max}
 		bind:value
 		bind:this={ref}
 	></textarea>

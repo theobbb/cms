@@ -10,12 +10,13 @@
 
 	let {
 		id,
-		key,
-		title,
+		name,
+
 		required,
-		collection: target_collection_name,
+		collectionId,
 		value,
-		multiple,
+		minSelect,
+		maxSelect,
 		record,
 		on_change,
 		onsubmit = $bindable()
@@ -26,17 +27,19 @@
 
 	const pocketbase = use_pocketbase();
 
+	const multiple = $derived(maxSelect > 1);
+
 	// Normalize value to array
 	const selected_ids = $derived.by(() => {
 		if (!value) return [];
 		return Array.isArray(value) ? value : [value];
 	});
-	$inspect(selected_ids);
+	//$inspect(selected_ids);
 	// Get display items from expanded records or available records
 	const items = $derived.by(() => {
 		if (!selected_ids.length) return [];
 
-		const expanded = record?.expand?.[key];
+		const expanded = record?.expand?.[name];
 		const expanded_arr = expanded ? (Array.isArray(expanded) ? expanded : [expanded]) : [];
 
 		return selected_ids
@@ -53,7 +56,7 @@
 	async function fetch_records() {
 		try {
 			const options: RecordListOptions = { sort: '-created' };
-			const res = await pocketbase.collection(target_collection_name).getList<T>(1, 32, options);
+			const res = await pocketbase.collection(collectionId).getList<T>(1, 32, options);
 			available_records = res.items;
 		} catch (error) {
 			console.error('Failed to fetch records:', error);
@@ -108,19 +111,19 @@
 	onsubmit = async (form_data: FormData) => {
 		if (multiple) {
 			if (selected_ids.length === 0) {
-				form_data.append(key, '');
+				form_data.append(name, '');
 			} else {
-				selected_ids.forEach((id) => form_data.append(key, id));
+				selected_ids.forEach((id) => form_data.append(name, id));
 			}
 		} else {
-			form_data.set(key, selected_ids[0] ?? '');
+			form_data.set(name, selected_ids[0] ?? '');
 		}
 	};
 </script>
 
 <div class="bg-bg">
-	{#if title}
-		<Label {id} label={title} {required} />
+	{#if name}
+		<Label {id} label={name} {required} />
 	{/if}
 
 	{#if items.length > 0}
@@ -128,7 +131,7 @@
 			{#each items as item (item.id)}
 				<div class="flex items-center justify-between gap-2 border border-b-0 px-2.5 py-1 pr-1.5">
 					<div class="truncate">
-						<RecordName record={item} collection={target_collection_name} />
+						<RecordName record={item} collection={collectionId} />
 					</div>
 					<Button size="sm" onclick={() => remove_item(item)} variant="ghost">
 						<span class="icon-[ri--close-fill]"></span>
@@ -139,14 +142,14 @@
 	{/if}
 
 	<div>
-		<Button variant="discrete" size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
+		<Button size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
 	</div>
 </div>
 
 {#if dialog_open}
 	<Dialog onclose={close_picker} size="xl">
 		<div class="space-y-6">
-			<div class="text-lg-">Selection: {title}</div>
+			<div class="text-lg-">Selection: {name}</div>
 
 			<Search
 				id="search-relation-{id}"
@@ -166,19 +169,29 @@
 							<span class="text-2 icon-[ri--checkbox-blank-line] text-lg"></span>
 						{/if}
 						<div class="truncate text-left">
-							<RecordName record={item} collection={target_collection_name} />
+							<RecordName record={item} collection={collectionId} />
 						</div>
 					</button>
 				{/each}
 			</div>
 
 			<div>
-				<div class="mb-2">Sélectionné:</div>
-				<div class="flex max-w-lg flex-wrap gap-1.5">
+				<div class="mb-2 flex items-center gap-2">
+					<div>Sélectionné</div>
+					{#if multiple}
+						({selected_ids.length} / {maxSelect})
+					{:else}
+						:
+					{/if}
+				</div>
+				<div class="flex max-w-lg flex-wrap gap-1.5 text-sm">
 					{#each pop_selection as selected (selected.id)}
-						<div class="flex w-fit items-center gap-1.5 rounded-full border bg-white/10 px-2.5">
-							<RecordName record={selected} collection={target_collection_name} />
+						<div
+							class="flex w-fit items-center gap-1.5 rounded-full border bg-white/10 px-2.5 pr-1.5"
+						>
+							<RecordName record={selected} collection={collectionId} />
 							<button
+								class="flex shrink-0 items-center"
 								type="button"
 								onclick={() => {
 									pop_selection = pop_selection.filter((i) => i.id !== selected.id);

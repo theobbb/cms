@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '../button.svelte';
 	import Search from './search.svelte';
-	import { ColumnComponents } from './column.types';
+	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
 	import type { Collection } from '$config/types';
 	import { use_editor } from '$lib/logic/editor.svelte';

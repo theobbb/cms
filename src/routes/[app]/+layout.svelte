@@ -5,14 +5,16 @@
 	import Header from './header.svelte';
 	import { set_app } from '$lib/logic/ctx.svelte';
 	import { init_editor } from '$lib/logic/editor.svelte';
+	import { set_data_store } from '$lib/logic/data.svelte';
 
 	let { data, children } = $props();
 	const { app, server_auth, public_route } = $derived(data);
-	$inspect(app);
+	//$inspect(app);
 	init_pocketbase(app.pocketbase.url, server_auth);
 
 	set_app(app);
 	init_editor();
+	set_data_store();
 </script>
 
 {#if !public_route}

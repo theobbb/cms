@@ -1,16 +1,14 @@
 <script lang="ts">
-	import type { FieldProps } from '$config/field.types';
+	import { page } from '$app/state';
 	import RecordName from '$lib/components/record-name.svelte';
-	import { get_app } from '$lib/logic/ctx.svelte';
 
-	const { row, key } = $props();
-	const app = get_app();
+	const { row, name } = $props();
 
-	const expanded = $derived(row?.expand?.[key]);
+	const expanded = $derived(row?.expand?.[name]);
 
 	let items = $derived(expanded ? (Array.isArray(expanded) ? expanded : [expanded]) : []);
 
-	const target_collection = $derived(app.collections[key]);
+	const target_collection = $derived(page.data.collections[name]);
 </script>
 
 <div class="overflow-hidden text-ellipsis whitespace-nowrap">

@@ -1,17 +1,77 @@
-import type { CollectionRecords } from '$lib/pocketbase.types';
+export type FieldConfig = {
+	//string: FieldTextBase & { value: string };
+	text: FieldTextBase & { value: string; rows?: number };
+	markdown: FieldTextBase & { value: string; rows?: number };
+	number: {
+		value: number;
+	};
+	bool: {
+		value: boolean;
+	};
+	email: {
+		value: string;
+		exceptDomains: string;
+	};
+	url: {
+		value: string;
+	};
+	date: {
+		value: string;
+	};
+	autodate: {
+		value: string;
+	};
+	select: {
+		value: string;
+	};
+	file: {
+		value: (string | File)[];
+		minSelect: number;
+		maxSelect: number;
+		maxSize: number;
+		thumbs: string[];
+		mimeTypes: string[];
+	};
+	relation: {
+		value: string | string[];
+		cascadeDelete: boolean;
+		collectionId: string;
+		minSelect: number;
+		maxSelect: number;
+	};
+	// slug: Length &
+	// 	Value<string> & {
+	// 		generate?: {
+	// 			key: keyof Record;
+	// 		};
+	// 	};
+	// geopoint: Value<string> & {};
+	json: {
+		value: string;
+	};
+};
+
+type FieldTextBase = {
+	min: number;
+	max: number;
+	pattern: string;
+	autogeneratePattern: string;
+};
 
 export type FieldBase<Record, T extends FieldType> = {
+	id: string;
+	hidden: boolean;
 	type: T;
-	key: Extract<keyof Record, string>;
-	title?: string;
-	required?: boolean;
+	name: Extract<keyof Record, string>;
+	required: boolean;
+	primaryKey: boolean;
 };
 
 export type Field<Record> = {
-	[K in FieldType]: FieldBase<Record, K> & FieldConfig<Record>[K];
+	[K in FieldType]: FieldBase<Record, K> & FieldConfig[K];
 }[FieldType];
 
-export type FieldType = keyof FieldConfig<any>;
+export type FieldType = keyof FieldConfig;
 
 type SubmitCallback<T> = (
 	form_data: FormData,
@@ -19,58 +79,7 @@ type SubmitCallback<T> = (
 ) => void | Promise<void | ((record: T) => void | Promise<void>)>;
 
 export type FieldProps<T extends FieldType> = FieldBase<any, T> &
-	FieldConfig<any>[T] & {
+	FieldConfig[T] & {
 		id: string;
 		onsubmit?: SubmitCallback<T>;
 	};
-
-export type FieldConfig<Record> = {
-	string: Length & Value<string>;
-	email: Length & Value<string>;
-	url: Value<string>;
-	number: Value<number>;
-	text: Length &
-		Value<string> & {
-			rows?: number;
-		};
-	markdown: Length &
-		Value<string> & {
-			rows?: number;
-		};
-	slug: Length &
-		Value<string> & {
-			generate?: {
-				key: keyof Record;
-			};
-		};
-	bool: Value<boolean> & {};
-	file: Length &
-		Value<string | File | (string | File)[]> & {
-			multiple?: boolean;
-		};
-
-	date: Value<string> & {};
-	relation: Value<string | string[]> & {
-		collection: string;
-		multiple?: boolean;
-	};
-};
-
-// type RelationConfig<Target> = {
-// 	expand: {
-// 		collection: string;
-// 		display_key: keyof Target;
-// 		displayer?: (record: Target) => string;
-// 	};
-// 	multiple?: boolean;
-// };
-
-// export type FieldRelation<From, To> = FieldBase<From, 'relation'> & RelationConfig<To>;
-
-type Value<V> = {
-	value?: V;
-};
-type Length = {
-	min_length?: number;
-	max_length?: number;
-};

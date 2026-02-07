@@ -4,11 +4,10 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import { init_toaster } from '$lib/logic/toaster.svelte';
 	import Toaster from '$lib/components/toaster/toaster.svelte';
-	import { init_editor } from '$lib/logic/editor.svelte';
 	import DialogConfirm from '$lib/components/dialog-confirm.svelte';
 
-	let { children } = $props();
-
+	let { data, children } = $props();
+	// $inspect(data);
 	init_toaster();
 </script>
 

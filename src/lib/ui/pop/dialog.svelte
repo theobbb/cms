@@ -31,7 +31,8 @@
 
 <style>
 	dialog::backdrop {
-		background-color: rgba(0, 0, 0, 0.5);
-		/*backdrop-filter: blur(5px);*/ /* Dim the background */
+		background-color: rgba(0, 0, 0, 0.3);
+		/* backdrop-filter: brightness(0.5); */
+		/* backdrop-filter: blur(5px); */
 	}
 </style>

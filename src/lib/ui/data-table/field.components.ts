@@ -1,10 +1,9 @@
-import type { Snippet } from 'svelte';
-import Bool from './columns/bool.svelte';
-import Date from './columns/date.svelte';
-import File from './columns/file.svelte';
-import Relation from './columns/relation.svelte';
-import String from './columns/string.svelte';
-import Url from './columns/url.svelte';
+import Bool from './fields/bool.svelte';
+import Date from './fields/date.svelte';
+import File from './fields/file.svelte';
+import Relation from './fields/relation.svelte';
+import String from './fields/string.svelte';
+import Url from './fields/url.svelte';
 import type { FieldType } from '$config/field.types';
 
 // export type Column<Record> = {
@@ -19,15 +18,17 @@ import type { FieldType } from '$config/field.types';
 // export type ColumnType = 'string' | 'url' | 'date' | 'bool' | 'color' | 'relation' | 'file';
 
 export const ColumnComponents: Record<FieldType, any> = {
-	string: String,
-
+	//string: String,
+	text: String,
 	url: Url,
 	relation: Relation,
 	bool: Bool,
 	number: String,
 	email: String,
-	text: String,
 	markdown: String,
 	file: File,
-	slug: String
+	//slug: String,
+	date: Date,
+	autodate: Date,
+	json: String
 };

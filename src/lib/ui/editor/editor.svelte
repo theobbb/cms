@@ -20,6 +20,10 @@
 	const method = $derived(editor?.type == 'create' ? 'POST' : 'UPDATE');
 	const collection = $derived(editor?.collection);
 
+	const fields = $derived(
+		collection.fields.filter((field) => field.type != 'autodate' && !field.hidden)
+	);
+
 	const update_record = $derived(editor?.type == 'update' ? editor.record : null);
 
 	async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
@@ -42,23 +46,23 @@
 		let record: any | null;
 
 		if (method == 'POST') {
-			const toast_id = toaster.push('loading', 'Création de: ' + collection.title + ' ...');
+			const toast_id = toaster.push('loading', 'Création de: ' + collection.name + ' ...');
 			try {
 				record = await pocketbase.collection(collection.name).create(form_data);
-				toaster.update(toast_id, 'success', collection.title + ' créé');
+				toaster.update(toast_id, 'success', collection.name + ' créé');
 			} catch (err) {
-				toaster.update(toast_id, 'error', 'Erreur lors de la création de: ' + collection.title);
+				toaster.update(toast_id, 'error', 'Erreur lors de la création de: ' + collection.name);
 				console.log(err);
 			}
 		} else if (method == 'UPDATE') {
-			const toast_id = toaster.push('loading', 'Enregistrement de: ' + collection.title + ' ...');
+			const toast_id = toaster.push('loading', 'Enregistrement de: ' + collection.name + ' ...');
 			if (!update_record?.id) return;
 			try {
 				record = await pocketbase.collection(collection.name).update(update_record.id, form_data);
-				toaster.update(toast_id, 'success', collection.title + ' enregistré');
+				toaster.update(toast_id, 'success', collection.name + ' enregistré');
 			} catch (err) {
 				console.log(err);
-				toaster.update(toast_id, 'error', collection.title + ' erreur');
+				toaster.update(toast_id, 'error', collection.name + ' erreur');
 			}
 		}
 
@@ -79,7 +83,7 @@
 		if (!confirmed) return;
 
 		await pocketbase.collection(collection.name).delete(update_record.id);
-		toaster.push('success', collection.title + ' supprimé');
+		toaster.push('success', collection.name + ' supprimé');
 		exit();
 	}
 
@@ -108,9 +112,9 @@
 <form {onsubmit} class="contents">
 	<Section size="lg">
 		{#snippet header()}
-			<div class="pb-gap-y- flex items-center justify-between gap-4">
+			<div class="flex items-center justify-between gap-4">
 				<div class="">
-					{method == 'POST' ? 'Nouveau' : 'Édition'}: <span class="">{collection.title}</span>
+					{method == 'POST' ? 'Nouveau' : 'Édition'}: <span class="">{collection.name}</span>
 				</div>
 				{#if method == 'UPDATE'}
 					<Menu
@@ -133,14 +137,14 @@
 		{/snippet}
 
 		<div class="flex flex-col gap-gap pt-gap-y pb-12">
-			{#each collection.fields as field, i}
+			{#each fields as field, i}
 				{@const Component = FieldComponents[field.type]}
 				{#if Component}
 					<Component
-						id="{field.key.toString()}-{props_id}"
-						value={update_record?.[field.key]}
+						value={update_record?.[field.name]}
 						record={update_record}
 						{...field}
+						id="{field.name.toString()}-{props_id}"
 						bind:onsubmit={field_on_submit[i]}
 					/>
 				{:else}

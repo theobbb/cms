@@ -5,8 +5,16 @@
 	import Attachment from './lib/attachment.svelte';
 	import { use_editor } from '$lib/logic/editor.svelte';
 
-	let { id, multiple, key, title, value, onsubmit = $bindable() }: FieldProps<'file'> = $props();
+	let {
+		id,
+		name,
+		value,
+		minSelect,
+		maxSelect,
+		onsubmit = $bindable()
+	}: FieldProps<'file'> = $props();
 
+	const multiple = $derived(maxSelect > 1);
 	let files: (string | File)[] = $state([]);
 
 	let is_over = $state(false);
@@ -72,14 +80,14 @@
 			if (!kept_files.has(server_file)) {
 				const filename = server_file.split('/').pop();
 				if (!filename) return;
-				form_data.append(key + '-', filename);
+				form_data.append(name + '-', filename);
 			}
 		});
 
 		// 3. Handle New Uploads:
 		files.forEach(async (item) => {
 			if (item instanceof File) {
-				const form_data_key = multiple ? key + '+' : key;
+				const form_data_key = multiple ? name + '+' : name;
 				form_data.append(form_data_key, item);
 			}
 		});
@@ -93,7 +101,7 @@
 	ondrop={on_drop}
 	role="presentation"
 >
-	<Label {id} label={title || ''} />
+	<Label {id} label={name || ''} />
 
 	<div class={['divide-y border border-b-0 px-3', !files.length && 'border-t-0']}>
 		{#each files as file, i}
@@ -101,12 +109,8 @@
 		{/each}
 	</div>
 
-	<Button
-		onclick={upload}
-		class="w-full"
-		size="lg"
-		variant="discrete"
-		disabled={(files.length && !multiple) || false}>Upload</Button
+	<Button onclick={upload} class="w-full" size="lg" disabled={(files.length && !multiple) || false}
+		>Upload</Button
 	>
 
 	<input

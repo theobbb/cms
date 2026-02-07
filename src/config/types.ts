@@ -15,7 +15,6 @@ export type App = {
 // collections
 
 export type Collection<Record> = {
-	title: string;
 	name: string;
 	fields: Field<Record>[];
 	query?: RecordListOptions;

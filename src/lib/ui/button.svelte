@@ -62,8 +62,7 @@
 		icon,
 		variant != 'ghost' && 'border',
 		variant_cx[variant],
-		props.class,
-		'transition- duration-100'
+		props.class
 	]}
 >
 	{@render children?.()}

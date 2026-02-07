@@ -1,17 +1,13 @@
 <script lang="ts">
 	import Input from '$lib/ui/form/input.svelte';
 	import type { FieldProps } from '$config/field.types';
+	import Text from './text.svelte';
 
-	const {
-		id,
-		key,
-		title,
-		value,
-		required,
-		type,
-		min_length = 0,
-		max_length = 100
-	}: FieldProps<'string'> = $props();
+	const props: FieldProps<'text'> = $props();
 </script>
 
-<Input {id} name={key} label={title} {type} {value} {required} />
+{#if props.rows}
+	<Text {...props} label={props.name} />
+{:else}
+	<Input {...props} label={props.name} />
+{/if}

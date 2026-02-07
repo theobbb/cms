@@ -11,7 +11,7 @@
 </script>
 
 <Section size="sm">
-	<nav class="my-gap-y">
+	<nav class="my-gap-y- space-y-px">
 		{#each links as { name, param }}
 			<NavLink {param} {name} {base_path} />
 		{/each}

@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '../button.svelte';
 	import Search from './search.svelte';
-	import { ColumnComponents } from './column.types';
+	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
 	import type { Collection } from '$config/types';
 	import { use_editor } from '$lib/logic/editor.svelte';
@@ -22,7 +22,7 @@
 
 	const pocketbase = use_pocketbase();
 	const data_store = use_data_store();
-
+	$inspect(collection);
 	set_collection(collection);
 
 	const current_search = $derived(page.url.searchParams.get('search') || '');
@@ -86,7 +86,10 @@
 	$effect(() => {
 		fetch_data(1);
 	});
-	const fields = $derived(collection.fields);
+	const fields = $derived(collection.fields.filter((field) => !field.hidden));
+	// const fields = $derived(
+	// 	[...collection.fields].filter((field) => !field.hidden && field.name != 'id')
+	// );
 
 	const records = $derived(pagination?.items || []);
 	const empty = $derived(!pagination?.items?.length);
@@ -121,19 +124,21 @@
 		}
 	}
 
-	function set_sort(column: any) {
-		const key = String(column.key);
-		const value = sort_param == column.key ? '-' + key : key;
+	function set_sort(field: any) {
+		const key = String(field.name);
+		const value = sort_param == field.name ? '-' + key : key;
 
 		const url = url_query_param(page.url.href, 'sort', value);
 		goto(url);
 	}
+
+	//$inspect(pagination, collection);
 </script>
 
 <Section size="full">
 	{#snippet header()}
 		<div class="flex justify-between">
-			<div>{collection.title}</div>
+			<div>{collection.name}</div>
 			<Button onclick={() => editor.open({ type: 'create', collection })}>+ Nouveau</Button>
 		</div>
 
@@ -154,7 +159,7 @@
 							onclick={() => set_sort(column)}
 							class="cursor-pointer text-left font-medium hover:bg-white/5"
 						>
-							{column.title}
+							{column.name}
 						</th>
 					{/each}
 				</tr>
@@ -177,10 +182,14 @@
 								ontoggle={() => on_toggle_check(row.id)}
 							/>
 						</td>
-						{#each visible_columns as { key, type = 'string' }}
+						{#each visible_columns as { name, type = 'text' }}
 							{@const Component = ColumnComponents[type]}
 							<td class="">
-								<Component {row} {key} />
+								{#if Component}
+									<Component {row} {name} />
+								{:else}
+									Component {name} - {type} not found
+								{/if}
 							</td>
 						{/each}
 					</tr>

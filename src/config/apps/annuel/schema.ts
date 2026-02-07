@@ -1,6 +1,6 @@
 import type { Schema } from '$config/types';
 // import { process_schema } from '$config/utils';
-import { collections } from './collections';
+import { collections } from './_collections';
 
 export const schema = [
 	{

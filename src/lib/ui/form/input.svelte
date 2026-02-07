@@ -17,7 +17,6 @@
 	<Label id={id || name || String(Math.random())} required={Boolean(required)} {label} linked />
 
 	<input
-		{...props}
 		class={[
 			'border px-2.5 py-1.5 placeholder-text/50 ring-text/20 outline-none',
 			label && 'border-t-0',

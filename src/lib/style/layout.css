@@ -16,6 +16,8 @@
 	--color-danger: rgb(187, 66, 66);
 
 	--color-active: oklch(80.9% 0.105 251.813);
+	/* --color-active: oklch(80.9% 0.105 251.813); */
+	--color-active-hover: oklch(80.712% 0.10074 250.473 / 0.491);
 }
 
 html {

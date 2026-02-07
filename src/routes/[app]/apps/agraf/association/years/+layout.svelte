@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import Nav from '$lib/components/nav.svelte';
 
 	const { data, children } = $props();

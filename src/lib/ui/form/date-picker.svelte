@@ -10,9 +10,8 @@
 		required
 	}: { id: string; name: string; value?: Date; label?: string; required?: boolean } = $props();
 
-	$inspect(value);
 	// Internal State
-	let showCalendar = $state(false);
+	let showCalendar = $state(true);
 	let containerRef = $state<HTMLDivElement | null>(null);
 
 	// viewDate controls what month the calendar shows
@@ -105,23 +104,31 @@
 	/>
 
 	{#if showCalendar}
-		<div class="bg-background-2 absolute z-50 mt-2 w-68 border p-4">
+		<div class=" absolute z-50 mt-2 w-68 border p-4">
 			<div class="mb-4 flex justify-between">
 				<div>
-					<Button onclick={() => changeMonth(-1)} icon="icon-[ri--arrow-left-s-line]" />
+					<Button
+						onclick={() => changeMonth(-1)}
+						variant="ghost"
+						icon="icon-[ri--arrow-left-s-line]"
+					/>
 				</div>
-				<div class="flex">
+				<div class="flex text-sm">
 					{months[month]}
 					{year}
 				</div>
 				<div>
-					<Button onclick={() => changeMonth(1)} icon="icon-[ri--arrow-right-s-line]"></Button>
+					<Button
+						onclick={() => changeMonth(1)}
+						variant="ghost"
+						icon="icon-[ri--arrow-right-s-line]"
+					></Button>
 				</div>
 			</div>
 
 			<div class="grid grid-cols-7 gap-1">
 				{#each daysOfWeek as day}
-					<div class="text-white/60- py-1 text-center text-sm uppercase">{day[0]}</div>
+					<div class=" py-1 text-center text-xs uppercase">{day[0]}</div>
 				{/each}
 				<div class="col-span-full border-b"></div>
 
@@ -136,9 +143,9 @@
 						class={[
 							'flex w-full items-center justify-center text-base/8 ',
 							isSelected(day)
-								? ' text-white- ring-white/50- ring-2'
-								: 'text-white/40-  hover:bg-white/10- hover:text-white/70-',
-							isToday(day) && 'text-active'
+								? ' text-white- bg-active ring-2 '
+								: 'text-white/40-  hover:text-white/70- hover:bg-active-hover',
+							isToday(day) && 'ring-2'
 						]}
 					>
 						{day}

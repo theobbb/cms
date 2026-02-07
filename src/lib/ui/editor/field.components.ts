@@ -11,15 +11,15 @@ import type { FieldType } from '$config/field.types';
 import Date from './fields/date.svelte';
 
 export const FieldComponents: Record<FieldType, any> = {
-	string: String,
 	email: String,
 	url: Url,
-	text: Text,
+	text: String,
 	number: Number,
-	slug: Slug,
+	// slug: Slug,
 	bool: Bool,
 	file: File,
 	relation: Relation,
 	markdown: Markdown,
-	date: Date
+	date: Date,
+	json: String
 };

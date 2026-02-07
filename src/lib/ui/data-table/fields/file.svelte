@@ -5,9 +5,9 @@
 	import { pocketbase_file_url } from '$lib/utils/pocketbase';
 	import { getContext } from 'svelte';
 
-	const { row, key } = $props();
+	const { row, name } = $props();
 
-	const expand = $derived(row?.[key]);
+	const expand = $derived(row?.[name]);
 
 	let items = $derived(expand ? (Array.isArray(expand) ? expand : [expand]) : []);
 

@@ -1,7 +1,7 @@
 <script>
-	const { row, key } = $props();
+	const { row, name } = $props();
 </script>
 
 <div class="truncate text-ellipsis">
-	{row[key]}
+	{row[name]}
 </div>

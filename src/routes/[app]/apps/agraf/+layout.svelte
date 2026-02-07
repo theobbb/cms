@@ -6,7 +6,10 @@
 	const links = [
 		{ name: 'Affiches', param: 'posters' },
 		{ name: 'Association', param: 'association' },
-		{ name: 'Catégories (projet)', param: 'project-tags' }
+		{ name: 'Membres', param: 'members' },
+		{ name: 'Postes', param: 'roles' },
+		{ name: 'Chat', param: 'chat' },
+		{ name: 'Commentaires', param: 'comments' }
 	];
 </script>
 

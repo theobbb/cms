@@ -7,7 +7,7 @@
 	import Button from '../button.svelte';
 	import type { DrawerCtx, DrawerType, PaginationResult } from '$lib/types';
 	import Search from './search.svelte';
-	import { ColumnComponents } from './column.types';
+	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
 	import Pagination from './pagination.svelte';
 	import type { Collection } from '$config/types';
