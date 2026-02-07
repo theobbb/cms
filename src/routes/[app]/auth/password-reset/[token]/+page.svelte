@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Logo from '$lib/assets/logo.svelte';
 	import Button from '$lib/ui/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 </script>
 
 <div class="-ml-nav">
-	<div class="max-w-2xs mx-auto my-24 flex flex-col items-center gap-4">
+	<div class="mx-auto my-24 flex max-w-2xs flex-col items-center gap-4">
 		<div class="w-full text-left">Choisis ton mot de passe wesh</div>
 		<form method="POST" action="?/reset" class="w-full space-y-3">
 			<div>
