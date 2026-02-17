@@ -21,7 +21,9 @@
 	const collection = $derived(editor?.collection);
 
 	const fields = $derived(
-		collection.fields.filter((field) => field.type != 'autodate' && !field.hidden)
+		collection.fields.filter(
+			(field) => field.type != 'autodate' && !field.hidden && !field.table_only
+		)
 	);
 
 	const update_record = $derived(editor?.type == 'update' ? editor.record : null);
@@ -141,9 +143,9 @@
 				{@const Component = FieldComponents[field.type]}
 				{#if Component}
 					<Component
-						value={update_record?.[field.name]}
 						record={update_record}
 						{...field}
+						value={update_record?.[field.name]}
 						id="{field.name.toString()}-{props_id}"
 						bind:onsubmit={field_on_submit[i]}
 					/>

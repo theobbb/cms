@@ -4,7 +4,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import Button from '../button.svelte';
-	import Search from './search.svelte';
+	import Search from '../form/search.svelte';
 	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
 	import type { Collection } from '$config/types';
@@ -16,13 +16,18 @@
 	import type { PaginationResult } from '$lib/types';
 	import Section from '$lib/components/section.svelte';
 	import { use_data_store } from '$lib/logic/data.svelte';
+	import type { Snippet } from 'svelte';
 
-	const { collection }: { collection: Collection<any> } = $props();
+	const {
+		collection,
+		no_editor = false,
+		header: outer_header
+	}: { collection: Collection<any>; no_editor?: boolean; header?: Snippet } = $props();
 	const id = $props.id();
 
 	const pocketbase = use_pocketbase();
 	const data_store = use_data_store();
-	$inspect(collection);
+
 	set_collection(collection);
 
 	const current_search = $derived(page.url.searchParams.get('search') || '');
@@ -47,7 +52,7 @@
 		current_page = page_num;
 		//await reopen_editor();
 	}
-
+	//$inspect(pagination?.items);
 	async function load_more() {
 		await fetch_data(current_page + 1);
 	}
@@ -86,7 +91,7 @@
 	$effect(() => {
 		fetch_data(1);
 	});
-	const fields = $derived(collection.fields.filter((field) => !field.hidden));
+	const fields = $derived(collection.fields.filter((field) => !field.hidden && !field.editor_only));
 	// const fields = $derived(
 	// 	[...collection.fields].filter((field) => !field.hidden && field.name != 'id')
 	// );
@@ -131,25 +136,28 @@
 		const url = url_query_param(page.url.href, 'sort', value);
 		goto(url);
 	}
-
-	//$inspect(pagination, collection);
 </script>
 
 <Section size="full">
 	{#snippet header()}
 		<div class="flex justify-between">
 			<div>{collection.name}</div>
-			<Button onclick={() => editor.open({ type: 'create', collection })}>+ Nouveau</Button>
+			{#if outer_header}
+				{@render outer_header()}
+			{/if}
+			{#if !no_editor}
+				<Button onclick={() => editor.open({ type: 'create', collection })}>+ Nouveau</Button>
+			{/if}
 		</div>
 
-		<div>
+		<div class="mt-2.5">
 			<Search id="search-{id}" />
 		</div>
 	{/snippet}
 
 	<div>
 		<table class="-mx-gap- pr-gap- w-full">
-			<thead class="sticky top-0 z-10 bg-bg">
+			<thead class="sticky top-0 z-10 bg-background">
 				<tr class="">
 					<th>
 						<Checkbox checked={all_checked} ontoggle={on_toggle_check_head} />
@@ -173,7 +181,8 @@
 							'group border-b select-none first:border-t ',
 							editor?.current?.type == 'update' && editor?.current?.record?.id == row.id
 								? 'bg-active'
-								: 'hover:bg-active/30'
+								: 'hover:bg-active/30',
+							collection.name == 'users' && row.id == page.data.user.id && 'bg-active'
 						]}
 					>
 						<td>
@@ -182,10 +191,12 @@
 								ontoggle={() => on_toggle_check(row.id)}
 							/>
 						</td>
-						{#each visible_columns as { name, type = 'text' }}
+						{#each visible_columns as { name, type = 'text', snippet }}
 							{@const Component = ColumnComponents[type]}
 							<td class="">
-								{#if Component}
+								{#if type == 'snippet'}
+									{@render snippet(row)}
+								{:else if Component}
 									<Component {row} {name} />
 								{:else}
 									Component {name} - {type} not found
@@ -200,7 +211,12 @@
 			<div class="text-right- my-gap-y"><Button onclick={load_more}>Charger plus</Button></div>
 		{/if}
 	</div>
-
+	{#if records.length == 0}
+		<div class="my-8 flex flex-col items-center justify-center">
+			<div class="text-2">Aucun résultat.</div>
+			<div class="text-2 mt-4"><Button size="lg">+ Nouveau</Button></div>
+		</div>
+	{/if}
 	{#snippet footer()}
 		<div class="flex items-center justify-between">
 			<div>
@@ -213,7 +229,7 @@
 	{/snippet}
 </Section>
 
-{#if editor.current && page.url.searchParams.has('editor')}
+{#if !no_editor && editor.current && page.url.searchParams.has('editor')}
 	<Editor editor={editor.current} />
 {/if}
 
@@ -222,7 +238,7 @@
 	th {
 		user-select: none;
 		cursor: pointer;
-		padding: 0.2rem 0.8rem;
+		padding: 0.25rem 0.8rem;
 		max-width: 10rem;
 	}
 	td:first-child,
@@ -235,5 +251,9 @@
 	}
 	tbody tr:hover {
 		box-shadow: inset -2px 0 0 currentColor;
+	}
+
+	thead tr {
+		box-shadow: inset 0 -1px 0 currentColor;
 	}
 </style>

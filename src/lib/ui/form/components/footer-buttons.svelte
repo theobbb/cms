@@ -1,7 +1,7 @@
 <script>
 	import Button from '$lib/ui/button.svelte';
 
-	const { action, cancel = 'Annuler', onclose } = $props();
+	const { action, cancel = 'Cancel', onclose } = $props();
 </script>
 
 <div class="flex items-center justify-end gap-1.5">

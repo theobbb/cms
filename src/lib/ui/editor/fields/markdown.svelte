@@ -3,8 +3,8 @@
 
 	import type { FieldProps } from '$config/field.types';
 
-	const { id, key, title, required, value }: FieldProps<'markdown'> = $props();
+	const { id, name, required, value }: FieldProps<'markdown'> = $props();
 </script>
 
 <!-- <Input {id} {name} {label} {type} {value} {required} /> -->
-<Markdown {id} name={key} label={title} {value} {required} />
+<Markdown {id} {name} label={name} {value} {required} />

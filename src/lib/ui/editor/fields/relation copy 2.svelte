@@ -6,7 +6,7 @@
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import RecordName from '$lib/components/record-name.svelte';
-	import Search from '$lib/ui/data-table/search.svelte';
+	import Search from '$lib/ui/form/search.svelte';
 
 	let {
 		id,

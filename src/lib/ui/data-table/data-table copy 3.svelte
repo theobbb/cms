@@ -4,7 +4,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import Button from '../button.svelte';
-	import Search from './search.svelte';
+	import Search from '../form/search.svelte';
 	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
 	import type { Collection } from '$config/types';
@@ -141,7 +141,7 @@
 
 	<div>
 		<table class="-mx-gap- pr-gap- w-full">
-			<thead class="sticky top-0 z-10 bg-bg">
+			<thead class="bg-bg sticky top-0 z-10">
 				<tr class="">
 					<th>
 						<Checkbox checked={all_checked} ontoggle={on_toggle_check_head} />

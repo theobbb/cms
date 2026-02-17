@@ -39,6 +39,7 @@ export type FieldConfig = {
 		minSelect: number;
 		maxSelect: number;
 	};
+
 	// slug: Length &
 	// 	Value<string> & {
 	// 		generate?: {
@@ -65,6 +66,9 @@ export type FieldBase<Record, T extends FieldType> = {
 	name: Extract<keyof Record, string>;
 	required: boolean;
 	primaryKey: boolean;
+
+	table_only?: true;
+	editor_only?: true;
 };
 
 export type Field<Record> = {
@@ -73,7 +77,7 @@ export type Field<Record> = {
 
 export type FieldType = keyof FieldConfig;
 
-type SubmitCallback<T> = (
+export type SubmitCallback<T> = (
 	form_data: FormData,
 	cancel: () => void
 ) => void | Promise<void | ((record: T) => void | Promise<void>)>;

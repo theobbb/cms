@@ -6,12 +6,11 @@
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import RecordName from '$lib/components/record-name.svelte';
-	import Search from '$lib/ui/data-table/search.svelte';
+	import Search from '$lib/ui/form/search.svelte';
 
 	let {
 		id,
 		name,
-
 		required,
 		collectionId,
 		value,
@@ -28,6 +27,12 @@
 	const pocketbase = use_pocketbase();
 
 	const multiple = $derived(maxSelect > 1);
+
+	// Dialog state
+	let dialog_open = $state(false);
+	let pop_selection = $state<T[]>([]);
+	let available_records = $state<T[]>([]);
+	let search = $state('');
 
 	// Normalize value to array
 	const selected_ids = $derived.by(() => {
@@ -46,12 +51,6 @@
 			.map((id) => [...expanded_arr, ...available_records].find((item: T) => item.id === id))
 			.filter(Boolean) as T[];
 	});
-
-	// Dialog state
-	let dialog_open = $state(false);
-	let pop_selection = $state<T[]>([]);
-	let available_records = $state<T[]>([]);
-	let search = $state('');
 
 	async function fetch_records() {
 		try {
@@ -121,21 +120,24 @@
 	};
 </script>
 
-<div class="bg-bg">
+<div class="bg-surface text-surface-foreground">
 	{#if name}
-		<Label {id} label={name} {required} />
+		<Label {id} label={name} {required} icon="icon-[ri--mind-map]" />
 	{/if}
 
 	{#if items.length > 0}
 		<div>
 			{#each items as item (item.id)}
-				<div class="flex items-center justify-between gap-2 border border-b-0 px-2.5 py-1 pr-1.5">
+				<div class="flex h-8 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5">
 					<div class="truncate">
 						<RecordName record={item} collection={collectionId} />
 					</div>
-					<Button size="sm" onclick={() => remove_item(item)} variant="ghost">
-						<span class="icon-[ri--close-fill]"></span>
-					</Button>
+					<Button
+						size="sm"
+						onclick={() => remove_item(item)}
+						variant="ghost"
+						icon="icon-[ri--close-fill]"
+					></Button>
 				</div>
 			{/each}
 		</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 
 	let {
 		size = 'md',
@@ -24,7 +24,7 @@
 </script>
 
 <dialog use:open closedby="any" class={['m-auto', sizes[size]]} {onclose}>
-	<div class=" bg-bg px-gap py-gap-y">
+	<div class="bg-background px-gap py-gap-y">
 		{@render children()}
 	</div>
 </dialog>

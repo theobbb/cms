@@ -35,7 +35,7 @@
 	</Button>
 
 	{#if pop.open}
-		<Pop {close_pop} anchor={container} anchor_position={pop_position} offset={pop_offset}>
+		<Pop onclose={close_pop} anchor={container} anchor_position={pop_position} offset={pop_offset}>
 			<div class="z-100 flex max-w-200 flex-col border bg-bg">
 				{#each options as { title, action }}
 					<button

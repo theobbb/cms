@@ -5,7 +5,7 @@ import { server } from '@passwordless-id/webauthn';
 import { json, error } from '@sveltejs/kit';
 
 export async function POST({ request, params, cookies, locals: { app }, url }) {
-	const invite = url.searchParams.get('invite');
+	const register = url.searchParams.get('register');
 
 	// const { name_or_email } = await request.json();
 
@@ -25,8 +25,8 @@ export async function POST({ request, params, cookies, locals: { app }, url }) {
 		maxAge: 60 * 5
 	} as const;
 
-	if (invite) {
-		const user = await super_pocketbase.collection('users').getOne(invite);
+	if (register) {
+		const user = await super_pocketbase.collection('users').getOne(register);
 		cookies.set('registration_challenge', challenge, cookie_options);
 		return json({
 			options: {
@@ -47,8 +47,8 @@ export async function POST({ request, params, cookies, locals: { app }, url }) {
 				timeout: 60000,
 				attestation: 'none',
 				authenticatorSelection: {
-					residentKey: 'preferred',
-					userVerification: 'preferred'
+					residentKey: 'required',
+					userVerification: 'required'
 				}
 			},
 			userId: user.id
@@ -68,25 +68,7 @@ export async function POST({ request, params, cookies, locals: { app }, url }) {
 			challenge,
 			timeout: 60000,
 			userVerification: 'preferred',
-			rpId: url.hostname // Must match the registration ID
-			// allowCredentials: passkeys.map((pk) => ({
-			// 	id: pk.credential_id,
-			// 	type: 'public-key',
-			// 	transports: ['internal', 'usb', 'ble', 'nfc']
-			// }))
+			rpId: url.hostname
 		}
 	});
-	// return json({
-	// 	options: {
-	// 		challenge,
-	// 		timeout: 60000,
-	// 		userVerification: 'preferred',
-	// 		rpId: 'localhost', // Must match the registration ID
-	// 		allowCredentials: passkeys.map((pk) => ({
-	// 			id: pk.credential_id,
-	// 			type: 'public-key',
-	// 			transports: ['internal', 'usb', 'ble', 'nfc']
-	// 		}))
-	// 	}
-	// });
 }

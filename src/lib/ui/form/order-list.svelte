@@ -24,7 +24,7 @@
 	const props_id = $props.id();
 </script>
 
-<div class="bg-bg">
+<div class="bg-surface text-surface-foreground">
 	{#if label}
 		<Label id={props_id} {label} {required} />
 	{/if}

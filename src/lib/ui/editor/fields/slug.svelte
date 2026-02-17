@@ -6,7 +6,7 @@
 
 	let {
 		id,
-		key,
+		name,
 		title,
 		value,
 		required,

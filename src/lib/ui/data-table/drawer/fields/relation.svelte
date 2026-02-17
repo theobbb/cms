@@ -5,7 +5,7 @@
 	import type { FieldProps } from '../field.types';
 	import type { BaseSystemFields } from '$lib/pocketbase.types';
 	import type { RecordListOptions } from 'pocketbase';
-	import Search from '../../search.svelte';
+	import Search from '../../../form/search.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 
 	let {

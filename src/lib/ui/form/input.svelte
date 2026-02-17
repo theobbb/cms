@@ -7,18 +7,26 @@
 		name,
 		type = 'text',
 		label = '',
+		label_icon,
 		required = false,
+		placeholder,
 		value = $bindable(),
 		...props
-	}: HTMLInputAttributes & { label?: string } = $props();
+	}: HTMLInputAttributes & { label?: string; label_icon?: string } = $props();
 </script>
 
-<div class="bg-background flex flex-col ring-text focus-within:ring">
-	<Label id={id || name || String(Math.random())} required={Boolean(required)} {label} linked />
+<div class="flex flex-col bg-surface text-surface-foreground ring-accent focus-within:ring-2">
+	<Label
+		id={id || name || String(Math.random())}
+		required={Boolean(required)}
+		{label}
+		icon={label_icon}
+		linked
+	/>
 
 	<input
 		class={[
-			'border px-2.5 py-1.5 placeholder-text/50 ring-text/20 outline-none',
+			'placeholder-text/50 border px-2.5 py-1.5 outline-none',
 			label && 'border-t-0',
 			props.class
 		]}
@@ -26,6 +34,7 @@
 		{type}
 		{name}
 		{required}
+		{placeholder}
 		bind:value
 	/>
 </div>

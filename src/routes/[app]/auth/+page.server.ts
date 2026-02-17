@@ -1,29 +1,162 @@
+import { dev } from '$app/environment';
+import { PASSKEY_AUTH_SECRET } from '$env/static/private';
 import { super_auth_pocketbase } from '$lib/server/super-pocketbase';
+import { server } from '@passwordless-id/webauthn';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 
-export async function load({ url, locals: { app } }) {
-	const invite_id = url.searchParams.get('invite');
-	if (!invite_id) return;
+export async function load({ url, cookies, locals: { app } }) {
+	const register_id = url.searchParams.get('register');
 
-	const super_pocketbase = await super_auth_pocketbase(app.pocketbase.url);
-	const invite = await super_pocketbase.collection('users').getOne(invite_id);
+	// --- 1. Passkey Challenge Logic (Moved from +server.ts) ---
+	const challenge = server.randomChallenge();
+	const rpId = url.hostname;
 
-	return { invite };
+	const cookie_options = {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'strict',
+		secure: !dev,
+		maxAge: 60 * 60
+	} as const;
+
+	let options;
+
+	// Registration Flow
+	if (register_id) {
+		const super_pocketbase = await super_auth_pocketbase(app.pocketbase.url);
+
+		// Note: We use try/catch here in case the user ID is invalid
+		try {
+			const register_user = await super_pocketbase.collection('users').getOne(register_id);
+			if (register_user.verified) throw new Error('User already registered');
+
+			cookies.set('registration_challenge', challenge, cookie_options);
+
+			options = {
+				challenge,
+				rp: { name: app.title, id: rpId },
+				user: {
+					id: register_user.id,
+					name: register_user.email || register_user.name,
+					displayName: register_user.email || register_user.name
+				},
+				pubKeyCredParams: [
+					{ type: 'public-key', alg: -7 }, // ES256
+					{ type: 'public-key', alg: -257 } // RS256
+				],
+				timeout: 60000,
+				attestation: 'none',
+				authenticatorSelection: {
+					residentKey: 'preferred',
+					userVerification: 'required'
+				}
+			};
+
+			return { register: register_user, options };
+		} catch (e) {
+			// Handle invalid user ID or verified user
+			return { register: null, options: null, error: 'Invalid registration link' };
+		}
+	}
+
+	// Authentication Flow
+	cookies.set('authentication_challenge', challenge, cookie_options);
+
+	options = {
+		challenge,
+		timeout: 60000,
+		userVerification: 'required',
+		rpId
+	};
+
+	return { register: null, options };
 }
 
-export const actions = {
-	signin: async ({ request, locals, params }) => {
-		const data = await request.formData();
-		const email = data.get('email') as string;
-		const password = data.get('password') as string;
+export const actions: Actions = {
+	default: async ({ request, cookies, locals: { pocketbase, app }, url }) => {
+		const isRegistration = url.searchParams.has('register');
+		const formData = await request.formData();
+		const credentialJSON = formData.get('credential') as string;
 
-		try {
-			await locals.pocketbase.collection('users').authWithPassword(email, password);
-		} catch (err) {
-			console.log(err);
-			return fail(400, { message: `Bruh, tu peux pas te connecter` });
+		if (!credentialJSON) {
+			return fail(400, { message: 'Missing credentials' });
 		}
 
-		throw redirect(303, '/' + params.app);
+		// Parse the JSON.toJSON() output from the client
+		const credential = JSON.parse(credentialJSON);
+		const challengeKey = isRegistration ? 'registration_challenge' : 'authentication_challenge';
+		const challenge = cookies.get(challengeKey);
+
+		if (!challenge) {
+			return fail(400, { message: 'Session expired. Please refresh the page.' });
+		}
+
+		const super_pocketbase = await super_auth_pocketbase(app.pocketbase.url);
+		let userId: string;
+
+		try {
+			if (isRegistration) {
+				const registerUserId = url.searchParams.get('register')!;
+
+				const verified = await server.verifyRegistration(credential, {
+					challenge,
+					origin: url.origin
+				});
+
+				await super_pocketbase.collection('users').update(registerUserId, {
+					password: PASSKEY_AUTH_SECRET,
+					passwordConfirm: PASSKEY_AUTH_SECRET,
+					verified: true
+				});
+
+				await super_pocketbase.collection('passkeys').create({
+					user: registerUserId,
+					credential_id: verified.credential.id,
+					public_key: verified.credential.publicKey,
+					algorithm: verified.credential.algorithm,
+					transports: verified.credential.transports || [] // Save transports if available
+				});
+
+				userId = registerUserId;
+			} else {
+				// Search for passkey by credential ID
+				const storedPasskey = await super_pocketbase
+					.collection('passkeys')
+					.getFirstListItem(`credential_id = "${credential.id}"`)
+					.catch(() => {
+						throw new Error('Passkey not found');
+					});
+
+				const verified = await server.verifyAuthentication(
+					credential,
+					{
+						id: storedPasskey.credential_id,
+						publicKey: storedPasskey.public_key,
+						algorithm: storedPasskey.algorithm,
+						transports: storedPasskey.transports
+					},
+					{
+						challenge,
+						origin: url.origin,
+						userVerified: true
+					}
+				);
+
+				userId = storedPasskey.user;
+			}
+
+			cookies.delete(challengeKey, { path: '/' });
+
+			const user = await super_pocketbase.collection('users').getOne(userId);
+			await pocketbase.collection('users').authWithPassword(user.email, PASSKEY_AUTH_SECRET);
+
+			throw redirect(303, '/');
+		} catch (err: any) {
+			console.error('Auth Error:', err);
+			// Do not leak internal server errors, but give hints
+			const msg = err.status === 303 ? 'Redirecting' : err.message || 'Authentication failed';
+			if (err.status === 303) throw err;
+			return fail(400, { message: msg });
+		}
 	}
-} satisfies Actions;
+};

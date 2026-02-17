@@ -3,7 +3,6 @@
 	import Label from '$lib/ui/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
 	import Attachment from './lib/attachment.svelte';
-	import { use_editor } from '$lib/logic/editor.svelte';
 
 	let {
 		id,
@@ -18,8 +17,6 @@
 	let files: (string | File)[] = $state([]);
 
 	let is_over = $state(false);
-
-	const editor = use_editor();
 
 	$effect(() => {
 		if (!value) {
@@ -95,13 +92,13 @@
 </script>
 
 <div
-	class={['bg-background', is_over && 'ring-3']}
+	class={['bg-surface text-surface-foreground', is_over && 'ring-3']}
 	ondragover={on_drag_over}
 	ondragleave={on_drag_leave}
 	ondrop={on_drop}
 	role="presentation"
 >
-	<Label {id} label={name || ''} />
+	<Label {id} label={name || ''} icon="icon-[ri--image-line]" />
 
 	<div class={['divide-y border border-b-0 px-3', !files.length && 'border-t-0']}>
 		{#each files as file, i}

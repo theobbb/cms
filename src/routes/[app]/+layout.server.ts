@@ -24,9 +24,8 @@ export async function load({ locals: { app, pocketbase, user, public_route } }) 
 	return {
 		app,
 		collections: process_collections(collections),
-
 		user,
-		server_auth: pocketbase.authStore.exportToCookie(),
+		server_auth: pocketbase.authStore.exportToCookie({ httpOnly: false }),
 		public_route
 	};
 }

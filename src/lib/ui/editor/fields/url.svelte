@@ -5,13 +5,11 @@
 
 	const {
 		id,
-		key,
-		title,
+		name,
 		value,
 		required,
 		type,
 		on_extract
-
 		// min_length = 0,
 		// max_length = 100
 	}: FieldProps<'url'> = $props();
@@ -24,8 +22,9 @@
 	<Input
 		class={[on_extract && 'border-b-0']}
 		{id}
-		name={key}
-		label={title}
+		{name}
+		label={name}
+		label_icon="icon-[ri--link-m]"
 		{type}
 		{value}
 		{required}

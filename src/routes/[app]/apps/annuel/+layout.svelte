@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { use_header } from '$lib/components/header/header-manager.svelte.js';
 	import NavLink from '$lib/components/nav-link.svelte';
 	import Nav from '$lib/components/nav.svelte';
 	import Menu from '$lib/ui/pop/menu.svelte';
+	import SelectYear from './select-year.svelte';
 
 	const { data, children } = $props();
 
@@ -21,9 +23,20 @@
 	const processed_links = $derived(
 		[...links].map(({ name, param }) => ({ name, param: year + '/' + param }))
 	);
-	$inspect(data);
+
+	const header = use_header();
+	header.push_start({
+		name: 'Année',
+		icon: 'icon-[ri--folder-2-line]',
+		options: years,
+		param: 'year'
+	});
+
+	$inspect(header.start_items);
 </script>
 
 <Nav links={processed_links} />
 
 {@render children()}
+
+<SelectYear />

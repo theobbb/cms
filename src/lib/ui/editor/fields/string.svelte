@@ -4,10 +4,12 @@
 	import Text from './text.svelte';
 
 	const props: FieldProps<'text'> = $props();
+
+	const label_icon = $derived(props.type == '');
 </script>
 
-{#if props.rows}
-	<Text {...props} label={props.name} />
+{#if 'rows' in props}
+	<Text {...props} />
 {:else}
-	<Input {...props} label={props.name} />
+	<Input {...props} label={props.name} label_icon="icon-[ri--text]" />
 {/if}

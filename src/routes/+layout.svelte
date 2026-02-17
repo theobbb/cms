@@ -1,7 +1,9 @@
 <script lang="ts">
 	import '$lib/style/layout.css';
 	import '$lib/style/fonts.css';
+	import '$lib/style/markdown.css';
 	import favicon from '$lib/assets/favicon.svg';
+
 	import { init_toaster } from '$lib/logic/toaster.svelte';
 	import Toaster from '$lib/components/toaster/toaster.svelte';
 	import DialogConfirm from '$lib/components/dialog-confirm.svelte';

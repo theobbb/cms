@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { use_editor } from '$lib/logic/editor.svelte';
+	import Button from '$lib/ui/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 	import DialogInviteUser from './dialog-invite-user.svelte';
 
@@ -8,13 +9,18 @@
 
 	const editor = use_editor();
 
-	$inspect(editor.current);
+	let dialog_invite_open = $state(false);
 </script>
 
-<div class="flex divide-x">
-	<DataTable collection={data.collections.users} />
-</div>
+<DataTable
+	no_editor
+	collection={{ ...data.collections.users, query: { sort: 'created', filter: 'verified=true' } }}
+>
+	{#snippet header()}
+		<Button onclick={() => (dialog_invite_open = true)}>+ New user</Button>
+	{/snippet}
+</DataTable>
 
-{#if editor.current && page.url.searchParams.has('editor')}
-	<DialogInviteUser onclose={editor.close} />
+{#if dialog_invite_open}
+	<DialogInviteUser onclose={() => (dialog_invite_open = false)} />
 {/if}

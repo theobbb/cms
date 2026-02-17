@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/state';
 	import Button from '$lib/ui/button.svelte';
+
+	let items = $state([]);
 
 	const { user } = $derived(page.data);
 </script>

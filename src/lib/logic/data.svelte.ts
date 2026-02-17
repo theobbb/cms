@@ -54,7 +54,7 @@ class DataStore {
 		const result = await this.#pocketbase
 			.collection(collection_name)
 			.getList(page_num, PER_PAGE, query_expanded);
-
+		console.log('fetching...', result?.items);
 		// Only cache page 1
 		if (page_num === 1) {
 			this.#chunks.set(cache_key, result);
@@ -99,6 +99,7 @@ class DataStore {
 			}
 		}
 		keys_to_delete.forEach((key) => this.#chunks.delete(key));
+		console.log('invalidate_collection...', collection);
 	}
 
 	/**

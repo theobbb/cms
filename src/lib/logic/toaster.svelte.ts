@@ -54,9 +54,11 @@ export class ToastManager {
 		return id;
 	}
 
-	update(id: CryptoID, type: ToastType, title: string, body?: string): void {
+	update(id: CryptoID, type: ToastType, title?: string, body?: string): void {
 		const index = this.toasts.findIndex((t) => t.id === id);
 		if (index === -1) return;
+
+		if (!title) title = this.default_title[type];
 
 		const current = this.toasts[index] as Toast;
 		const created = new Date().toISOString();

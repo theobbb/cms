@@ -1,5 +1,5 @@
 import PocketBase from 'pocketbase';
-import type { App as AppConfig } from './config/types';
+import type { App as AppConfig } from './config/apps';
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 declare global {

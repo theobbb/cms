@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { floating } from '$lib/utils/floating';
 	import Button from '../button.svelte';
+	import Floating from '../pop/floating.svelte';
+	import { use_pop } from '../pop/pop-test.svelte';
 	import Input from './input.svelte';
 
 	let {
@@ -10,9 +13,9 @@
 		required
 	}: { id: string; name: string; value?: Date; label?: string; required?: boolean } = $props();
 
+	const TEST_POP = false;
 	// Internal State
-	let showCalendar = $state(true);
-	let containerRef = $state<HTMLDivElement | null>(null);
+	// REMOVED: showCalendar, containerRef (handled by CSS now)
 
 	// viewDate controls what month the calendar shows
 	let viewDate = $state(new Date(value));
@@ -58,11 +61,16 @@
 		const target = e.target as HTMLInputElement;
 		inputValue = target.value;
 
-		const parsed = Date.parse(inputValue);
+		// FIX: Replace hyphens with slashes to force Local Time parsing
+		// '2023-10-25' (UTC) becomes '2023/10/25' (Local)
+		const normalizedInput = inputValue.replace(/-/g, '/');
+
+		const parsed = Date.parse(normalizedInput);
+
 		if (!isNaN(parsed)) {
 			const newDate = new Date(parsed);
 			value = newDate;
-			viewDate = new Date(newDate); // Sync calendar view to typed date
+			viewDate = new Date(newDate);
 		}
 	}
 
@@ -70,7 +78,13 @@
 		const newDate = new Date(year, month, day);
 		value = newDate;
 		inputValue = newDate.toLocaleDateString();
-		showCalendar = false;
+		// REMOVED: showCalendar = false;
+		// Focus naturally moves or stays; to close explicitly you might need
+		// to blur the active element (document.activeElement.blur()),
+		// but often keeping it open for verification is fine.
+		if (document.activeElement instanceof HTMLElement) {
+			document.activeElement.blur();
+		}
 	}
 
 	function changeMonth(step: number) {
@@ -80,32 +94,19 @@
 	function isSelected(day: number) {
 		return day === value.getDate() && month === value.getMonth() && year === value.getFullYear();
 	}
-
-	function handleOutsideClick(event: MouseEvent) {
-		if (showCalendar && containerRef && !containerRef.contains(event.target as Node)) {
-			showCalendar = false;
-			// Re-sync input text to the last valid date on blur
-			inputValue = value.toLocaleDateString();
-		}
-	}
 </script>
 
-<svelte:window onclick={handleOutsideClick} />
+<div class="group relative flex w-full">
+	<div class="flex w-full" style="anchor-name: --main-anchor;">
+		<Input {id} {name} value={inputValue} oninput={handleInput} placeholder="JJ/MM/YYYY" {label} />
+	</div>
 
-<div bind:this={containerRef} class="relative inline-block">
-	<Input
-		{id}
-		{name}
-		value={inputValue}
-		oninput={handleInput}
-		onfocus={() => (showCalendar = true)}
-		placeholder="JJ/MM/YYYY"
-		{label}
-	/>
-
-	{#if showCalendar}
-		<div class=" absolute z-50 mt-2 w-68 border p-4">
-			<div class="mb-4 flex justify-between">
+	<div
+		class={['fixed z-50 m-2 hidden group-focus-within:block focus:block', TEST_POP && 'block!']}
+		style="position-anchor: --main-anchor; top: anchor(bottom); left: anchor(left); position-try-fallbacks: flip-block;"
+	>
+		<div class="w-64- border bg-surface p-3 text-sm text-surface-foreground">
+			<div class="mb-4 flex items-center justify-between">
 				<div>
 					<Button
 						onclick={() => changeMonth(-1)}
@@ -128,7 +129,7 @@
 
 			<div class="grid grid-cols-7 gap-1">
 				{#each daysOfWeek as day}
-					<div class=" py-1 text-center text-xs uppercase">{day[0]}</div>
+					<div class="py-1 text-center text-xs uppercase">{day[0]}</div>
 				{/each}
 				<div class="col-span-full border-b"></div>
 
@@ -141,7 +142,7 @@
 						type="button"
 						onclick={() => selectDate(day)}
 						class={[
-							'flex w-full items-center justify-center text-base/8 ',
+							'w-full- flex size-7 items-center justify-center  ',
 							isSelected(day)
 								? ' text-white- bg-active ring-2 '
 								: 'text-white/40-  hover:text-white/70- hover:bg-active-hover',
@@ -153,5 +154,5 @@
 				{/each}
 			</div>
 		</div>
-	{/if}
+	</div>
 </div>

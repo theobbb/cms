@@ -4,14 +4,14 @@
 	export type PopAnchorPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 	let {
-		close_pop,
+		onclose,
 		anchor = null,
 		anchor_position,
 		offset = [0, 0],
 		children,
 		class: cx
 	}: {
-		close_pop: () => void;
+		onclose: () => void;
 		anchor?: HTMLElement | null;
 		anchor_position?: PopAnchorPosition;
 		offset?: [number, number];
@@ -20,13 +20,6 @@
 	} = $props();
 
 	let el: HTMLDivElement | null = null;
-
-	function onclose(event: ToggleEvent) {
-		if (event.newState === 'closed') {
-			close_pop();
-			return;
-		}
-	}
 
 	function position() {
 		if (!el || !anchor) return;
@@ -64,19 +57,23 @@
 		el.style.left = `calc(${left}px + ${offset[0]}rem)`;
 	}
 
-	onMount(() => {
-		if (!el) return;
+	function open(el: HTMLDivElement) {
 		el.showPopover();
-		position();
+	}
 
-		el.addEventListener('toggle', onclose);
+	// onMount(() => {
+	// 	if (!el) return;
+	// 	el.showPopover();
+	// 	position();
 
-		return () => {
-			el?.removeEventListener('toggle', onclose);
-		};
-	});
+	// 	el.addEventListener('toggle', onclose);
+
+	// 	return () => {
+	// 		el?.removeEventListener('toggle', onclose);
+	// 	};
+	// });
 </script>
 
-<div bind:this={el} popover class="text-font-color bg-background absolute {cx}">
+<div use:open popover class="text-font-color bg-background absolute {cx}" {onclose}>
 	{@render children()}
 </div>

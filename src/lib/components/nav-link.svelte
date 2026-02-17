@@ -8,9 +8,7 @@
 
 	const { name, param, base_path = '' }: Link & { base_path?: string } = $props();
 
-	const href = $derived(
-		'/' + [page.params.app, base_path, param].filter((i) => Boolean(i)).join('/')
-	);
+	const href = $derived('/' + [base_path, param].filter((i) => Boolean(i)).join('/'));
 
 	const active = $derived(page.url.pathname.startsWith(href));
 </script>

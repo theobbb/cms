@@ -7,9 +7,11 @@
 		name,
 		required,
 		label,
+		label_icon,
 		placeholder,
 		value = $bindable(),
 		rows = 6,
+
 		ref = $bindable(null),
 		class: class_override,
 		min,
@@ -20,6 +22,7 @@
 		ref?: any;
 		min?: number;
 		max?: number;
+		label_icon?: string;
 	} = $props();
 
 	const props_id = $props.id();
@@ -36,14 +39,14 @@
 	const id = $derived(props.id || name || props_id);
 </script>
 
-<div class="bg-background flex flex-col focus-within:ring">
+<div class="flex flex-col bg-surface text-surface-foreground ring-accent focus-within:ring-2">
 	{#if label}
-		<Label {id} required={Boolean(required)} {label} linked />
+		<Label {id} required={Boolean(required)} {label} icon={label_icon} linked />
 	{/if}
 	<textarea
 		{oninput}
 		class={[
-			'border  px-2.5 py-1.5 placeholder-text/50  outline-none',
+			'bg-bg-2 placeholder-text/50 border px-2.5 py-1.5  outline-none',
 			label && 'border-t-0',
 			class_override
 		]}

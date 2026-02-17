@@ -6,7 +6,7 @@
 
 	import Button from '../button.svelte';
 	import type { DrawerCtx, DrawerType, PaginationResult } from '$lib/types';
-	import Search from './search.svelte';
+	import Search from '../form/search.svelte';
 	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
 	import Pagination from './pagination.svelte';
@@ -75,7 +75,7 @@
 	</div>
 	<div class="-mr-gap min-h-0 overflow-y-auto pr-gap">
 		<table class="">
-			<thead class="sticky top-0 z-10 border-b bg-bg">
+			<thead class="bg-bg sticky top-0 z-10 border-b">
 				<tr class="border-b">
 					<th>
 						<Checkbox checked={all_checked} ontoggle={on_toggle_check_head} />
