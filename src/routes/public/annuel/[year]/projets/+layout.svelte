@@ -5,6 +5,8 @@
 	const { data, children }: LayoutProps = $props();
 
 	set_collection(data.collections.projects);
+
+	$inspect(data.collections);
 </script>
 
 {@render children()}

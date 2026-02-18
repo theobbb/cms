@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+@custom-variant dark (&:is(.dark *));
+
+:root {
+	--background: oklch(88.224% 0.0001 271.152);
+	--foreground: oklch(29.716% 0.00003 271.152);
+	--foreground-muted: oklch(41.716% 0.00003 271.152);
+
+	--surface: oklch(91.887% 0.0001 271.152);
+	--surface-foreground: oklch(32.109% 0.00004 271.152);
+	--surface-foreground-muted: oklch(44.109% 0.00004 271.152);
+
+	--primary: oklch(25.615% 0.00003 271.152);
+	--primary-foreground: oklch(89.755% 0.0001 271.152);
+	--primary-foreground-muted: oklch(77.755% 0.0001 271.152);
+
+	--secondary: oklch(77.944% 0.00009 271.152);
+	--secondary-foreground: oklch(24.776% 0.00003 271.152);
+	--secondary-foreground-muted: oklch(36.776% 0.00003 271.152);
+
+	--accent: oklch(80.9% 0.105 251.813);
+	--accent-foreground: oklch(32.613% 0.0435 250.528);
+	--accent-foreground-muted: oklch(42.663% 0.04714 250.109);
+
+	/* --- utils */
+	--blue: oklch(86.325% 0.02828 258.419);
+	--blue-foreground: oklch(42.694% 0.06713 265.279);
+	--blue-foreground-muted: oklch(55.323% 0.05711 256.732);
+	--blue-surface: oklch(70.984% 0.15 258.148);
+	--blue-surface-foreground: oklch(30.984% 0.15 258.148);
+	--blue-surface-foreground-muted: oklch(42.984% 0.15 258.148);
+
+	--green: oklch(88.569% 0.04494 159.657);
+	--green-foreground: oklch(45.191% 0.12129 147.447);
+	--green-foreground-muted: oklch(58.537% 0.08895 158.535);
+	--green-surface: oklch(79.034% 0.15 154.905);
+	--green-surface-foreground: oklch(37.034% 0.15 154.905);
+	--green-surface-foreground-muted: oklch(49.034% 0.15 154.905);
+
+	--yellow: oklch(90.57% 0.05482 89.921);
+	--yellow-foreground: oklch(53.494% 0.07732 83.058);
+	--yellow-foreground-muted: oklch(64.942% 0.07432 92.293);
+	--yellow-surface: oklch(84.275% 0.12867 89.156);
+	--yellow-surface-foreground: oklch(37.987% 0.07803 77.558);
+	--yellow-surface-foreground-muted: oklch(54.275% 0.12867 89.156);
+
+	--red: oklch(89.555% 0.0416 14.132);
+	--red-foreground: oklch(43.132% 0.1143 15.321);
+	--red-foreground-muted: oklch(57.72% 0.07405 10.422);
+	--red-surface: oklch(70.583% 0.15045 18.639);
+	--red-surface-foreground: oklch(30.583% 0.15045 18.639);
+	--red-surface-foreground-muted: oklch(42.583% 0.15045 18.639);
+
+	/* placeholder */
+	--muted: oklch(41.716% 0.00003 271.152);
+}
+
+@theme inline static {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-foreground-muted: var(--foreground-muted);
+
+	--color-surface: var(--surface);
+	--color-surface-foreground: var(--surface-foreground);
+	--color-surface-foreground-muted: var(--surface-foreground-muted);
+
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary-foreground-muted: var(--primary-foreground-muted);
+
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-secondary-foreground-muted: var(--secondary-foreground-muted);
+
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent-foreground-muted: var(--accent-foreground-muted);
+
+	/* --- utils --- */
+	--color-blue: var(--blue);
+	--color-blue-foreground: var(--blue-foreground);
+	--color-blue-foreground-muted: var(--blue-foreground-muted);
+	--color-blue-surface: var(--blue-surface);
+	--color-blue-surface-foreground: var(--blue-surface-foreground);
+	--color-blue-surface-foreground-muted: var(--blue-surface-foreground-muted);
+
+	--color-green: var(--green);
+	--color-green-foreground: var(--green-foreground);
+	--color-green-foreground-muted: var(--green-foreground-muted);
+	--color-green-surface: var(--green-surface);
+	--color-green-surface-foreground: var(--green-surface-foreground);
+	--color-green-surface-foreground-muted: var(--green-surface-foreground-muted);
+
+	--color-yellow: var(--yellow);
+	--color-yellow-foreground: var(--yellow-foreground);
+	--color-yellow-foreground-muted: var(--yellow-foreground-muted);
+	--color-yellow-surface: var(--yellow-surface);
+	--color-yellow-surface-foreground: var(--yellow-foreground);
+	--color-yellow-surface-foreground-muted: var(--yellow-foreground-muted);
+
+	--color-red: var(--red);
+	--color-red-foreground: var(--red-foreground);
+	--color-red-foreground-muted: var(--red-foreground-muted);
+	--color-red-surface: var(--red-surface);
+	--color-red-surface-foreground: var(--red-surface-foreground);
+	--color-red-surface-foreground-muted: var(--red-surface-foreground-muted);
+
+	--color-muted: var(--muted);
+}

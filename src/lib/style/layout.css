@@ -1,62 +1,19 @@
 @import 'tailwindcss';
 @plugin '@iconify/tailwind4';
-@custom-variant dark (&:is(.dark *));
 
-:root {
-	--background: oklch(88.224% 0.0001 271.152);
-	--foreground: oklch(29.716% 0.00003 271.152);
-
-	--surface: oklch(91.887% 0.0001 271.152);
-	--surface-foreground: oklch(32.109% 0.00004 271.152);
-
-	--primary: oklch(25.615% 0.00003 271.152);
-	--primary-foreground: oklch(89.755% 0.0001 271.152);
-
-	--secondary: oklch(77.944% 0.00009 271.152);
-	--secondary-foreground: oklch(24.776% 0.00003 271.152);
-
-	--accent: oklch(80.9% 0.105 251.813);
-	--accent-foreground: oklch(32.613% 0.0435 250.528);
-
-	--destructive: oklch(39.961% 0.11893 20.44);
-	--destructive-foreground: oklch(70.4% 0.191 22.216);
-
-	--border: oklch(0% 0 0 / 0.284);
-
-	--gap: 1rem;
-}
+@custom-variant hover (&:where(:hover, .hover));
+@custom-variant active (&:where(:active, .active));
+@custom-variant focus (&:where(:focus, .focus));
+@custom-variant focus-visible (&:where(:focus-visible, .focus-visible));
+@custom-variant loading (&[aria-busy="true"]);
 
 @theme {
-	--spacing-gap: var(--gap);
+	--spacing-gap: 1rem;
 	--spacing-gap-y: 0.7rem;
-
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-surface: var(--surface);
-	--color-surface-foreground: var(--surface-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-destructive-foreground: var(--destructive-foreground);
-
-	--color-border: var(--border);
-
-	/* --color-text: rgb(25, 25, 25);
-	--color-text-2: rgba(0, 0, 0, 0.472); */
 
 	--spacing-header: 0rem;
 	--spacing-section: 0rem;
 	--spacing-inner-section: 0rem;
-
-	--color-danger: rgb(187, 66, 66);
-
-	--color-active: oklch(80.9% 0.105 251.813);
-	/* --color-active: oklch(80.9% 0.105 251.813); */
-	--color-active-hover: oklch(80.712% 0.10074 250.473 / 0.491);
 }
 
 html {

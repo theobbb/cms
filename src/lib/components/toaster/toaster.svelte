@@ -11,19 +11,19 @@
 			icon: icons.spinner
 		},
 		info: {
-			cx: 'bg-blue-500/50 text-blue-950',
+			cx: 'bg-blue text-blue-foreground',
 			icon: icons.info
 		},
 		success: {
-			cx: 'bg-green-500/50 text-green-950',
+			cx: 'bg-green text-green-foreground',
 			icon: icons.success
 		},
 		warning: {
-			cx: 'bg-yellow-500/50 text-yellow-950',
+			cx: 'bg-yellow text-yellow-foreground',
 			icon: icons.warning
 		},
 		error: {
-			cx: 'bg-red-500/50 text-red-950',
+			cx: 'bg-red text-red-foreground',
 			icon: icons.error
 		}
 	};

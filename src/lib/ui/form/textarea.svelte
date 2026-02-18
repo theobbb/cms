@@ -55,6 +55,7 @@
 		{name}
 		{required}
 		{placeholder}
+		autocomplete="off"
 		minlength={min}
 		maxlength={max}
 		bind:value

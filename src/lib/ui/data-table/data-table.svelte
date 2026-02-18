@@ -7,7 +7,6 @@
 	import Search from '../form/search.svelte';
 	import { ColumnComponents } from './field.components';
 	import { url_query_param } from '$lib/utils/url';
-	import type { Collection } from '$config/types';
 	import { use_editor } from '$lib/logic/editor.svelte';
 
 	import Editor from '../editor/editor.svelte';
@@ -17,12 +16,13 @@
 	import Section from '$lib/components/section.svelte';
 	import { use_data_store } from '$lib/logic/data.svelte';
 	import type { Snippet } from 'svelte';
+	import type { CollectionModel } from 'pocketbase';
 
 	const {
 		collection,
 		no_editor = false,
 		header: outer_header
-	}: { collection: Collection<any>; no_editor?: boolean; header?: Snippet } = $props();
+	}: { collection: CollectionModel; no_editor?: boolean; header?: Snippet } = $props();
 	const id = $props.id();
 
 	const pocketbase = use_pocketbase();
@@ -50,6 +50,8 @@
 		);
 
 		current_page = page_num;
+
+		checked_set.add(pagination.items[0].id);
 		//await reopen_editor();
 	}
 	//$inspect(pagination?.items);
@@ -151,13 +153,13 @@
 		</div>
 
 		<div class="mt-2.5">
-			<Search id="search-{id}" />
+			<Search id="search-{id}" url_param="search" />
 		</div>
 	{/snippet}
 
-	<div>
+	<div class="relative">
 		<table class="-mx-gap- pr-gap- w-full">
-			<thead class="sticky top-0 z-10 bg-background">
+			<thead class="bg-background sticky top-0 z-10">
 				<tr class="">
 					<th>
 						<Checkbox checked={all_checked} ontoggle={on_toggle_check_head} />
@@ -167,7 +169,14 @@
 							onclick={() => set_sort(column)}
 							class="cursor-pointer text-left font-medium hover:bg-white/5"
 						>
-							{column.name}
+							<div class="flex items-center justify-between gap-2">
+								<div>{column.name}</div>
+								{#if sort_param == column.name}
+									<div class="icon-[ri--arrow-up-line]"></div>
+								{:else if sort_param == '-' + column.name}
+									<div class="icon-[ri--arrow-down-line]"></div>
+								{/if}
+							</div>
 						</th>
 					{/each}
 				</tr>
@@ -180,9 +189,9 @@
 						class={[
 							'group border-b select-none first:border-t ',
 							editor?.current?.type == 'update' && editor?.current?.record?.id == row.id
-								? 'bg-active'
-								: 'hover:bg-active/30',
-							collection.name == 'users' && row.id == page.data.user.id && 'bg-active'
+								? 'bg-accent'
+								: 'hover:bg-accent/30',
+							collection.name == 'users' && row.id == page.data.user.id && 'bg-accent'
 						]}
 					>
 						<td>
@@ -191,15 +200,15 @@
 								ontoggle={() => on_toggle_check(row.id)}
 							/>
 						</td>
-						{#each visible_columns as { name, type = 'text', snippet }}
+						{#each visible_columns as { type, snippet, ...field_props }}
 							{@const Component = ColumnComponents[type]}
 							<td class="">
 								{#if type == 'snippet'}
 									{@render snippet(row)}
 								{:else if Component}
-									<Component {row} {name} />
+									<Component {row} {...field_props} />
 								{:else}
-									Component {name} - {type} not found
+									Component {type} not found
 								{/if}
 							</td>
 						{/each}
@@ -209,6 +218,25 @@
 		</table>
 		{#if has_more}
 			<div class="text-right- my-gap-y"><Button onclick={load_more}>Charger plus</Button></div>
+		{/if}
+		{#if checked_set.size > 0}
+			<div class="pointer-events-none absolute inset-0 flex items-end justify-center">
+				<div class="sticky bottom-12">
+					<div
+						class="bg-surface text-surface-foreground pointer-events-auto w-sm px-3 py-2 shadow-lg"
+					>
+						<div class="flex items-center justify-between gap-2">
+							<div class="flex items-center gap-2">
+								<Button icon="icon-[ri--close-line]" size="sm" variant="ghost" />
+								<div>{checked_set.size} séléctionné(s)</div>
+							</div>
+							<div>
+								<Button>Supprimer</Button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		{/if}
 	</div>
 	{#if records.length == 0}

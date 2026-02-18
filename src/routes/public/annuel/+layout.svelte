@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+	import { page } from '$app/state';
 	import { apps } from '$config/apps';
 	import { set_app } from '$lib/logic/ctx.svelte';
 	import { init_pocketbase } from '$lib/pocketbase';

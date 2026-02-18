@@ -32,7 +32,7 @@
 		param: 'year'
 	});
 
-	$inspect(header.start_items);
+	$inspect(page.data);
 </script>
 
 <Nav links={processed_links} />

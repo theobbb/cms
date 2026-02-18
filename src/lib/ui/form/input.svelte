@@ -26,11 +26,12 @@
 
 	<input
 		class={[
-			'placeholder-text/50 border px-2.5 py-1.5 outline-none',
-			label && 'border-t-0',
+			'border px-2.5 py-1.5 placeholder-surface-foreground/50 outline-none',
+			label && '-mt-1.5 border-t-0',
 			props.class
 		]}
 		{id}
+		autocomplete="off"
 		{type}
 		{name}
 		{required}

@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+@theme static {
+	/* --text-sm--line-height: calc(1.25 / 0.875);
+	--text-base--line-height: calc(1.5 / 1);
+	--text-lg--line-height: calc(1.75 / 1.125);
+	--text-xl--line-height: calc(1.75 / 1.25); */
+}

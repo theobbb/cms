@@ -3,7 +3,6 @@ export async function load({ params, locals: { pocketbase } }) {
 
 	const students = await pocketbase.collection('students').getFullList({
 		filter: `year="${params.year}"`,
-		expand: 'projects(students)',
 		sort: 'last_name'
 	});
 

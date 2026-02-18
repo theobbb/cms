@@ -1,6 +1,9 @@
 <script lang="ts">
 	import '$lib/style/layout.css';
 	import '$lib/style/fonts.css';
+	import '$lib/style/colors.css';
+	import '$lib/style/typo.css';
+
 	import '$lib/style/markdown.css';
 	import favicon from '$lib/assets/favicon.svg';
 
@@ -13,7 +16,7 @@
 	init_toaster();
 </script>
 
-<div class="text-base/5">
+<div class="">
 	{@render children()}
 	<Toaster />
 	<DialogConfirm />

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { invalidate, invalidateAll } from '$app/navigation';
 	import Menu from '$lib/ui/pop/menu.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_toaster } from '$lib/logic/toaster.svelte';

@@ -1,6 +1,6 @@
 export type App = { title: string; param: string; pocketbase: { url: string } };
 
-export const apps: Record<string, App> = {
+export const apps = {
 	annuel: {
 		title: 'Annuel de design',
 		param: 'annuel',
@@ -15,7 +15,7 @@ export const apps: Record<string, App> = {
 			url: 'https://api.agraf.xyz'
 		}
 	}
-};
+} satisfies Record<string, App>;
 
 // export const apps: Record<string, App> = {
 // 	annuel: {

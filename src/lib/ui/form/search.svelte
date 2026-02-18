@@ -1,83 +1,101 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import Button from '$lib/ui/button.svelte';
 	import { url_query_param } from '$lib/utils/url';
-	import Button from '../button.svelte';
-	import Input from './input.svelte';
 
-	const {
-		id,
-		query_param = 'search',
-		client_override
+	let {
+		url_param = undefined,
+		placeholder = 'Rechercher',
+		on_search: outer_on_search, // Triggered on Submit (Enter/Button) -> Immediate
+		on_reset: outer_on_reset // Triggered on Reset -> Immediate
 	}: {
-		id: string;
-		query_param?: string;
-		client_override?: { on_search: (value: string) => void; on_reset: () => void };
+		url_param?: string;
+		placeholder?: string;
+		on_search?: (v: string) => void;
+		on_reset?: () => void;
 	} = $props();
 
-	const url_value = $derived(page.url.searchParams.get(query_param) || '');
-	let value: string = $state('');
+	const id = $props.id();
 
-	const has_changed = $derived(url_value !== value);
+	const url_value = $derived(url_param ? page.url.searchParams.get(url_param) || '' : '');
 
-	async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
-		event.preventDefault();
-		if (client_override) return client_override.on_search(value);
-		//event.currentTarget.reset()
+	let value = $state(url_param ? url_value : '');
+	let last_value = $state(value);
 
-		const url = url_query_param(page.url.href, query_param, value);
-		goto(url);
+	let timer: ReturnType<typeof setTimeout>;
+
+	// Sync: Prop -> Input (Client Mode)
+	// $effect(() => {
+	// 	if (!is_url_mode && outer_value !== undefined && outer_value !== value) {
+	// 		value = outer_value;
+	// 	}
+	// });
+	const has_changed = $derived(url_param ? url_value !== value : last_value != value);
+	$inspect(has_changed, value, url_value);
+	function on_submit() {
+		if (url_param) {
+			const url = url_query_param(page.url.href, url_param, value);
+			goto(url);
+		} else {
+			outer_on_search?.(value);
+		}
+		last_value = value;
 	}
 
-	function reset() {
+	function on_reset() {
 		value = '';
 
-		if (client_override) return client_override.on_reset();
-
-		const url = url_query_param(page.url.href, query_param, null);
-		goto(url);
+		if (url_param) {
+			on_submit();
+		} else {
+			outer_on_reset?.();
+			outer_on_search?.('');
+		}
 	}
 </script>
 
-<form class="group relative w-full" {onsubmit} autocomplete="off">
-	<!-- <Input
-		id="search-{id}"
-		class={['peer', value ? 'w-full pr-54' : 'w-64- focus:w-full']}
-		name="search"
-		placeholder="Rechercher"
-		bind:value
-	/> -->
+<form
+	class="group relative w-full"
+	onsubmit={(e) => {
+		e.preventDefault();
+		on_submit();
+	}}
+	autocomplete="off"
+>
+	<label for="search-{id}" class="sr-only">{placeholder}</label>
 
 	<input
 		class={[
 			'peer',
+			'text-surface-foreground placeholder-surface-foreground/50 ring-accent w-full border px-2.5 py-2 outline-none focus:ring-2',
 			value
-				? 'w-full  bg-surface pr-54'
-				: 'w-64- border-transparent group-hover:border-inherit group-hover:bg-surface focus:w-full focus:border-inherit focus:bg-surface',
-			'w-full border px-2.5 py-2 text-surface-foreground placeholder-surface-foreground/50 ring-accent outline-none focus:ring-2'
+				? 'bg-surface w-full pr-24'
+				: 'group-hover:bg-surface focus:bg-surface w-64 border-transparent bg-transparent group-hover:border-inherit focus:w-full focus:border-inherit'
 		]}
 		id="search-{id}"
 		name="search"
-		placeholder="Rechercher"
+		{placeholder}
 		bind:value
 	/>
 
 	<div
 		class={[
-			value ? '' : 'invisible group-focus-within:visible group-hover:visible',
-			'pointer-events-none absolute inset-0 flex items-center justify-end gap-1.5 px-1.5 '
+			value ? 'visible' : 'invisible group-focus-within:visible group-hover:visible',
+			'pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end gap-1 px-1.5'
 		]}
 	>
 		<div class="pointer-events-auto">
 			<Button type="submit" disabled={!has_changed}>Rechercher</Button>
 		</div>
+
 		<div class="pointer-events-auto">
 			<Button
 				variant="discrete"
 				icon="icon-[ri--reset-right-line]"
 				disabled={!value}
-				onclick={reset}
-			></Button>
+				onclick={on_reset}
+			/>
 		</div>
 	</div>
 </form>

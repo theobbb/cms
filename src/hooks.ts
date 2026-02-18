@@ -2,7 +2,7 @@ import { apps } from '$config/apps';
 import type { Reroute } from '@sveltejs/kit';
 
 // Routes accessible from any subdomain without app context
-export const global_routes = ['public', 'help'];
+export const global_routes = ['public', 'help', 'ui'];
 
 // Routes that exist in [app] root (not in /apps folder)
 const shared_routes = ['auth', 'users', 'info', 'profile', 'stats'];
@@ -13,7 +13,7 @@ export const reroute: Reroute = ({ url }) => {
 	const firstSegment = segments[0];
 
 	// Global routes check (public, help)
-	if (global_routes.includes(firstSegment)) {
+	if (firstSegment == 'public') {
 		// If accessed via an app subdomain (e.g. annuel.localhost), inject it
 		if (apps[subdomain]) {
 			// Remove 'public' from the start
@@ -25,6 +25,11 @@ export const reroute: Reroute = ({ url }) => {
 			return `/${firstSegment}/${subdomain}${rest.length ? '/' + rest.join('/') : ''}`;
 		}
 
+		return url.pathname;
+	}
+
+	// Global routes pass through unchanged
+	if (global_routes.includes(firstSegment)) {
 		return url.pathname;
 	}
 

@@ -1,14 +1,13 @@
 import { goto } from '$app/navigation';
 import { page } from '$app/state';
-import type { Collection } from '$config/types';
 import { use_pocketbase } from '$lib/pocketbase';
 import { url_query_param } from '$lib/utils/url';
 import { getContext, setContext } from 'svelte';
-import { get_collection } from './ctx.svelte';
+import type { CollectionModel, RecordModel } from 'pocketbase';
 
 export type EditorTarget =
-	| { type: 'create'; collection: Collection<any> }
-	| { type: 'update'; collection: Collection<any>; record: any };
+	| { type: 'create'; collection: CollectionModel }
+	| { type: 'update'; collection: CollectionModel; record: RecordModel };
 
 export class Editor {
 	current: EditorTarget | null = $state(null);

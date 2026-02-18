@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+@custom-variant dark (&:is(.dark *));
+
+:root {
+	--background: oklch(88.224% 0.0001 271.152);
+	--foreground: oklch(29.716% 0.00003 271.152);
+
+	--surface: oklch(91.887% 0.0001 271.152);
+	--surface-foreground: oklch(32.109% 0.00004 271.152);
+
+	--primary: oklch(25.615% 0.00003 271.152);
+	--primary-foreground: oklch(89.755% 0.0001 271.152);
+
+	--secondary: oklch(77.944% 0.00009 271.152);
+	--secondary-foreground: oklch(24.776% 0.00003 271.152);
+
+	--accent: oklch(80.9% 0.105 251.813);
+	--accent-foreground: oklch(32.613% 0.0435 250.528);
+
+	/* --- utils */
+	--active: oklch(80.9% 0.105 251.813);
+	--active-hover: oklch(80.712% 0.10074 250.473 / 0.491);
+
+	--blue: oklch(70.984% 0.15 258.148);
+	--blue-foreground: oklch(30.984% 0.15 258.148);
+
+	--green: oklch(79.034% 0.15 154.905);
+	--green-foreground: oklch(37.034% 0.15 154.905);
+
+	--yellow: oklch(84.275% 0.12867 89.156);
+	--yellow-foreground: oklch(42.275% 0.12867 89.156);
+
+	--red: oklch(70.583% 0.15045 18.639);
+	--red-foreground: oklch(30.583% 0.15045 18.639);
+}
+
+@theme inline static {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-surface: var(--surface);
+	--color-surface-foreground: var(--surface-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+
+	/* --- utils --- */
+	--color-active: var(--active);
+	--color-active-hover: var(--active-hover);
+
+	--color-blue: var(--blue);
+	--color-blue-foreground: var(--blue-foreground);
+
+	--color-green: var(--green);
+	--color-green-foreground: var(--green-foreground);
+
+	--color-yellow: var(--yellow);
+	--color-yellow-foreground: var(--yellow-foreground);
+
+	--color-red: var(--red);
+	--color-red-foreground: var(--red-foreground);
+}

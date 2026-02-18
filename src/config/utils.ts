@@ -1,95 +1,64 @@
-import type { Branch, Leaf, Schema, TreeItem } from '$config/types';
+import type { CollectionModel } from 'pocketbase';
 
-// export function process_schema(schema: Schema, parent_path = ''): TreeItem[] {
-// 	return schema.map((item) => {
-// 		if (item.type != 'link') return item;
+// export function process_collections(
+// 	collections: CollectionModel[]
+// ): Record<string, CollectionModel> {
+// 	for (const collection of collections) {
+// 		collection.fields = collection.fields.filter(
+// 			(field) => !field.hidden && field.name != 'id' && field.name != 'emailVisibility'
+// 		);
+// 		collection.field_map = Object.fromEntries(
+// 			collection.fields.map((field) => [field.name, field])
+// 		);
 
-// 		item.path = parent_path ? `${parent_path}/${item.param}` : item.param;
-
-// 		if (item.children) {
-// 			item.children = process_schema(item.children, item.path);
-// 		}
-
-// 		return item;
-// 	});
+// 		collection.presentable_keys = get_collection_presentable_keys(collection);
+// 	}
+// 	return Object.fromEntries(
+// 		collections.map((col) => [
+// 			col.name,
+// 			{
+// 				...col,
+// 				// We ensure 'name' is present in the value as well
+// 				name: col.name
+// 			}
+// 		])
+// 	);
 // }
-
-export function process_collections<T extends Record<string, any>>(json_collections: any[]): T {
-	// 1. Iterate over the array of collection objects
-	// 2. Map the 'name' property to the key of the new object
-	return Object.fromEntries(
-		json_collections.map((col) => [
-			col.name,
-			{
-				...col,
-				// We ensure 'name' is present in the value as well
-				name: col.name
-			}
-		])
-	) as T;
-}
-
-export function build_schema_sections(schema: Schema, path: string): TreeItem[][] {
-	const segments = path ? path.split('/').filter(Boolean) : [];
-	const sections: TreeItem[][] = [schema];
-	let current_level = schema;
-
-	for (const segment of segments) {
-		// Find the item in the current level that matches the URL segment
-		const match = current_level.find((item) => item.param === segment);
-
-		// If we found a branch, drill down into its children
-		if (match && is_branch(match)) {
-			current_level = match.children;
-			sections.push(current_level);
-		}
-		// If it's a leaf or not found, we stop drilling
-		else {
-			break;
-		}
+export function process_collections(collections: CollectionModel[]): {
+	collections: Record<string, CollectionModel>;
+	id_collections: Record<string, CollectionModel>;
+} {
+	for (const collection of collections) {
+		collection.fields = collection.fields.filter(
+			(field) => !field.hidden && field.name != 'id' && field.name != 'emailVisibility'
+		);
+		collection.field_map = Object.fromEntries(
+			collection.fields.map((field) => [field.name, field])
+		);
+		collection.presentable_keys = get_collection_presentable_keys(collection);
 	}
 
-	return sections;
-}
+	const by_name: Record<string, CollectionModel> = {};
+	const by_id: Record<string, CollectionModel> = {};
 
-export function find_current_link(schema: Block[], route: string): BlockLink | null {
-	for (const block of schema) {
-		if (block.type != 'link') continue;
-		// Check if this block is the one
-		if (block.path === route) return block;
-
-		// If it has children, search them recursively
-		if (block.children) {
-			const found = find_current_link(block.children, route);
-			if (found) return found;
-		}
+	for (const col of collections) {
+		const entry = { ...col, name: col.name };
+		by_name[col.name] = entry;
+		by_id[col.id] = entry;
 	}
-	return null;
+
+	return { collections: by_name, id_collections: by_id };
 }
 
-export function resolve_query_params(
-	filter: string,
-	params: Record<string, string | undefined>
-): string {
-	// Matches $param.something and replaces it with params['something']
-	return filter.replace(/\$param\.(\w+)/g, (_, key) => {
-		const value = params[key];
-		if (!value) {
-			console.warn(`Query variable $param.${key} was not found in URL params.`);
-			return "''"; // Fallback to empty string to prevent PocketBase syntax errors
-		}
-		return `'${value.replace(/'/g, "\\'")}'`; // Escape single quotes for safety
-	});
+export function get_collection_presentable_keys(collection: CollectionModel): string[] {
+	return collection.fields.reduce<string[]>((acc, { presentable, name }) => {
+		if (presentable) acc.push(name);
+		return acc;
+	}, []);
 }
 
-export function is_leaf(item: TreeItem): item is Leaf {
-	return 'collection' in item;
-}
+export function search_keys(search: string, keys: string[]) {
+	if (!search || !keys.length) return '';
 
-export function is_branch(item: TreeItem): item is Branch {
-	return 'children' in item;
+	return keys.map((key) => `${key}~"${search}"`).join(' || ');
 }
-
-// export function is_dynamic(block: Block): block is BlockDynamicLink {
-// 	return block.type === 'dynamic_link';
-// }

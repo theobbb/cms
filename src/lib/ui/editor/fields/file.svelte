@@ -106,9 +106,9 @@
 		{/each}
 	</div>
 
-	<Button onclick={upload} class="w-full" size="lg" disabled={(files.length && !multiple) || false}
-		>Upload</Button
-	>
+	<Button onclick={upload} class="w-full" size="lg" disabled={(files.length && !multiple) || false}>
+		Upload
+	</Button>
 
 	<input
 		class="hidden"

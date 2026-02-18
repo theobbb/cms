@@ -12,7 +12,7 @@
 		...data.collections.students.fields
 	]);
 	async function copy_link(id: string) {
-		const url = page.url.host + '/public/annuel/finissant-e-s/' + id;
+		const url = page.url.host + '/public/' + page.params.year + '/finissant-e-s/' + id;
 		await navigator.clipboard.writeText(url);
 
 		toaster.push('info', url + ' copied to clipboard');

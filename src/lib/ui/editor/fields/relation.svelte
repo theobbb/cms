@@ -1,12 +1,14 @@
-<script lang="ts" generics="T extends {id: string}">
+<script lang="ts">
 	import Button from '$lib/ui/button.svelte';
 	import Label from '$lib/ui/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
-	import type { RecordListOptions } from 'pocketbase';
+	import type { CollectionModel, RecordListOptions, RecordModel } from 'pocketbase';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import RecordName from '$lib/components/record-name.svelte';
 	import Search from '$lib/ui/form/search.svelte';
+	import RecordPresentable from '$lib/components/record-presentable.svelte';
+	import { page } from '$app/state';
+	import { search_keys } from '$config/utils';
 
 	let {
 		id,
@@ -27,20 +29,20 @@
 	const pocketbase = use_pocketbase();
 
 	const multiple = $derived(maxSelect > 1);
+	const collection: CollectionModel | undefined = $derived(page.data.id_collections[collectionId]);
 
 	// Dialog state
 	let dialog_open = $state(false);
-	let pop_selection = $state<T[]>([]);
-	let available_records = $state<T[]>([]);
-	let search = $state('');
+	let pop_selection = $state<RecordModel[]>([]);
+	let available_records = $state<RecordModel[]>([]);
 
 	// Normalize value to array
 	const selected_ids = $derived.by(() => {
 		if (!value) return [];
 		return Array.isArray(value) ? value : [value];
 	});
-	//$inspect(selected_ids);
-	// Get display items from expanded records or available records
+
+	// Get display items strictly from the cache + current availability
 	const items = $derived.by(() => {
 		if (!selected_ids.length) return [];
 
@@ -48,14 +50,21 @@
 		const expanded_arr = expanded ? (Array.isArray(expanded) ? expanded : [expanded]) : [];
 
 		return selected_ids
-			.map((id) => [...expanded_arr, ...available_records].find((item: T) => item.id === id))
-			.filter(Boolean) as T[];
+			.map((id) =>
+				[...expanded_arr, ...available_records].find((item: RecordModel) => item.id === id)
+			)
+			.filter(Boolean) as RecordModel[];
 	});
 
-	async function fetch_records() {
+	async function fetch_records(search: string = '') {
+		if (!collection) return;
+
+		search = search.trim();
 		try {
 			const options: RecordListOptions = { sort: '-created' };
-			const res = await pocketbase.collection(collectionId).getList<T>(1, 32, options);
+			options.filter = search_keys(search, collection.presentable_keys);
+
+			const res = await pocketbase.collection(collectionId).getList<RecordModel>(1, 32, options);
 			available_records = res.items;
 		} catch (error) {
 			console.error('Failed to fetch records:', error);
@@ -72,144 +81,152 @@
 	function close_picker() {
 		dialog_open = false;
 		pop_selection = [];
-		search = '';
 	}
 
 	function on_search(value: string) {
-		if (search === value) return;
-		search = value;
-		fetch_records();
+		fetch_records(value);
 	}
 
-	function toggle_selection(item: T) {
-		if (!multiple) {
-			pop_selection = [item];
-			return;
-		}
-
+	function toggle_selection(item: RecordModel) {
 		const exists = pop_selection.some((i) => i.id === item.id);
-		pop_selection = exists
-			? pop_selection.filter((i) => i.id !== item.id)
-			: [...pop_selection, item];
+
+		if (exists) {
+			pop_selection = pop_selection.filter((i) => i.id !== item.id);
+		} else {
+			if (!multiple) {
+				pop_selection = [item];
+			} else {
+				// FIX: Enforce maxSelect
+				if (maxSelect && pop_selection.length >= maxSelect) {
+					// Optional: Add toast/alert here
+					return;
+				}
+				pop_selection = [...pop_selection, item];
+			}
+		}
 	}
 
-	function remove_item(item: T) {
+	function remove_item(item: RecordModel) {
 		const new_ids = selected_ids.filter((id) => id !== item.id);
-		value = new_ids;
+		value = multiple ? new_ids : (new_ids[0] ?? null);
 		on_change?.(new_ids);
 	}
 
 	function save_selection() {
 		const new_ids = pop_selection.map((i) => i.id);
-		value = new_ids;
+		value = multiple ? new_ids : (new_ids[0] ?? null);
 		on_change?.(new_ids);
 		close_picker();
 	}
 
 	// Form submission handler
 	onsubmit = async (form_data: FormData) => {
-		if (multiple) {
-			if (selected_ids.length === 0) {
-				form_data.append(name, '');
-			} else {
-				selected_ids.forEach((id) => form_data.append(name, id));
-			}
+		// Clean existing entries for this name to prevent duplicates if called multiple times
+		form_data.delete(name);
+
+		if (selected_ids.length === 0) {
+			form_data.append(name, '');
 		} else {
-			form_data.set(name, selected_ids[0] ?? '');
+			selected_ids.forEach((id) => form_data.append(name, id));
 		}
 	};
 </script>
 
-<div class="bg-surface text-surface-foreground">
-	{#if name}
-		<Label {id} label={name} {required} icon="icon-[ri--mind-map]" />
-	{/if}
+{#if collection}
+	<div class="bg-surface text-surface-foreground">
+		{#if name}
+			<Label {id} label={name} {required} icon="icon-[ri--mind-map]" />
+		{/if}
 
-	{#if items.length > 0}
-		<div>
-			{#each items as item (item.id)}
-				<div class="flex h-8 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5">
-					<div class="truncate">
-						<RecordName record={item} collection={collectionId} />
-					</div>
-					<Button
-						size="sm"
-						onclick={() => remove_item(item)}
-						variant="ghost"
-						icon="icon-[ri--close-fill]"
-					></Button>
-				</div>
-			{/each}
-		</div>
-	{/if}
-
-	<div>
-		<Button size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
-	</div>
-</div>
-
-{#if dialog_open}
-	<Dialog onclose={close_picker} size="xl">
-		<div class="space-y-6">
-			<div class="text-lg-">Selection: {name}</div>
-
-			<Search
-				id="search-relation-{id}"
-				client_override={{ on_search, on_reset: () => on_search('') }}
-			/>
-
-			<div class="max-h-64 divide-y overflow-y-auto border">
-				{#each available_records as item (item.id)}
-					<button
-						type="button"
-						class="flex w-full cursor-pointer items-center gap-3 px-2.5 py-1.5 hover:bg-white/15"
-						onclick={() => toggle_selection(item)}
-					>
-						{#if pop_selection.some((i) => i.id === item.id)}
-							<span class="icon-[ri--checkbox-line] text-lg"></span>
-						{:else}
-							<span class="text-2 icon-[ri--checkbox-blank-line] text-lg"></span>
-						{/if}
-						<div class="truncate text-left">
-							<RecordName record={item} collection={collectionId} />
+		{#if items.length > 0}
+			<div class="flex flex-col">
+				{#each items as item (item.id)}
+					<div class="flex h-10 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5">
+						<div class="truncate">
+							<RecordPresentable record={item} {collection} />
 						</div>
-					</button>
+						<Button
+							size="sm"
+							onclick={() => remove_item(item)}
+							variant="ghost"
+							icon="icon-[ri--close-fill]"
+							aria-label="Remove item"
+						/>
+					</div>
 				{/each}
 			</div>
+		{/if}
 
-			<div>
-				<div class="mb-2 flex items-center gap-2">
-					<div>Sélectionné</div>
-					{#if multiple}
-						({selected_ids.length} / {maxSelect})
-					{:else}
-						:
+		<div>
+			<Button size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
+		</div>
+	</div>
+
+	{#if dialog_open}
+		<Dialog onclose={close_picker} size="xl">
+			<div class="flex h-[80vh] flex-col gap-4">
+				<div class="text-lg font-medium">Sélection: {name}</div>
+
+				<Search {on_search} />
+
+				<div class="bg-surface-50 flex-1 divide-y overflow-y-auto border">
+					{#if available_records.length === 0}
+						<div class="text-muted-foreground p-4 text-center text-sm">Aucun résultat</div>
 					{/if}
-				</div>
-				<div class="flex max-w-lg flex-wrap gap-1.5 text-sm">
-					{#each pop_selection as selected (selected.id)}
-						<div
-							class="flex w-fit items-center gap-1.5 rounded-full border bg-white/10 px-2.5 pr-1.5"
+
+					{#each available_records as item (item.id)}
+						<button
+							type="button"
+							class="hover:bg-surface-200 flex w-full cursor-pointer items-center gap-3 px-3 py-2 transition-colors"
+							onclick={() => toggle_selection(item)}
 						>
-							<RecordName record={selected} collection={collectionId} />
-							<button
-								class="flex shrink-0 items-center"
-								type="button"
-								onclick={() => {
-									pop_selection = pop_selection.filter((i) => i.id !== selected.id);
-								}}
-							>
-								<span class="icon-[ri--close-fill]"></span>
-							</button>
-						</div>
+							{#if pop_selection.some((i) => i.id === item.id)}
+								<span class="text-primary icon-[ri--checkbox-line] text-xl"></span>
+							{:else}
+								<span class="text-muted-foreground icon-[ri--checkbox-blank-line] text-xl"></span>
+							{/if}
+							<div class="flex-1 truncate text-left">
+								<RecordPresentable record={item} {collection} />
+							</div>
+						</button>
 					{/each}
 				</div>
-			</div>
 
-			<div class="flex justify-end gap-1.5 border-t pt-3">
-				<Button size="lg" variant="ghost" onclick={close_picker}>Annuler</Button>
-				<Button size="lg" variant="action" onclick={save_selection}>Enregistrer</Button>
+				<div class="space-y-3 border-t pt-3">
+					<div class="text-muted-foreground flex items-center gap-2 text-sm">
+						<div>Sélectionné</div>
+						{#if multiple}
+							({pop_selection.length} / {maxSelect})
+						{/if}
+					</div>
+
+					<div class="flex max-h-24 flex-wrap gap-1.5 overflow-y-auto">
+						{#each pop_selection as selected (selected.id)}
+							<div
+								class="bg-surface-100 flex w-fit items-center gap-1.5 rounded-full border py-0.5 pr-1 pl-2 text-xs"
+							>
+								<span class="max-w-24 truncate">
+									<RecordPresentable record={selected} {collection} />
+								</span>
+								<button
+									class="hover:bg-surface-200 flex shrink-0 items-center rounded-full p-0.5"
+									type="button"
+									onclick={() => toggle_selection(selected)}
+								>
+									<span class="icon-[ri--close-fill]"></span>
+								</button>
+							</div>
+						{/each}
+					</div>
+
+					<div class="flex justify-end gap-2">
+						<Button size="lg" variant="ghost" onclick={close_picker}>Annuler</Button>
+						<Button size="lg" variant="action" onclick={save_selection}>Enregistrer</Button>
+					</div>
+				</div>
 			</div>
-		</div>
-	</Dialog>
+		</Dialog>
+	{/if}
+{:else}
+	Collection not found
 {/if}
