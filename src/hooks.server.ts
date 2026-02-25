@@ -1,4 +1,4 @@
-import { type Handle, redirect } from '@sveltejs/kit';
+import { error, type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import PocketBase from 'pocketbase';
 import { dev } from '$app/environment';
@@ -42,7 +42,8 @@ const authentication: Handle = async ({ event, resolve }) => {
 			return resolve(event);
 		}
 		// Otherwise, invalid subdomain -> redirect to help
-		throw redirect(303, '/help');
+		throw error(404, 'Page not found');
+		//throw redirect(303, '/help');
 	}
 
 	// 2. Initialize App Context & PocketBase (Runs for ALL routes on valid subdomains)

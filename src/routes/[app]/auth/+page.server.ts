@@ -19,7 +19,7 @@ export async function load({ url, cookies, locals: { app } }) {
 		maxAge: 60 * 60
 	} as const;
 
-	let options: PublicKeyCredentialRequestOptionsJSON;
+	let options;
 
 	// Registration Flow
 	if (register_id) {
@@ -34,7 +34,6 @@ export async function load({ url, cookies, locals: { app } }) {
 
 			options = {
 				challenge,
-
 				rp: { name: app.title, id: rpId },
 				user: {
 					id: register_user.id,
