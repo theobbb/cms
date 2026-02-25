@@ -25,19 +25,27 @@
 
 			// 1. Parse Options (using data from server, no fetch needed)
 			const publicKey = register_user
-				? PublicKeyCredential.parseCreationOptionsFromJSON(options)
-				: PublicKeyCredential.parseRequestOptionsFromJSON(options);
+				? PublicKeyCredential.parseCreationOptionsFromJSON(
+						options as PublicKeyCredentialCreationOptionsJSON
+					)
+				: PublicKeyCredential.parseRequestOptionsFromJSON(
+						options as PublicKeyCredentialRequestOptionsJSON
+					);
 
 			// 2. Get credential from browser
 			// This will prompt the user (TouchID/FaceID/etc)
 			const credential = register_user
-				? await navigator.credentials.create({ publicKey })
-				: await navigator.credentials.get({ publicKey });
+				? await navigator.credentials.create({
+						publicKey: publicKey as PublicKeyCredentialCreationOptions
+					})
+				: await navigator.credentials.get({
+						publicKey: publicKey as PublicKeyCredentialRequestOptions
+					});
 
 			if (!credential) throw new Error('Login cancelled');
 
 			// 3. Prepare form data
-			const credentialJSON = credential.toJSON();
+			const credentialJSON = (credential as any).toJSON();
 			formData.set('credential', JSON.stringify(credentialJSON));
 
 			toaster.push('success');

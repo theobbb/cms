@@ -19,7 +19,7 @@ export async function load({ url, cookies, locals: { app } }) {
 		maxAge: 60 * 60
 	} as const;
 
-	let options;
+	let options: PublicKeyCredentialRequestOptionsJSON;
 
 	// Registration Flow
 	if (register_id) {
@@ -34,6 +34,7 @@ export async function load({ url, cookies, locals: { app } }) {
 
 			options = {
 				challenge,
+
 				rp: { name: app.title, id: rpId },
 				user: {
 					id: register_user.id,
@@ -50,7 +51,7 @@ export async function load({ url, cookies, locals: { app } }) {
 					residentKey: 'preferred',
 					userVerification: 'required'
 				}
-			};
+			} satisfies PublicKeyCredentialCreationOptionsJSON;
 
 			return { register: register_user, options };
 		} catch (e) {
@@ -67,7 +68,7 @@ export async function load({ url, cookies, locals: { app } }) {
 		timeout: 60000,
 		userVerification: 'required',
 		rpId
-	};
+	} satisfies PublicKeyCredentialRequestOptionsJSON;
 
 	return { register: null, options };
 }
