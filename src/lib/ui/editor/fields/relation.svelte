@@ -8,11 +8,12 @@
 	import Search from '$lib/ui/form/search.svelte';
 	import RecordPresentable from '$lib/components/record-presentable.svelte';
 	import { page } from '$app/state';
-	import { search_keys } from '$config/utils';
+	import { get_search_keys } from '$config/utils';
 
 	let {
 		id,
 		name,
+		label,
 		required,
 		collectionId,
 		value,
@@ -23,13 +24,16 @@
 		onsubmit = $bindable()
 	}: FieldProps<'relation'> & {
 		on_change?: (ids: string[]) => void;
+		label?: string;
 		record: any;
 	} = $props();
 
 	const pocketbase = use_pocketbase();
 
 	const multiple = $derived(maxSelect > 1);
-	const collection: CollectionModel | undefined = $derived(page.data.id_collections[collectionId]);
+	const collection: CollectionModel | undefined = $derived(
+		page.data.id_collections?.[collectionId]
+	);
 
 	// Dialog state
 	let dialog_open = $state(false);
@@ -62,7 +66,7 @@
 		search = search.trim();
 		try {
 			const options: RecordListOptions = { sort: '-created' };
-			options.filter = search_keys(search, collection.presentable_keys);
+			options.filter = get_search_keys(search, collection.presentable_keys);
 
 			const res = await pocketbase.collection(collectionId).getList<RecordModel>(1, 32, options);
 			available_records = res.items;
@@ -135,7 +139,7 @@
 {#if collection}
 	<div class="bg-surface text-surface-foreground">
 		{#if name}
-			<Label {id} label={name} {required} icon="icon-[ri--mind-map]" />
+			<Label {id} label={label || name} {required} icon="icon-[ri--mind-map]" />
 		{/if}
 
 		{#if items.length > 0}
@@ -164,8 +168,8 @@
 
 	{#if dialog_open}
 		<Dialog onclose={close_picker} size="xl">
-			<div class="flex h-[80vh] flex-col gap-4">
-				<div class="text-lg font-medium">Sélection: {name}</div>
+			<div class="flex max-h-[80svh] flex-col gap-4">
+				<div class="text-lg font-medium">Sélection: {label || name}</div>
 
 				<Search {on_search} />
 
@@ -175,12 +179,16 @@
 					{/if}
 
 					{#each available_records as item (item.id)}
+						{@const selected = pop_selection.some((i) => i.id === item.id)}
 						<button
 							type="button"
-							class="hover:bg-surface-200 flex w-full cursor-pointer items-center gap-3 px-3 py-2 transition-colors"
+							class={[
+								'flex h-10 w-full cursor-pointer items-center gap-3 px-2.5',
+								selected ? 'bg-accent' : 'hover:bg-accent-hover'
+							]}
 							onclick={() => toggle_selection(item)}
 						>
-							{#if pop_selection.some((i) => i.id === item.id)}
+							{#if selected}
 								<span class="text-primary icon-[ri--checkbox-line] text-xl"></span>
 							{:else}
 								<span class="text-muted-foreground icon-[ri--checkbox-blank-line] text-xl"></span>
@@ -193,7 +201,7 @@
 				</div>
 
 				<div class="space-y-3 border-t pt-3">
-					<div class="text-muted-foreground flex items-center gap-2 text-sm">
+					<div class="text-foreground-muted flex items-center gap-2 text-sm">
 						<div>Sélectionné</div>
 						{#if multiple}
 							({pop_selection.length} / {maxSelect})

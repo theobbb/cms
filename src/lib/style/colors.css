@@ -19,6 +19,7 @@
 	--secondary-foreground-muted: oklch(36.776% 0.00003 271.152);
 
 	--accent: oklch(80.9% 0.105 251.813);
+	--accent-hover: oklch(80.712% 0.10074 250.473 / 0.528);
 	--accent-foreground: oklch(32.613% 0.0435 250.528);
 	--accent-foreground-muted: oklch(42.663% 0.04714 250.109);
 
@@ -73,6 +74,7 @@
 	--color-secondary-foreground-muted: var(--secondary-foreground-muted);
 
 	--color-accent: var(--accent);
+	--color-accent-hover: var(--accent-hover);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-accent-foreground-muted: var(--accent-foreground-muted);
 

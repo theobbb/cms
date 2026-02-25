@@ -7,7 +7,7 @@
 	import '$lib/style/markdown.css';
 	import favicon from '$lib/assets/favicon.svg';
 
-	import { init_toaster } from '$lib/logic/toaster.svelte';
+	import { init_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Toaster from '$lib/components/toaster/toaster.svelte';
 	import DialogConfirm from '$lib/components/dialog-confirm.svelte';
 

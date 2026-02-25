@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 	import Button from '$lib/ui/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
@@ -24,7 +24,7 @@
 </script>
 
 <div class="">
-	<div class="gap-gap-y mx-auto my-24 flex max-w-2xs flex-col items-center">
+	<div class="mx-auto my-24 flex max-w-2xs flex-col items-center gap-gap-y">
 		<div class="text-xl">{data.app.title}</div>
 
 		<form method="POST" action="?/signin" class="w-full space-y-3" use:enhance={onsubmit}>

@@ -25,30 +25,10 @@
 
 	// const has_changed = $derived(stable(draft_data) !== stable(live_data));
 
-	const fields = {
-		first_name: '',
-		last_name: '',
-		description: '',
-		socials: [] as Social[]
-	};
-	function resolve(val: unknown, fallback: unknown) {
-		if (typeof val === 'string' && typeof fallback !== 'string') {
-			try {
-				return JSON.parse(val);
-			} catch {
-				return fallback;
-			}
-		}
-		return val ?? fallback;
-	}
+	const fields = ['first_name', 'last_name', 'description', 'socials'] as const;
 
 	const initial = $derived(
-		Object.fromEntries(
-			Object.entries(fields).map(([k, fallback]) => [
-				k,
-				resolve(draft?.data?.[k] ?? student?.[k], fallback)
-			])
-		)
+		Object.fromEntries(fields.map((k) => [k, draft?.data?.[k] ?? student?.[k] ?? null]))
 	);
 
 	let values = $state({ ...initial });
@@ -57,7 +37,7 @@
 
 	// --- 3. Submission Handler ---
 	const manager = new DraftManager({
-		collection: 'students',
+		collection: 'student_drafts',
 		invalidate_key: 'data:student_draft'
 	});
 
@@ -65,13 +45,15 @@
 		await manager.on_submit(e, {
 			draft,
 			record: student,
-			process_data: (fd) => fd.set('socials', JSON.stringify(values.socials))
+			process_data: (fd) => {
+				fd.set('socials', JSON.stringify(values.socials));
+			}
 		});
 	}
 </script>
 
 <form {onsubmit} class="space-y-6">
-	<DraftHeader {draft} {has_changed} is_virgin_record={virgin}>
+	<DraftHeader {draft} has_changed={true} is_virgin_record={virgin}>
 		{#if draft}
 			{draft.data.first_name}
 			{draft.data.last_name}
@@ -83,26 +65,20 @@
 
 	<!-- <Info /> -->
 
-	<Input name="first_name" label="Prénom" required bind:value={values.first_name} />
-	<Input name="last_name" label="Nom" required bind:value={values.last_name} />
-	<Textarea
-		name="description"
-		label="description"
-		rows={6}
-		required
-		bind:value={values.description}
-	/>
+	<Input name="first_name" label="Prénom" required bind:value={first_name} />
+	<Input name="last_name" label="Nom" required bind:value={last_name} />
+	<Textarea name="description" label="description" rows={6} required bind:value={description} />
 
 	<div class="space-y-3">
 		<Box color="blue" class="px-3 py-2 text-sm">
 			Tu peux ajouter des liens vers tes réseaux sociaux ou autres ressources (optionel)
 		</Box>
 		<div>
-			<Socials bind:socials={values.socials} />
+			<Socials bind:values.socials />
 		</div>
 	</div>
 	<div>
-		<Relation {...collections.students.field_map.program} label="programme" record={student} />
+		<Relation {...collections.students.field_map.program} label="programme" />
 	</div>
 	{#if !virgin}
 		<div class="mt-12 mb-gap flex items-center justify-between border-b py-3">

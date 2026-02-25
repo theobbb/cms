@@ -57,8 +57,8 @@ export function get_collection_presentable_keys(collection: CollectionModel): st
 	}, []);
 }
 
-export function search_keys(search: string, keys: string[]) {
-	if (!search || !keys.length) return '';
+export function get_search_keys(search: string, keys: string[]): string {
+	if (!search || !keys.length) return `id~"${search}"`;
 
 	return keys.map((key) => `${key}~"${search}"`).join(' || ');
 }

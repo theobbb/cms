@@ -4,4 +4,4 @@
 	const { data } = $props();
 </script>
 
-<DataTable collection={{ ...data.collections.socials, query: { sort: 'created' } }} />
+<DataTable collection={data.collections.socials} query={{ sort: 'created' }} />

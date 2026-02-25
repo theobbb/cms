@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { use_data_store } from '$lib/logic/data.svelte';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/button.svelte';
 	import FooterButtons from '$lib/ui/form/components/footer-buttons.svelte';

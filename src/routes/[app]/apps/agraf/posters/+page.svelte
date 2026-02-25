@@ -4,4 +4,4 @@
 	const { data } = $props();
 </script>
 
-<DataTable collection={{ ...data.collections.posters, query: { sort: 'date' } }} />
+<DataTable collection={data.collections.posters} query={{ sort: 'date' }} />

@@ -1,18 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { use_editor } from '$lib/logic/editor.svelte';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Button from '$lib/ui/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 
 	const { data } = $props();
 
-	const editor = use_editor();
 	const toaster = use_toaster();
 
 	let dialog_invite_open = $state(false);
-
-	$inspect(data.collections.users);
 
 	const fields = $derived([
 		{ name: 'link', type: 'snippet', snippet: link },
@@ -37,7 +33,7 @@
 	no_editor
 	collection={{
 		...data.collections.users,
-		fields,
-		query: { sort: 'created', filter: 'verified=false' }
+		fields
 	}}
+	query={{ sort: 'created', filter: 'verified=false' }}
 />

@@ -296,16 +296,16 @@
 {@render content(false)}
 
 {#snippet content(local_fullscreen: boolean)}
-	<div class="relative w-full bg-surface text-surface-foreground ring-accent focus-within:ring-2">
+	<div class="bg-surface text-surface-foreground ring-accent relative w-full focus-within:ring-2">
 		<Label {label} {id} {required} icon="icon-[ri--text-block]" />
 
 		<div class="absolute top-0 right-1.5 flex h-8 items-center">
 			<Button href="/help/markdown" variant="ghost" size="sm" icon="icon-[ri--information-line]" />
 		</div>
 		<header
-			class="flex h-8 items-center justify-between gap-4 border border-b bg-background py-1.5 pr-1.5 pl-2.5"
+			class="bg-background flex h-8 items-center justify-between gap-4 border border-b py-1.5 pr-1.5 pl-2.5"
 		>
-			<div class="flex w-fit items-center gap-1 bg-surface p-1">
+			<div class="bg-surface flex w-fit items-center gap-1 p-1">
 				{#each views as { mode, icon }}
 					<button
 						onclick={() => (view = mode)}

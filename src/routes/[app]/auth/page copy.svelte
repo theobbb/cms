@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import Button from '$lib/ui/button.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';

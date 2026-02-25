@@ -1,6 +1,25 @@
 <script module>
+	import type { Snippet } from 'svelte';
+	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
+	import { use_cvx } from '$lib/utils/tailwind';
+
 	type Variant = 'default' | 'action' | 'danger' | 'ghost' | 'discrete' | 'none';
 	type Size = 'sm' | 'md' | 'lg';
+
+	type BaseProps = {
+		variant?: Variant;
+		size?: Size;
+		icon?: string;
+		tooltip?: string;
+		loading?: boolean;
+		disabled?: boolean;
+		children?: Snippet;
+	};
+
+	type ButtonProps = BaseProps & HTMLButtonAttributes & { href?: never };
+	type LinkProps = BaseProps & HTMLAnchorAttributes & { href: string };
+
+	export type Props = ButtonProps | LinkProps;
 
 	const cvx = use_cvx(
 		'group/tooltip inline-flex cursor-pointer items-center justify-center border font-medium transition-colors disabled:cursor-not-allowed loading:cursor-wait loading:opacity-50',
@@ -9,13 +28,12 @@
 				default:
 					'border-foreground/50 bg-black/10 hover:not-disabled:border-black hover:not-disabled:bg-black/15 disabled:opacity-40',
 				action:
-					'hover:bg-text/80 disabled:bg-text/20 border-black bg-black/80 text-background not-hover:border-black/90 hover:bg-black disabled:opacity-50',
+					'text-background disabled:bg-text/20 border-black bg-black/80 not-hover:border-black/90 hover:bg-black disabled:opacity-50',
 				danger:
 					'border-red-800/50 bg-red-600/50 hover:border-red-800 hover:bg-red-600/60 disabled:opacity-50',
 				discrete: 'hover:bg-foreground/10 disabled:opacity-50',
 				ghost:
-					'border-transparent hover:border-foreground/50 hover:bg-foreground/15 disabled:opacity-50',
-
+					'hover:border-foreground/50 hover:bg-foreground/15 border-transparent disabled:opacity-50',
 				none: 'border-0 disabled:opacity-50'
 			},
 			size: {
@@ -28,85 +46,57 @@
 			}
 		}
 	);
-
-	export type ButtonProps = HTMLButtonAttributes & {
-		variant?: Variant;
-		size?: Size;
-		type?: 'button' | 'submit' | 'reset';
-		icon?: string;
-		href?: string;
-		disabled?: boolean;
-		children?: Snippet;
-	};
 </script>
 
-<!-- svelte-ignore state_referenced_locally -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import Tooltip from './tooltip.svelte';
-	import { use_cvx } from '$lib/utils/tailwind';
 
 	const {
 		variant = 'default',
 		size = 'md',
-		type = 'button',
+		type = 'button' as 'button' | 'submit' | 'reset',
 		icon,
-		href = '',
+
 		disabled = false,
 		loading = false,
 		tooltip,
 		children,
 		...props
-	}: ButtonProps & {
-		tooltip?: string;
-		loading?: boolean;
-	} = $props();
+	}: Props = $props();
 
-	const bipolar_props = href ? { href } : { type };
+	const cx = $derived([cvx({ variant, size: icon ? `icon_${size}` : size }), props.class]);
 </script>
 
-<svelte:element
-	this={href ? 'a' : 'button'}
-	role={href ? 'button' : undefined}
-	aria-busy={loading}
-	{...props}
-	{disabled}
-	{...bipolar_props}
-	class={[cvx({ variant, size: icon ? 'icon_' + size : size }), props.class]}
->
+{#if props.href}
+	<a
+		{...props as HTMLAnchorAttributes}
+		href={props.href}
+		class={cx}
+		aria-disabled={disabled}
+		tabindex={disabled ? -1 : undefined}
+		onclick={disabled ? (e) => e.preventDefault() : props.onclick}
+		rel={props.target === '_blank' ? (props.rel ?? 'noopener noreferrer') : props.rel}
+	>
+		{@render content()}
+	</a>
+{:else}
+	<button
+		{...props as HTMLButtonAttributes}
+		class={cx}
+		type={type as 'button' | 'submit' | 'reset'}
+		{disabled}
+		aria-busy={loading}
+	>
+		{@render content()}
+	</button>
+{/if}
+
+{#snippet content()}
 	{#if icon}
-		<div class={[icon]}></div>
+		<span aria-hidden="true" class={icon}></span>
 	{/if}
 	{@render children?.()}
 	{#if tooltip}
-		<Tooltip>
-			{tooltip}
-		</Tooltip>
+		<Tooltip>{tooltip}</Tooltip>
 	{/if}
-</svelte:element>
-
-<!-- {#if href}
-	<a
-		{...props}
-		class={[cvx({ variant, size }), props.class]}
-		href={disabled ? undefined : href}
-		aria-disabled={disabled}
-		role={disabled ? 'link' : undefined}
-		tabindex={disabled ? -1 : undefined}
-	>
-		{@render children?.()}
-	</a>
-{:else}
-	<button {...props} class={[cvx({ variant, size }), props.class]} {type} {disabled}>
-		{#if icon}
-			<div class={[icon]}></div>
-		{/if}
-		{@render children?.()}
-		{#if tooltip}
-			<Tooltip>
-				{tooltip}
-			</Tooltip>
-		{/if}
-	</button>
-{/if} -->
+{/snippet}

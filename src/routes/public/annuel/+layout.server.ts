@@ -6,7 +6,7 @@ export async function load() {
 	const super_pocketbase = await super_auth_pocketbase(apps.annuel.pocketbase.url);
 
 	const collections = await super_pocketbase.collections.getFullList({
-		filter: 'name = "students" || name = "projects"',
+		filter: 'name = "students" || name = "projects" || name = "programs"',
 		sort: 'name',
 		fields: 'id,fields,name,updateRule,viewRule,createRule,deleteRule'
 	});

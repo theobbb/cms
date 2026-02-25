@@ -2,7 +2,7 @@
 	import { init_pocketbase } from '$lib/pocketbase';
 	// import Header from './header.svelte';
 	import { set_app } from '$lib/logic/ctx.svelte';
-	import { init_editor } from '$lib/logic/editor.svelte';
+	import { init_editor } from '$lib/ui/editor/editor-context.svelte.js';
 	import { set_data_store } from '$lib/logic/data.svelte';
 	import { init_header } from '$lib/components/header/header-manager.svelte';
 	import Header from '$lib/components/header/header.svelte';

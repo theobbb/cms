@@ -8,14 +8,17 @@ export async function load({ url, locals: { pocketbase }, depends }) {
 		try {
 			student = await pocketbase
 				.collection('students')
-				.getOne(draft_id, { expand: 'projects(students)' });
+				.getOne(draft_id, { expand: 'projects(students),program' });
 		} catch (error) {}
 
 		try {
-			draft = await pocketbase
-				.collection('student_drafts')
-				.getOne(draft_id, { expand: 'projects(students)' });
+			draft = await pocketbase.collection('drafts').getOne(draft_id);
 		} catch (error) {}
+		// try {
+		// 	draft = await pocketbase
+		// 		.collection('student_drafts')
+		// 		.getOne(draft_id, { expand: 'projects(students)' });
+		// } catch (error) {}
 	}
 
 	return { student, draft };

@@ -1,14 +1,14 @@
 import { page } from '$app/state';
 import { use_pocketbase } from '$lib/pocketbase';
 import type { PaginationResult } from '$lib/types';
-import type { RecordListOptions } from 'pocketbase';
+import type { RecordListOptions, RecordModel } from 'pocketbase';
 import { getContext, setContext } from 'svelte';
 
 const PER_PAGE = 64;
 
 class DataStore {
 	// Only cache first pages: Map<"collection:query", PaginationResult>
-	#chunks: Map<string, PaginationResult<any>> = $state(new Map());
+	#chunks: Map<string, PaginationResult<RecordModel>> = $state(new Map());
 	#pocketbase = use_pocketbase();
 
 	/**

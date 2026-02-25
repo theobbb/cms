@@ -15,7 +15,7 @@ export class Editor {
 
 	constructor() {
 		// Read URL params once on init
-		//this.#initFromUrl();
+		this.#initFromUrl();
 	}
 
 	async #initFromUrl() {
@@ -25,7 +25,9 @@ export class Editor {
 		// console.log(this.#collection);
 		if (!type || !collection_name) return;
 
-		const collection = page.data.app.collections[collection_name || ''];
+		const collection = page.data.collections?.[collection_name || ''];
+
+		if (!collection) return;
 
 		if (type === 'create') {
 			this.current = { type: 'create', collection };

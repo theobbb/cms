@@ -4,4 +4,4 @@
 	const { data } = $props();
 </script>
 
-<DataTable collection={{ ...data.collections.roles }} />
+<DataTable collection={data.collections.roles} />

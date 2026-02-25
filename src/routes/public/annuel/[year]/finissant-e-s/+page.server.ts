@@ -5,6 +5,8 @@ export async function load({ params, locals: { pocketbase } }) {
 		filter: `year="${params.year}"`,
 		sort: 'last_name'
 	});
+	const drafts = await pocketbase.collection('drafts').getFullList();
+	const draft_map = Object.fromEntries([...drafts].map((draft) => [draft.id, draft]));
 
-	return { students };
+	return { students, drafts, draft_map };
 }

@@ -2,10 +2,14 @@
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
 	import Button from '$lib/ui/button.svelte';
+	import type { RecordModel } from 'pocketbase';
 	import Guide from './guide.svelte';
 
 	const { data } = $props();
-	$inspect(page.data);
+
+	const { draft_map } = $derived(data);
+
+	$inspect(draft_map);
 </script>
 
 <Guide />
@@ -26,11 +30,16 @@
 
 	<div class="mt-8">
 		{#each data.students as student}
-			<div>
+			<div class="flex items-center justify-between">
 				<a href="/public/{page.params.year}/finissant-e-s/draft?id={student.id}">
 					{student.last_name},
 					{student.first_name}
 				</a>
+				{#if draft_map[student.id]}
+					<Box color="green">
+						<div class="px-2 py-0.5 text-sm">En attente d'approbation</div>
+					</Box>
+				{/if}
 			</div>
 		{/each}
 	</div>

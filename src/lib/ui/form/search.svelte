@@ -32,7 +32,7 @@
 	// 	}
 	// });
 	const has_changed = $derived(url_param ? url_value !== value : last_value != value);
-	$inspect(has_changed, value, url_value);
+
 	function on_submit() {
 		if (url_param) {
 			const url = url_query_param(page.url.href, url_param, value);
@@ -68,7 +68,7 @@
 	<input
 		class={[
 			'peer',
-			'text-surface-foreground placeholder-surface-foreground/50 ring-accent w-full border px-2.5 py-2 outline-none focus:ring-2',
+			'text-surface-foreground placeholder-surface-foreground/50 ring-accent w-full border px-2.5 py-1.5 outline-none focus:ring-2',
 			value
 				? 'bg-surface w-full pr-24'
 				: 'group-hover:bg-surface focus:bg-surface w-64 border-transparent bg-transparent group-hover:border-inherit focus:w-full focus:border-inherit'

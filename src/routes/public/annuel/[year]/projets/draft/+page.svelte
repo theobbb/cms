@@ -10,6 +10,7 @@
 	import { DraftManager } from '../../draft.svelte.js';
 	import DraftHeader from '../../draft-header.svelte';
 	import type { RecordModel } from 'pocketbase';
+	import Box from '$lib/components/box.svelte';
 
 	const { data } = $props();
 	let { collections, project, draft } = $derived(data);
@@ -59,10 +60,10 @@
 	let onsubmit_students: SubmitCallback<any> = $state(() => {});
 
 	async function onsubmit(e: any) {
-		await manager.handle_submit(e, {
+		await manager.on_submit(e, {
 			draft_id: draft?.id,
 			live_record_id: project?.id,
-			is_new_creation: virgin,
+			virgin,
 			process_data: async (fd) => {
 				fd.set('tags', JSON.stringify(tags));
 				// Run the relation component's internal submit logic
@@ -86,6 +87,12 @@
 	<DraftHeader {draft} {has_changed} is_virgin_record={virgin}>
 		{project?.name}
 	</DraftHeader>
+
+	<Box color="yellow">
+		<div>
+			Assurez-vous d'avoir créé votre profil (et qu'il ait été validé) AVANT de créer vos projets.
+		</div>
+	</Box>
 
 	<Input name="name" label="titre" required bind:value={name} autocomplete="off" />
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Button from '$lib/ui/button.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';

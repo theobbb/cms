@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { use_toaster } from '$lib/logic/toaster.svelte.js';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Button from '$lib/ui/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 
@@ -11,8 +11,9 @@
 		{ name: 'link', type: 'snippet', snippet: draft_link, table_only: true },
 		...data.collections.projects.fields
 	]);
+
 	async function copy_link(id: string) {
-		const url = page.url.host + '/public/' + page.params.year + '/projets/' + id;
+		const url = page.url.host + '/public/' + page.params.year + '/projets?draft=' + id;
 		await navigator.clipboard.writeText(url);
 
 		toaster.push('info', url + ' copied to clipboard');
@@ -21,18 +22,13 @@
 
 {#snippet draft_link(item: any)}
 	<Button
+		href="/public/{page.params.year}/projets/draft?id={item.id}"
 		icon="icon-[ri--draft-line]"
 		variant="ghost"
-		onclick={(event) => {
-			event.stopPropagation();
-			copy_link(item.id);
-		}}
-	></Button>
+		target="_blank"
+	/>
 {/snippet}
 <DataTable
-	collection={{
-		...data.collections.projects,
-		fields,
-		query: { sort: 'created', filter: `year = "${page.params.year}"` }
-	}}
+	collection={{ ...data.collections.projects, fields }}
+	query={{ sort: 'created', filter: `year = "${page.params.year}"` }}
 />

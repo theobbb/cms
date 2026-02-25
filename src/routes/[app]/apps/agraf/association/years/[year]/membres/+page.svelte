@@ -6,8 +6,6 @@
 </script>
 
 <DataTable
-	collection={{
-		...data.collections.member_entries,
-		query: { filter: `year = "${page.params.year}"`, sort: 'created' }
-	}}
+	collection={data.collections.member_entries}
+	query={{ filter: `year = "${page.params.year}"`, sort: 'created' }}
 />

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { use_toaster } from '$lib/logic/toaster.svelte.js';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Button from '$lib/ui/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 
@@ -31,11 +31,8 @@
 {/snippet}
 
 <DataTable
-	collection={{
-		...data.collections.students,
-		fields,
-		query: { sort: 'created', filter: `year = "${page.params.year}"` }
-	}}
+	collection={{ ...data.collections.students, fields }}
+	query={{ sort: 'created', filter: `year = "${page.params.year}"` }}
 >
 	<!-- {#snippet header()}
 

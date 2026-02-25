@@ -12,12 +12,7 @@
 	import { set_collection } from '$lib/logic/ctx.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Section from '$lib/components/section.svelte';
-	import type {
-		CollectionField,
-		CollectionModel,
-		RecordListOptions,
-		RecordModel
-	} from 'pocketbase';
+	import type { CollectionModel, RecordListOptions, RecordModel } from 'pocketbase';
 	import { get_search_keys } from '$config/utils';
 
 	const PER_PAGE = 64;
@@ -37,7 +32,7 @@
 	let items: RecordModel[] = $state([]);
 	let total_items = $state(0);
 	let loaded_pages = $state(0);
-	let loading = $state(true);
+	let loading = $state(false);
 
 	// — Derived from URL —
 	const search = $derived(page.url.searchParams.get('search') || '');
@@ -135,8 +130,7 @@
 	// — Sorting —
 	const sort_param = $derived(page.url.searchParams.get('sort') || '');
 
-	function set_sort(field: CollectionField) {
-		if (field.type == 'snippet') return;
+	function set_sort(field: any) {
 		const key = String(field.name);
 		const value = sort_param === field.name ? '-' + key : key;
 		goto(url_query_param(page.url.href, 'sort', value));

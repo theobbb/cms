@@ -12,21 +12,12 @@
 	import { set_collection } from '$lib/logic/ctx.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Section from '$lib/components/section.svelte';
-	import type {
-		CollectionField,
-		CollectionModel,
-		RecordListOptions,
-		RecordModel
-	} from 'pocketbase';
-	import { get_search_keys } from '$config/utils';
+	import type { CollectionModel, RecordModel } from 'pocketbase';
 
 	const PER_PAGE = 64;
 
-	const {
-		collection,
-		query: default_query,
-		no_editor = false
-	}: { collection: CollectionModel; query?: RecordListOptions; no_editor?: boolean } = $props();
+	const { collection, no_editor = false }: { collection: CollectionModel; no_editor?: boolean } =
+		$props();
 
 	const pocketbase = use_pocketbase();
 	const editor = use_editor();
@@ -37,7 +28,7 @@
 	let items: RecordModel[] = $state([]);
 	let total_items = $state(0);
 	let loaded_pages = $state(0);
-	let loading = $state(true);
+	let loading = $state(false);
 
 	// — Derived from URL —
 	const search = $derived(page.url.searchParams.get('search') || '');
@@ -58,21 +49,24 @@
 	const has_more = $derived(items.length < total_items);
 
 	// — Build query —
-	function build_query() {
-		//const query = { ...collection.query };
-		const query = { ...default_query };
+	function build_query(page_num: number) {
+		const query = { ...collection.query };
 
 		if (sort) query.sort = sort;
 		if (relation_fields) query.expand = relation_fields;
 
-		const filters = [
-			query.filter,
-			search ? get_search_keys(search, collection.presentable_keys) : ''
-		].filter(Boolean);
-
-		query.filter = filters.join(' && ');
-
+		console.log('building query', sort, search);
 		// Search filter
+		const search_keys = (collection.search_key || '')
+			.split(',')
+			.map((k: string) => k.trim())
+			.filter(Boolean);
+
+		if (search && search_keys.length) {
+			const escaped = search.replace(/'/g, "\\'");
+			const search_filter = `(${search_keys.map((k: string) => `${k} ~ '${escaped}'`).join(' || ')})`;
+			query.filter = query.filter ? `${query.filter} && ${search_filter}` : search_filter;
+		}
 
 		return query;
 	}
@@ -83,7 +77,7 @@
 		try {
 			const result = await pocketbase
 				.collection(collection.name)
-				.getList(page_num, PER_PAGE, build_query());
+				.getList(page_num, PER_PAGE, build_query(page_num));
 
 			if (page_num === 1) {
 				items = result.items;
@@ -135,8 +129,7 @@
 	// — Sorting —
 	const sort_param = $derived(page.url.searchParams.get('sort') || '');
 
-	function set_sort(field: CollectionField) {
-		if (field.type == 'snippet') return;
+	function set_sort(field: any) {
 		const key = String(field.name);
 		const value = sort_param === field.name ? '-' + key : key;
 		goto(url_query_param(page.url.href, 'sort', value));

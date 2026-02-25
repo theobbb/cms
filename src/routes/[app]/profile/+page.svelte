@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/button.svelte';

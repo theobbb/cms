@@ -10,12 +10,12 @@
 	type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
 	const sizes = {
-		sm: 'min-w-sm',
-		md: 'min-w-md',
-		lg: 'min-w-lg',
-		xl: 'min-w-xl',
-		'2xl': 'min-w-2xl',
-		'3xl': 'min-w-3xl'
+		sm: 'w-sm',
+		md: 'w-md',
+		lg: 'w-lg',
+		xl: 'w-xl',
+		'2xl': 'w-2xl',
+		'3xl': 'w-3xl'
 	};
 
 	function open(el: HTMLDialogElement) {

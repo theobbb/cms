@@ -1,29 +1,29 @@
 <script lang="ts">
 	import { icons } from '$lib/ui/icons';
 	import Button from '$lib/ui/button.svelte';
-	import { use_toaster, type ToastType } from '$lib/logic/toaster.svelte';
+	import { use_toaster, type ToastType } from '$lib/components/toaster/toaster-context.svelte';
 
 	const toaster = use_toaster();
 
 	const toast_style: Record<ToastType, { cx?: string; icon: string }> = {
 		loading: {
-			cx: 'bg-black/15 text-black',
+			cx: 'bg-secondary text-secondary-foreground',
 			icon: icons.spinner
 		},
 		info: {
-			cx: 'bg-blue text-blue-foreground',
+			cx: 'bg-blue-surface text-blue-surface-foreground',
 			icon: icons.info
 		},
 		success: {
-			cx: 'bg-green text-green-foreground',
+			cx: 'bg-green-surface text-green-surface-foreground',
 			icon: icons.success
 		},
 		warning: {
-			cx: 'bg-yellow text-yellow-foreground',
+			cx: 'bg-yellow-surface text-yellow-surface-foreground',
 			icon: icons.warning
 		},
 		error: {
-			cx: 'bg-red text-red-foreground',
+			cx: 'bg-red-surface text-red-surface-foreground',
 			icon: icons.error
 		}
 	};

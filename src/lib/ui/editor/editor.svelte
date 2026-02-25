@@ -1,20 +1,18 @@
 <script lang="ts">
 	import Menu from '$lib/ui/pop/menu.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import { FieldComponents } from './field.components';
 	import Button from '../button.svelte';
 	import Section from '$lib/components/section.svelte';
-	import { use_editor, type EditorTarget } from '$lib/logic/editor.svelte';
-	import { use_data_store } from '$lib/logic/data.svelte';
+	import { use_editor, type EditorTarget } from '$lib/ui/editor/editor-context.svelte';
 
 	const { editor }: { editor: EditorTarget } = $props();
 	const props_id = $props.id();
 
 	const toaster = use_toaster();
 	const pocketbase = use_pocketbase();
-	const data_store = use_data_store();
 
 	const method = $derived(editor?.type == 'create' ? 'POST' : 'UPDATE');
 	const collection = $derived(editor?.collection);
@@ -99,9 +97,9 @@
 
 	function exit() {
 		//invalidate('data:' + collection);
-		const collection = String(editor.collection.name);
+		//const collection = String(editor.collection.name);
 		editor_ctx.close();
-		data_store.invalidate_collection(collection);
+		//data_store.invalidate_collection(collection);
 		//invalidateAll();
 
 		//ctx.close_drawer();

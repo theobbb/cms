@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { use_toaster } from '$lib/logic/toaster.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 	import type { Social } from '$lib/types';
 	import Button from '$lib/ui/button.svelte';
@@ -56,7 +56,7 @@
 
 {#if pop_open}
 	<Dialog onclose={close_pop} size="sm">
-		<form class="w-sm space-y-gap-y" {onsubmit}>
+		<form class="space-y-gap-y" {onsubmit}>
 			<div class="border-b pb-gap-y text-lg">Nouveau lien</div>
 
 			<div class="flex flex-wrap gap-1.5 text-xs whitespace-nowrap">
