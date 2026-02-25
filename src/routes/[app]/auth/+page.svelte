@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import Button from '$lib/ui/button.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';
@@ -42,21 +42,22 @@
 
 			toaster.push('success');
 		} catch (err: any) {
-			submitting = false;
 			toaster.push('error');
 			console.error(err);
 			cancel();
+		} finally {
+			submitting = false;
 		}
 
-		return async ({ result, update }) => {
-			if (result.type === 'redirect') {
-				//toaster.push('success', 'Welcome!');
-			} else if (result.type === 'failure') {
-				//toaster.update(toast, 'error', result.data?.message || 'Verification failed');
-			}
-			await update();
-			submitting = false;
-		};
+		// return async ({ result, update }) => {
+		// 	if (result.type === 'redirect') {
+		// 		//toaster.push('success', 'Welcome!');
+		// 	} else if (result.type === 'failure') {
+		// 		//toaster.update(toast, 'error', result.data?.message || 'Verification failed');
+		// 	}
+		// 	await update();
+		// 	submitting = false;
+		// };
 	};
 </script>
 
