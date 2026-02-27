@@ -12,7 +12,7 @@
 		href: `/`
 	});
 	header.push_start({
-		name: 'Users',
+		name: 'Membres',
 		icon: 'icon-[ri--group-line]',
 		href: `/users`
 	});

@@ -38,7 +38,9 @@ export async function load({ url, cookies, locals: { app, super_pocketbase } }) 
 	// Device Connect Flow
 	if (pair_id) {
 		try {
-			const device_invite = await super_pocketbase.collection('_passkey_invites').getOne(pair_id);
+			const device_invite = await super_pocketbase
+				.collection('_passkey_invites')
+				.getOne(pair_id, { expand: 'user' });
 
 			const existing_user = await super_pocketbase.collection('users').getOne(device_invite.user);
 

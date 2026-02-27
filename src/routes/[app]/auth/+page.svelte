@@ -52,9 +52,9 @@
 
 	const button_label = $derived(
 		submitting
-			? 'Connecting...'
+			? 'Connexion...'
 			: pair_invite
-				? 'Pair New Device'
+				? 'Ajouter un nouvel appareil'
 				: register_user
 					? 'Register with Passkey'
 					: 'Sign in with Passkey'

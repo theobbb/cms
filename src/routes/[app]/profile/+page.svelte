@@ -54,6 +54,8 @@
 
 	<div></div>
 	<!-- <div>Thème</div> -->
+
+	<Button onclick={dialog_passkey.show}>Se connecter autre device</Button>
 </div>
 
 {#if dialog_passkey.open}
