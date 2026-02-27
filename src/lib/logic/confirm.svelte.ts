@@ -1,19 +1,18 @@
-export type DialogConfirm = {
-	open: boolean;
-	message: string;
-	resolve: (value: boolean) => void;
-};
+// confirm.svelte.ts
 
-export const dialog_confirm = $state<DialogConfirm>({
-	open: false,
-	message: '',
-	resolve: () => {}
-});
+import { Pop } from '$lib/ui/pop/pop-context.svelte';
+
+class DialogConfirm extends Pop {
+	message = $state('');
+	resolve: (value: boolean) => void = () => {};
+}
+
+export const dialog_confirm = new DialogConfirm();
 
 export async function confirm(message: string): Promise<boolean> {
 	return new Promise<boolean>((resolve) => {
-		dialog_confirm.open = true;
 		dialog_confirm.message = message;
 		dialog_confirm.resolve = resolve;
+		dialog_confirm.show();
 	});
 }

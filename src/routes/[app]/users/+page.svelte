@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from '$lib/ui/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 	import DialogInviteUser from './dialog-invite-user.svelte';
 
@@ -7,6 +8,7 @@
 	let dialog_invite_open = $state(false);
 </script>
 
+<div><Button onclick={() => (dialog_invite_open = true)}>+ New user</Button></div>
 <DataTable
 	no_editor
 	collection={data.collections.users}

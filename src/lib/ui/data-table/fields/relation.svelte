@@ -12,9 +12,9 @@
 	const target_collection = $derived(page.data.id_collections[collectionId]);
 </script>
 
-<div class="overflow-hidden text-ellipsis whitespace-nowrap">
+<div class="flex flex-wrap gap-x-3 gap-y-1 overflow-hidden text-ellipsis whitespace-nowrap">
 	{#each items as item, i}
-		<span class="underline">
+		<span class="underline- bg-yellow-500/30 text-sm">
 			<RecordPresentable record={item} collection={target_collection} />
 			{i < items.length - 1 ? ', ' : ''}
 		</span>

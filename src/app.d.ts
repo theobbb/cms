@@ -8,6 +8,7 @@ declare global {
 		interface Locals {
 			app: AppConfig;
 			pocketbase: PocketBase;
+			super_pocketbase: PocketBase;
 			user: any;
 			public_route: boolean;
 		}

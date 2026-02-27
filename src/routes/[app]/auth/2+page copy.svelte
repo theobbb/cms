@@ -6,20 +6,25 @@
 	import Invitation from './invitation.svelte';
 
 	const { data } = $props();
-	const options = $derived(data.options);
+
+	// Access data returned from the server load function
 	const register_user = $derived(data.register);
-	const pair_invite = $derived(data.pair);
-	const is_new_credential = $derived(!!register_user || !!pair_invite);
+	const options = $derived(data.options);
+
 	const toaster = use_toaster();
 	let submitting = $state(false);
 
 	const onsubmit: SubmitFunction = async ({ formData, cancel }) => {
 		if (submitting) return;
 		submitting = true;
+
+		//const toast = toaster.push('loading', 'Waiting for passkey...');
+
 		try {
 			if (!options) throw new Error('Initialization failed. Try refreshing.');
 
-			const publicKey = is_new_credential
+			// 1. Parse Options (using data from server, no fetch needed)
+			const publicKey = register_user
 				? PublicKeyCredential.parseCreationOptionsFromJSON(
 						options as PublicKeyCredentialCreationOptionsJSON
 					)
@@ -27,7 +32,9 @@
 						options as PublicKeyCredentialRequestOptionsJSON
 					);
 
-			const credential = is_new_credential
+			// 2. Get credential from browser
+			// This will prompt the user (TouchID/FaceID/etc)
+			const credential = register_user
 				? await navigator.credentials.create({
 						publicKey: publicKey as PublicKeyCredentialCreationOptions
 					})
@@ -36,38 +43,34 @@
 					});
 
 			if (!credential) throw new Error('Login cancelled');
-			formData.set('credential', JSON.stringify((credential as any).toJSON()));
+
+			// 3. Prepare form data
+			const credentialJSON = (credential as any).toJSON();
+			formData.set('credential', JSON.stringify(credentialJSON));
 		} catch (err: any) {
 			toaster.push('error');
 			console.error(err);
 			cancel();
 		}
+
 		return async ({ result, update }) => {
-			if (result.type === 'redirect') toaster.push('success');
-			else if (result.type === 'failure') toaster.push('error');
+			if (result.type === 'redirect') {
+				toaster.push('success');
+				//toaster.push('success', 'Welcome!');
+			} else if (result.type === 'failure') {
+				toaster.push('error');
+				//toaster.update(toast, 'error', result.data?.message || 'Verification failed');
+			}
 			await update();
 			submitting = false;
 		};
 	};
-
-	const button_label = $derived(
-		submitting
-			? 'Connecting...'
-			: pair_invite
-				? 'Pair New Device'
-				: register_user
-					? 'Register with Passkey'
-					: 'Sign in with Passkey'
-	);
 </script>
 
 <div class="mx-auto my-24 flex max-w-2xl flex-col items-center gap-6">
 	<div class="text-xl">Authentication</div>
-
 	{#if register_user}
 		<Invitation name={register_user.name} />
-	{:else if pair_invite}
-		<Invitation name={pair_invite.expand?.user?.name} />
 	{/if}
 
 	{#if data.error}
@@ -76,7 +79,7 @@
 		<form method="POST" use:enhance={onsubmit}>
 			<Button size="lg" class="flex w-full items-center gap-2" type="submit" disabled={submitting}>
 				<div class="icon-[ri--key-line] text-xl"></div>
-				{button_label}
+				{submitting ? 'Connecting...' : 'Connect with Passkey'}
 			</Button>
 		</form>
 	{/if}

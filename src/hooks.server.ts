@@ -4,6 +4,7 @@ import PocketBase from 'pocketbase';
 import { dev } from '$app/environment';
 import { apps } from './config/apps';
 import { global_routes } from './hooks';
+import { super_auth_pocketbase } from '$lib/server/super-pocketbase';
 
 // Helper to check if a route is global
 function isGlobalRoute(pathname: string): boolean {
@@ -49,6 +50,9 @@ const authentication: Handle = async ({ event, resolve }) => {
 	// 2. Initialize App Context & PocketBase (Runs for ALL routes on valid subdomains)
 	event.locals.app = apps[subdomain];
 	event.locals.pocketbase = new PocketBase(event.locals.app.pocketbase.url);
+
+	// Super instance (singleton, reuses token until expiry)
+	event.locals.super_pocketbase = await super_auth_pocketbase(event.locals.app.pocketbase.url);
 
 	// 3. Load Auth from cookie (It's okay if this remains empty for public routes)
 	const cookie = event.request.headers.get('cookie');

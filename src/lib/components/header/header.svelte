@@ -1,8 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import Button from '$lib/ui/button.svelte';
-	import Select from '$lib/ui/pop/select.svelte';
 	import { use_header } from './header-manager.svelte';
 
 	const { user } = $derived(page.data);

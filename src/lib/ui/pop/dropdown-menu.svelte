@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Pop, { type PopAnchorPosition } from './pop.svelte';
-	import Button, { type ButtonProps } from '../button.svelte';
+	import Button, { type Props as ButtonProps } from '../button.svelte';
 
 	const {
 		pop_offset = [0, 0],
@@ -36,10 +36,10 @@
 
 	{#if pop.open}
 		<Pop onclose={close_pop} anchor={container} anchor_position={pop_position} offset={pop_offset}>
-			<div class="z-100 flex max-w-200 flex-col border bg-bg">
+			<div class="bg-bg z-100 flex max-w-200 flex-col border">
 				{#each options as { title, action }}
 					<button
-						class="border-b px-4 py-1.5 text-left font-medium transition duration-100 last:border-b-0 hover:bg-text/10"
+						class="hover:bg-text/10 border-b px-4 py-1.5 text-left font-medium transition duration-100 last:border-b-0"
 						onclick={() => {
 							close_pop();
 							action();

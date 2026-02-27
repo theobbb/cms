@@ -12,7 +12,7 @@
 
 	const fields = $derived([
 		{ name: 'link', type: 'snippet', snippet: link },
-		...data.collections.users.fields
+		...data.collections._user_invites.fields
 	]);
 
 	async function copy_link(id: string) {
@@ -32,8 +32,8 @@
 <DataTable
 	no_editor
 	collection={{
-		...data.collections.users,
+		...data.collections._user_invites,
 		fields
 	}}
-	query={{ sort: 'created', filter: 'verified=false' }}
+	query={{ sort: 'created' }}
 />

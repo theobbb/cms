@@ -12,7 +12,8 @@
 				{ name: 'text', param: 'text' },
 				{ name: 'fields', param: 'fields' },
 				{ name: 'colors', param: 'colors' },
-				{ name: 'buttons', param: 'buttons' }
+				{ name: 'buttons', param: 'buttons' },
+				{ name: 'components', param: 'components' }
 			]}
 			base_path="ui"
 		/>

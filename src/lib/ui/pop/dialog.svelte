@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
+	import type { Pop } from './pop-context.svelte';
 
 	let {
+		pop,
 		size = 'md',
-		onclose,
+
 		children
-	}: { size?: Size; onclose?: () => void; children: Snippet } = $props();
+	}: { pop: Pop; size?: Size; children: Snippet } = $props();
 
 	type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
@@ -23,7 +25,7 @@
 	}
 </script>
 
-<dialog use:open closedby="any" class={['m-auto', sizes[size]]} {onclose}>
+<dialog use:open closedby="any" class={['m-auto', sizes[size]]} onclose={pop.close}>
 	<div class="bg-background px-gap py-gap-y">
 		{@render children()}
 	</div>

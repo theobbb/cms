@@ -1,4 +1,6 @@
 <script>
+	import Bool from '$lib/ui/editor/fields/bool.svelte';
+
 	import File from '$lib/ui/editor/fields/file.svelte';
 	import Markdown from '$lib/ui/editor/fields/markdown.svelte';
 	import Number from '$lib/ui/editor/fields/number.svelte';
@@ -8,8 +10,6 @@
 	import Url from '$lib/ui/editor/fields/url.svelte';
 	import DatePicker from '$lib/ui/form/date-picker.svelte';
 	import Search from '$lib/ui/form/search.svelte';
-
-	const label = 'label';
 
 	const fields = [
 		{ name: 'string', Component: String, value: 'Business-focused optimal migration' },
@@ -34,6 +34,7 @@ Le problème avec cette approche - et d'ailleurs le problème de ma vie - c'est 
 `
 		},
 		{ name: 'number', Component: Number, value: 69 },
+		{ name: 'bool', Component: Bool, value: false },
 		{ name: 'date', Component: DatePicker },
 		{ name: 'search', Component: Search },
 		{ name: 'relation', Component: Relation },

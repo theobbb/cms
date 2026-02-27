@@ -6,17 +6,16 @@
 	function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
 		event.preventDefault();
 		dialog_confirm.resolve(true);
-		dialog_confirm.open = false;
+		dialog_confirm.close();
 	}
-
 	function cancel() {
 		dialog_confirm.resolve(false);
-		dialog_confirm.open = false;
+		dialog_confirm.close();
 	}
 </script>
 
 {#if dialog_confirm.open}
-	<Dialog onclose={cancel}>
+	<Dialog pop={dialog_confirm}>
 		<form class="max-w-md space-y-5 pb-2" {onsubmit}>
 			<div class="mt-1 border-b px-2 pb-5 text-lg">
 				{dialog_confirm.message}

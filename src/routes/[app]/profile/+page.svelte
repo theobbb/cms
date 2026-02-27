@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
+	import DialogPasskeys from '$lib/components/auth/dialog-passkeys.svelte';
+	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
+	import { Pop } from '$lib/ui/pop/pop-context.svelte';
 
 	const { data } = $props();
 	const { user } = $derived(data);
@@ -13,6 +15,8 @@
 	const toaster = use_toaster();
 
 	const pocketbase = use_pocketbase();
+
+	let dialog_passkey = new Pop();
 
 	async function rename(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
 		event.preventDefault();
@@ -48,5 +52,10 @@
 		<Button type="submit">Déconnexion 😓</Button>
 	</form>
 
+	<div></div>
 	<!-- <div>Thème</div> -->
 </div>
+
+{#if dialog_passkey.open}
+	<DialogPasskeys pop={dialog_passkey} />
+{/if}

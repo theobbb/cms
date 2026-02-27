@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { floating } from '$lib/utils/floating';
 	import Button from '../button.svelte';
-	import Floating from '../pop/floating.svelte';
-	import { use_pop } from '../pop/pop-test.svelte';
 	import Input from './input.svelte';
 
 	let {
@@ -105,7 +102,7 @@
 		class={['fixed z-50 m-2 hidden group-focus-within:block focus:block', TEST_POP && 'block!']}
 		style="position-anchor: --main-anchor; top: anchor(bottom); left: anchor(left); position-try-fallbacks: flip-block;"
 	>
-		<div class="w-64- border bg-surface p-3 text-sm text-surface-foreground">
+		<div class="w-64- bg-surface text-surface-foreground border p-3 text-sm">
 			<div class="mb-4 flex items-center justify-between">
 				<div>
 					<Button

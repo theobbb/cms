@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Menu from '$lib/ui/pop/menu.svelte';
+	import DropdownMenu from '$lib/ui/pop/dropdown-menu.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
@@ -116,7 +116,7 @@
 					{method == 'POST' ? 'Nouveau' : 'Édition'}: <span class="">{collection.name}</span>
 				</div>
 				{#if method == 'UPDATE'}
-					<Menu
+					<DropdownMenu
 						icon="icon-[ri--more-fill]"
 						variant="ghost"
 						options={[
@@ -130,7 +130,7 @@
 							{ title: 'Supprimer', action: () => delete_record() }
 						]}
 						pop_position="bottom-right"
-					></Menu>
+					/>
 				{/if}
 			</div>
 		{/snippet}

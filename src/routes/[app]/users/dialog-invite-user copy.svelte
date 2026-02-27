@@ -10,7 +10,7 @@
 	const { onclose } = $props();
 	const data_store = use_data_store();
 
-	let name: string = $state('');
+	let emails: { value: string }[] = $state([{ value: 'tacbaillargeon@gmail.com' }]);
 
 	const pocketbase = use_pocketbase();
 	const toaster = use_toaster();
@@ -19,10 +19,15 @@
 		event.preventDefault();
 
 		try {
-			await pocketbase.collection('_user_invites').create({
-				name,
-				created_by: pocketbase.authStore.record?.id
-			});
+			for (const { value: email } of emails) {
+				const temp_password = Math.random().toString(36).slice(-12);
+				await pocketbase.collection('users').create({
+					email,
+					password: temp_password,
+					passwordConfirm: temp_password,
+					emailVisibility: true
+				});
+			}
 
 			// 1. Create the user with a random temporary password
 
@@ -30,7 +35,7 @@
 			//await pocketbase.collection('users').requestPasswordReset(email);
 
 			toaster.push('success');
-			//data_store.invalidate_collection('users');
+			data_store.invalidate_collection('users');
 			onclose();
 		} catch (err) {
 			toaster.push('error');
@@ -79,11 +84,16 @@
 
 <Dialog {onclose}>
 	<div class="mb-gap-y">Inviter un nouvel utilisateur</div>
-	<div>1h + guide</div>
 
 	<form class="space-y-gap-y" {onsubmit}>
 		<div>
-			<Input placeholder="nom" name="name" required bind:value={name} />
+			{#each emails as email}
+				<Input placeholder="email" name="email" type="email" required bind:value={email.value} />
+			{/each}
+
+			<Button class="w-full border-t-0" size="lg" onclick={() => emails.push({ value: '' })}>
+				+ New
+			</Button>
 		</div>
 		<FooterButtons {onclose} action="Invite"></FooterButtons>
 		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
