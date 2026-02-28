@@ -3,9 +3,16 @@
 	import type { FieldProps } from '$config/field.types';
 	import Text from './text.svelte';
 
-	const props: FieldProps<'text'> = $props();
+	const {
+		record,
+		system,
+		pattern,
+		autogeneratePattern,
+		presentable,
+		...props
+	}: FieldProps<'text'> = $props();
 
-	const label_icon = $derived(props.type == '');
+	//const label_icon = $derived(props.type == '');
 </script>
 
 {#if 'rows' in props}

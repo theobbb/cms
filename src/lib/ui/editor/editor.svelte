@@ -137,7 +137,7 @@
 
 		<div class="flex flex-col gap-gap pt-gap-y pb-12">
 			{#each fields as field, i}
-				{@const Component = FieldComponents[field.type]}
+				{@const Component = FieldComponents[field.type as keyof typeof FieldComponents] ?? null}
 				{#if Component}
 					<Component
 						record={update_record}

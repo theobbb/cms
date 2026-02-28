@@ -66,6 +66,8 @@ export type FieldBase<Record, T extends FieldType> = {
 	name: Extract<keyof Record, string>;
 	required: boolean;
 	primaryKey: boolean;
+	presentable: boolean;
+	system: boolean;
 
 	table_only?: true;
 	editor_only?: true;
