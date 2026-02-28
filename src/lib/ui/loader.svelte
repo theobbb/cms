@@ -1,4 +1,4 @@
-<div class="w-4.5 flex items-center justify-center">
+<div class="flex w-4.5 items-center justify-center">
 	<svg
 		class="size-4 animate-spin"
 		xmlns="http://www.w3.org/2000/svg"

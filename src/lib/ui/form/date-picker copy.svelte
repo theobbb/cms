@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Button from '../button.svelte';
-	import Anchor from '../pop/anchor.svelte';
 	import Input from './input.svelte';
 
 	let {
@@ -95,61 +94,62 @@
 </script>
 
 <div class="group relative flex w-full">
-	<div class="flex w-full" style="anchor-name: --anchor-{id};">
+	<div class="flex w-full" style="anchor-name: --main-anchor;">
 		<Input {id} {name} value={inputValue} oninput={handleInput} placeholder="JJ/MM/YYYY" {label} />
 	</div>
 
-	<div class={[' hidden group-focus-within:block focus:block', TEST_POP && 'block!']}>
-		<Anchor anchor="anchor-{id}" class="m-2">
-			<div class="w-64- bg-surface text-surface-foreground border p-3 text-sm">
-				<div class="mb-4 flex items-center justify-between">
-					<div>
-						<Button
-							onclick={() => changeMonth(-1)}
-							variant="ghost"
-							icon="icon-[ri--arrow-left-s-line]"
-						/>
-					</div>
-					<div class="flex text-sm">
-						{months[month]}
-						{year}
-					</div>
-					<div>
-						<Button
-							onclick={() => changeMonth(1)}
-							variant="ghost"
-							icon="icon-[ri--arrow-right-s-line]"
-						></Button>
-					</div>
+	<div
+		class={['fixed z-50 m-2 hidden group-focus-within:block focus:block', TEST_POP && 'block!']}
+		style="position-anchor: --main-anchor; top: anchor(bottom); left: anchor(left); position-try-fallbacks: flip-block;"
+	>
+		<div class="w-64- bg-surface text-surface-foreground border p-3 text-sm">
+			<div class="mb-4 flex items-center justify-between">
+				<div>
+					<Button
+						onclick={() => changeMonth(-1)}
+						variant="ghost"
+						icon="icon-[ri--arrow-left-s-line]"
+					/>
 				</div>
-
-				<div class="grid grid-cols-7 gap-1">
-					{#each daysOfWeek as day}
-						<div class="py-1 text-center text-xs uppercase">{day[0]}</div>
-					{/each}
-					<div class="col-span-full border-b"></div>
-
-					{#each paddingDays as _}
-						<div></div>
-					{/each}
-
-					{#each calendarDays as day}
-						<button
-							type="button"
-							onclick={() => selectDate(day)}
-							class={[
-								'w-full- flex size-7 items-center justify-center  ',
-								isSelected(day)
-									? ' text-white- bg-active ring-2 '
-									: 'text-white/40-  hover:text-white/70- hover:bg-active-hover',
-								isToday(day) && 'ring-2'
-							]}
-						>
-							{day}
-						</button>
-					{/each}
+				<div class="flex text-sm">
+					{months[month]}
+					{year}
+				</div>
+				<div>
+					<Button
+						onclick={() => changeMonth(1)}
+						variant="ghost"
+						icon="icon-[ri--arrow-right-s-line]"
+					></Button>
 				</div>
 			</div>
-		</Anchor>
+
+			<div class="grid grid-cols-7 gap-1">
+				{#each daysOfWeek as day}
+					<div class="py-1 text-center text-xs uppercase">{day[0]}</div>
+				{/each}
+				<div class="col-span-full border-b"></div>
+
+				{#each paddingDays as _}
+					<div></div>
+				{/each}
+
+				{#each calendarDays as day}
+					<button
+						type="button"
+						onclick={() => selectDate(day)}
+						class={[
+							'w-full- flex size-7 items-center justify-center  ',
+							isSelected(day)
+								? ' text-white- bg-active ring-2 '
+								: 'text-white/40-  hover:text-white/70- hover:bg-active-hover',
+							isToday(day) && 'ring-2'
+						]}
+					>
+						{day}
+					</button>
+				{/each}
+			</div>
+		</div>
 	</div>
 </div>

@@ -1,7 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Pop, { type PopAnchorPosition } from './pop.svelte';
+	import { type PopAnchorPosition } from './pop.svelte';
 	import Button, { type Props as ButtonProps } from '../button.svelte';
+	import { Pop } from './pop-context.svelte';
+	import Anchor from './anchor.svelte';
+	import Box from '$lib/components/box.svelte';
 
 	const {
 		pop_offset = [0, 0],
@@ -16,7 +19,9 @@
 		children?: Snippet;
 	} = $props();
 
-	const pop = $state({ open: false });
+	const id = $props.id();
+
+	const pop = new Pop();
 	function close_pop() {
 		pop.open = false;
 	}
@@ -25,31 +30,42 @@
 
 	function onclick(ev: MouseEvent) {
 		ev.stopPropagation();
-		pop.open = !pop.open;
+		pop.toggle();
 	}
 </script>
 
-<div bind:this={container} class="relative">
-	<Button {onclick} {...props}>
+<!-- <div class="flex w-full" style="anchor-name: --main-anchor;">
+style="position-anchor: --main-anchor; top: anchor(bottom); left: anchor(left); position-try-fallbacks: flip-block;" -->
+
+<div class="relative">
+	<Button {onclick} {...props} style="anchor-name: --dropdown-{id};">
 		{@render children?.()}
 	</Button>
 
 	{#if pop.open}
-		<Pop onclose={close_pop} anchor={container} anchor_position={pop_position} offset={pop_offset}>
-			<div class="bg-bg z-100 flex max-w-200 flex-col border">
-				{#each options as { title, action }}
-					<button
-						class="hover:bg-text/10 border-b px-4 py-1.5 text-left font-medium transition duration-100 last:border-b-0"
-						onclick={() => {
-							close_pop();
-							action();
-						}}
-						type="button"
-					>
-						{title}
-					</button>
-				{/each}
-			</div>
-		</Pop>
+		<Anchor
+			anchor="dropdown-{id}"
+			top="bottom"
+			left="self-start"
+			position_try="flip-inline"
+			class="my-2"
+		>
+			<Box color="surface">
+				<div class="flex flex-col">
+					{#each options as { title, action }}
+						<button
+							class="hover:bg-text/10 border-b px-4 py-1.5 text-left font-medium transition duration-100 last:border-b-0"
+							onclick={() => {
+								close_pop();
+								action();
+							}}
+							type="button"
+						>
+							{title}
+						</button>
+					{/each}
+				</div>
+			</Box>
+		</Anchor>
 	{/if}
 </div>
