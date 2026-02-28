@@ -8,11 +8,16 @@
 	let dialog_invite_open = $state(false);
 </script>
 
-<div><Button onclick={() => (dialog_invite_open = true)}>+ New user</Button></div>
+<div>
+	<Button onclick={() => (dialog_invite_open = true)}>+ New user</Button>
+</div>
 <DataTable
 	no_editor
-	collection={data.collections.users}
-	query={{ sort: 'created', filter: 'verified=true' }}
+	collection={{
+		...data.collections.users,
+		fields: data.collections.users.fields.filter((f) => f.name != 'email')
+	}}
+	query={{ sort: 'created' }}
 >
 	<!-- {#snippet header()}
 		<Button onclick={() => (dialog_invite_open = true)}>+ New user</Button>
