@@ -9,6 +9,7 @@
 	import RecordPresentable from '$lib/components/record-presentable.svelte';
 	import { page } from '$app/state';
 	import { get_search_keys } from '$config/utils';
+	import { Pop } from '$lib/ui/pop/pop-context.svelte';
 
 	let {
 		id,
@@ -36,7 +37,7 @@
 	);
 
 	// Dialog state
-	let dialog_open = $state(false);
+	let dialog_picker = new Pop();
 	let pop_selection = $state<RecordModel[]>([]);
 	let available_records = $state<RecordModel[]>([]);
 
@@ -78,12 +79,12 @@
 
 	function open_picker() {
 		pop_selection = [...items];
-		dialog_open = true;
+		dialog_picker.show();
 		if (!available_records.length) fetch_records();
 	}
 
 	function close_picker() {
-		dialog_open = false;
+		dialog_picker.close();
 		pop_selection = [];
 	}
 
@@ -166,8 +167,8 @@
 		</div>
 	</div>
 
-	{#if dialog_open}
-		<Dialog onclose={close_picker} size="xl">
+	{#if dialog_picker.open}
+		<Dialog pop={dialog_picker} onclose={close_picker} size="xl">
 			<div class="flex max-h-[80svh] flex-col gap-4">
 				<div class="text-lg font-medium">Sélection: {label || name}</div>
 
