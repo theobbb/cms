@@ -30,5 +30,5 @@
 </div>
 
 {#if dialog_invite.open}
-	<DialogInvitation pop={dialog_invite} type="user" />
+	<DialogInviteUser pop={dialog_invite} />
 {/if}

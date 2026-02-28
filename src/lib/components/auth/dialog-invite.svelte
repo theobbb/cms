@@ -85,7 +85,7 @@
 	$inspect(invite);
 
 	onMount(() => {
-		fetch_invite();
+		//fetch_invite();
 	});
 
 	async function onsubmit_name(
@@ -93,7 +93,8 @@
 	) {
 		event.preventDefault();
 
-		const random_password = crypto.randomUUID();
+		const random_password = crypto.randomUUID().replaceAll('-', '');
+		console.log(random_password);
 		try {
 			invite = await pocketbase.collection('users').create({
 				name: input_name,
@@ -110,7 +111,7 @@
 
 			toaster.push('success');
 			//data_store.invalidate_collection('users');
-			pop.close();
+			//pop.close();
 			//onclose();
 		} catch (err) {
 			toaster.push('error');

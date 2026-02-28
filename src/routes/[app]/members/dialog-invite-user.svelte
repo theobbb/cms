@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
+	import Button from '$lib/ui/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import type { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/pop/pop-context.svelte';
 	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
 
 	const { pop }: { pop: Pop } = $props();
@@ -74,9 +75,11 @@
 			console.error('Invitation failed:', err);
 		}
 	}
+	const pop2 = new Pop();
 </script>
 
 <Dialog {pop}>
+	<Button onclick={pop2.show}>test</Button>
 	<div class="mb-gap-y">Inviter un nouvel utilisateur</div>
 	<div>1h + guide</div>
 
@@ -88,3 +91,7 @@
 		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
 	</form>
 </Dialog>
+
+<!-- {#if pop2.open}
+	<Dialog pop={pop2}>gregre</Dialog>
+{/if} -->
