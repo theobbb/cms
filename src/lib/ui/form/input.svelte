@@ -3,8 +3,6 @@
 	import Label from './label.svelte';
 
 	let {
-		id,
-		name,
 		type = 'text',
 		label = '',
 		label_icon,
@@ -13,29 +11,25 @@
 		value = $bindable(),
 		...props
 	}: HTMLInputAttributes & { label?: string; label_icon?: string } = $props();
+
+	const props_id = $props.id();
+	const id = $derived(props.id || props.name || props_id);
+
+	$inspect(id);
 </script>
 
-<div class="flex flex-col bg-surface text-surface-foreground ring-accent focus-within:ring-2">
-	<Label
-		id={id || name || String(Math.random())}
-		required={Boolean(required)}
-		{label}
-		icon={label_icon}
-		linked
-	/>
+<div class="bg-surface text-surface-foreground ring-accent flex flex-col focus-within:ring-2">
+	<Label {id} required={Boolean(required)} {label} icon={label_icon} linked />
 
 	<input
+		{...props}
 		class={[
-			'border px-2.5 py-1.5 placeholder-surface-foreground/50 outline-none',
+			'placeholder-surface-foreground/50 border px-2.5 py-1.5 outline-none',
 			label && '-mt-1.5 border-t-0',
 			props.class
 		]}
 		{id}
 		autocomplete="off"
-		{type}
-		{name}
-		{required}
-		{placeholder}
 		bind:value
 	/>
 </div>
