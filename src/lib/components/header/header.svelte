@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { use_header } from './header-manager.svelte';
+	import Profile from './profile.svelte';
 
 	const { user } = $derived(page.data);
 
@@ -14,7 +15,7 @@
 	header.push_start({
 		name: 'Membres',
 		icon: 'icon-[ri--group-line]',
-		href: `/users`
+		href: `/members`
 	});
 </script>
 
@@ -62,6 +63,7 @@
 		<div>Données</div>
 		<div>Facturation</div> -->
 	</div>
+
 	<a href="/profile" class="flex items-center gap-1">
 		<span class="icon-[ri--user-line]"></span>
 		{user?.name}

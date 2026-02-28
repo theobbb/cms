@@ -27,6 +27,7 @@ export const ColumnComponents: Record<FieldType, any> = {
 	email: String,
 	markdown: String,
 	file: File,
+	select: String,
 	//slug: String,
 	date: Date,
 	autodate: Date,

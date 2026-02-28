@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { init_pocketbase } from '$lib/pocketbase';
-	// import Header from './header.svelte';
 	import { set_app } from '$lib/logic/ctx.svelte';
-	import { init_editor } from '$lib/ui/editor/editor-context.svelte.js';
-	import { set_data_store } from '$lib/logic/data.svelte';
+	import { init_editor } from '$lib/ui/editor/editor-context.svelte';
 	import { init_header } from '$lib/components/header/header-manager.svelte';
 	import Header from '$lib/components/header/header.svelte';
 
 	let { data, children } = $props();
 	const { app, server_auth, public_route } = $derived(data);
-	//$inspect(app);
+
 	set_app(app);
 
 	const pocketbase = init_pocketbase(app.pocketbase.url, server_auth);
@@ -24,7 +22,6 @@
 	});
 
 	init_editor();
-	set_data_store();
 
 	init_header();
 </script>

@@ -5,7 +5,7 @@ import type { Reroute } from '@sveltejs/kit';
 export const global_routes = ['public', 'help', 'ui'];
 
 // Routes that exist in [app] root (not in /apps folder)
-const shared_routes = ['auth', 'users', 'info', 'profile', 'stats'];
+const shared_routes = ['auth', 'settings', 'members', 'profile', 'stats'];
 
 export const reroute: Reroute = ({ url }) => {
 	const subdomain = url.hostname.split('.')[0];

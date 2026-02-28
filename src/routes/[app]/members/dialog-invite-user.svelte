@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { use_data_store } from '$lib/logic/data.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/button.svelte';
-	import FooterButtons from '$lib/ui/form/components/footer-buttons.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
+	import type { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
 
-	const { onclose } = $props();
-	const data_store = use_data_store();
+	const { pop }: { pop: Pop } = $props();
 
-	let emails: { value: string }[] = $state([{ value: 'tacbaillargeon@gmail.com' }]);
+	let name: string = $state('');
 
 	const pocketbase = use_pocketbase();
 	const toaster = use_toaster();
@@ -19,15 +17,10 @@
 		event.preventDefault();
 
 		try {
-			for (const { value: email } of emails) {
-				const temp_password = Math.random().toString(36).slice(-12);
-				await pocketbase.collection('users').create({
-					email,
-					password: temp_password,
-					passwordConfirm: temp_password,
-					emailVisibility: true
-				});
-			}
+			await pocketbase.collection('_user_invites').create({
+				name,
+				created_by: pocketbase.authStore.record?.id
+			});
 
 			// 1. Create the user with a random temporary password
 
@@ -35,8 +28,9 @@
 			//await pocketbase.collection('users').requestPasswordReset(email);
 
 			toaster.push('success');
-			data_store.invalidate_collection('users');
-			onclose();
+			//data_store.invalidate_collection('users');
+			pop.close();
+			//onclose();
 		} catch (err) {
 			toaster.push('error');
 			console.error('Invitation failed:', err);
@@ -82,20 +76,15 @@
 	}
 </script>
 
-<Dialog {onclose}>
+<Dialog {pop}>
 	<div class="mb-gap-y">Inviter un nouvel utilisateur</div>
+	<div>1h + guide</div>
 
 	<form class="space-y-gap-y" {onsubmit}>
 		<div>
-			{#each emails as email}
-				<Input placeholder="email" name="email" type="email" required bind:value={email.value} />
-			{/each}
-
-			<Button class="w-full border-t-0" size="lg" onclick={() => emails.push({ value: '' })}>
-				+ New
-			</Button>
+			<Input placeholder="nom" name="name" required bind:value={name} />
 		</div>
-		<FooterButtons {onclose} action="Invite"></FooterButtons>
+		<FooterButtons action="Invite"></FooterButtons>
 		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
 	</form>
 </Dialog>

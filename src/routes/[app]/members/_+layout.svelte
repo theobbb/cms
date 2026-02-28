@@ -9,8 +9,4 @@
 	];
 </script>
 
-<div class="flex divide-x">
-	<Nav {links} base_path="users" />
-
-	{@render children()}
-</div>
+{@render children()}

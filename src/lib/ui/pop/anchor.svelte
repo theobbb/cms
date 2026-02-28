@@ -1,4 +1,6 @@
-<script lang="ts">
+<script module>
+	import { type Snippet } from 'svelte';
+
 	type AnchorSide =
 		| 'top'
 		| 'right'
@@ -13,10 +15,19 @@
 		| 'center'
 		| `${number}%`;
 
-	import { type Snippet } from 'svelte';
+	type AnchorPositionTryFallbacks = 'flip-block' | 'flip-inline' | 'flip-start';
 
-	type PositionTryFallbacks = 'none' | `${'flip-block' | 'flip-inline' | 'flip-start'}${string}`;
+	export type AnchorProps = {
+		anchor: string;
+		top?: AnchorSide;
+		left?: AnchorSide;
+		position_try?: AnchorPositionTryFallbacks;
+		children?: Snippet;
+		class?: string;
+	};
+</script>
 
+<script lang="ts">
 	let {
 		anchor,
 		top = 'bottom',
@@ -24,14 +35,7 @@
 		position_try = 'flip-block',
 		children,
 		class: cx
-	}: {
-		anchor: string;
-		top: AnchorSide;
-		left: AnchorSide;
-		position_try?: PositionTryFallbacks;
-		children: Snippet;
-		class?: string;
-	} = $props();
+	}: AnchorProps = $props();
 
 	//const [anchor_y, anchor_x] = $derived(position?.split('-') || []);
 </script>
@@ -40,5 +44,5 @@
 	class="fixed z-50 {cx}"
 	style="position-anchor: --{anchor}; top: anchor({top}); left: anchor({left}); position-try: {position_try};"
 >
-	{@render children()}
+	{@render children?.()}
 </div>

@@ -18,6 +18,9 @@
 
 	let dialog_passkey = new Pop();
 
+	let name = $state(user.name);
+	const has_changed = $derived(name != user.name);
+
 	async function rename(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
 		event.preventDefault();
 
@@ -38,13 +41,12 @@
 </script>
 
 <div class="mx-auto my-24 max-w-sm space-y-4">
-	<div class="">
-		{user?.email}
-	</div>
 	<form onsubmit={rename}>
-		<Input class="w-full" label="Username" name="name" value={user?.name} />
+		<Input class="w-full" label="username" name="name" bind:value={name} />
 		<div class="mt-2- text-right">
-			<Button class="w-full border-t-0" size="lg" type="submit">Modifier</Button>
+			<Button disabled={!has_changed} class="w-full border-t-0" size="lg" type="submit">
+				Modifier
+			</Button>
 		</div>
 	</form>
 

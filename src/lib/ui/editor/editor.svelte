@@ -8,6 +8,8 @@
 	import Section from '$lib/components/section.svelte';
 	import { use_editor, type EditorTarget } from '$lib/ui/editor/editor-context.svelte';
 
+	import { Pop } from '../pop/pop-context.svelte';
+
 	const { editor }: { editor: EditorTarget } = $props();
 	const props_id = $props.id();
 
@@ -104,6 +106,7 @@
 
 		//ctx.close_drawer();
 	}
+	const pop = new Pop();
 
 	const field_on_submit: Array<(fd: FormData, cancel: () => void) => Promise<void>> = $state([]);
 </script>
@@ -116,21 +119,29 @@
 					{method == 'POST' ? 'Nouveau' : 'Édition'}: <span class="">{collection.name}</span>
 				</div>
 				{#if method == 'UPDATE'}
-					<DropdownMenu
-						icon="icon-[ri--more-fill]"
-						variant="ghost"
-						options={[
-							{ title: 'Copier raw JSON', action: copy_record_to_clipboard },
-							{
-								title: 'Dupliquer',
-								action: () => {
-									toaster.push('warning', 'Pas encore fait');
-								}
-							},
-							{ title: 'Supprimer', action: () => delete_record() }
-						]}
-						pop_position="bottom-right"
-					/>
+					<div>
+						<Button
+							icon="icon-[ri--more-fill]"
+							variant="ghost"
+							style="anchor-name: --editor-{props_id}"
+						/>
+
+						{#if pop.open}
+							<DropdownMenu
+								anchor="editor-{props_id}"
+								options={[
+									{ title: 'Copier raw JSON', action: copy_record_to_clipboard },
+									{
+										title: 'Dupliquer',
+										action: () => {
+											toaster.push('warning', 'Pas encore fait');
+										}
+									},
+									{ title: 'Supprimer', action: () => delete_record() }
+								]}
+							/>
+						{/if}
+					</div>
 				{/if}
 			</div>
 		{/snippet}
