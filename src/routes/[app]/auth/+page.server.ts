@@ -162,11 +162,7 @@ export const actions: Actions = {
 
 			throw redirect(303, '/');
 		} catch (err: any) {
-			console.error('Auth Error:', err);
-			// Do not leak internal server errors, but give hints
-			const msg = err.status === 303 ? 'Redirecting' : err.message || 'Authentication failed';
-			if (err.status === 303) throw err;
-			return fail(400, { message: msg });
+			return fail(400, { message: 'Authentication failed' });
 		}
 	}
 };
