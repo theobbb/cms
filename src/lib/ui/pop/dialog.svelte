@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
-	import type { Pop } from './pop-context.svelte';
+	import { set_pop_context, type Pop } from './pop-context.svelte';
 
 	let {
 		pop,
@@ -8,6 +8,8 @@
 		onclose: outer_onclose,
 		children
 	}: { pop: Pop; size?: Size; onclose?: () => void; children: Snippet } = $props();
+
+	set_pop_context(pop);
 
 	type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 
