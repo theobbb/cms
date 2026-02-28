@@ -10,12 +10,19 @@
 	import Section from '$lib/components/section.svelte';
 	import type { CollectionModel, RecordListOptions } from 'pocketbase';
 	import { CollectionList } from '$lib/logic/collection-list.svelte';
+	import type { Snippet } from 'svelte';
 
 	const {
 		collection,
 		query: default_query,
-		editor_mode = true
-	}: { collection: CollectionModel; query?: RecordListOptions; editor_mode?: boolean } = $props();
+		editor_mode = true,
+		action: snippet_action
+	}: {
+		collection: CollectionModel;
+		query?: RecordListOptions;
+		editor_mode?: boolean;
+		action?: Snippet;
+	} = $props();
 
 	const editor = use_editor();
 	set_collection(collection);
@@ -31,6 +38,7 @@
 			{#if editor_mode}
 				<Button onclick={() => editor.open({ type: 'create', collection })}>+ Nouveau</Button>
 			{/if}
+			{@render snippet_action?.()}
 		</div>
 	{/snippet}
 
@@ -40,11 +48,10 @@
 				<tr>
 					<th><Checkbox checked={list.all_checked} ontoggle={() => list.toggle_check_head()} /></th>
 					{#each list.fields as column}
-						<th
-							onclick={() => list.set_sort(column)}
-							class="cursor-pointer text-left font-medium hover:bg-white/5"
-						>
-							<div class="flex items-center justify-between gap-2">
+						<th onclick={() => list.set_sort(column)} class="cursor-pointer text-left">
+							<div
+								class="text-foreground-muted flex items-center justify-between gap-2 text-sm font-normal"
+							>
 								<div>{column.name}</div>
 								{#if list.sort_param === column.name}
 									<div class="icon-[ri--arrow-up-line]"></div>
@@ -65,7 +72,7 @@
 							'group border-b select-none first:border-t',
 							editor?.current?.type === 'update' && editor?.current?.record?.id === row.id
 								? 'bg-accent'
-								: 'hover:bg-accent/30',
+								: editor_mode && 'hover:bg-accent/30',
 							collection.name === 'users' && row.id === page.data.user?.id && 'bg-accent'
 						]}
 					>
