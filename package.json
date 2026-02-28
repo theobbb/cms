@@ -1,7 +1,7 @@
 {
 	"name": "cms2",
 	"private": true,
-	"version": "0.0.2",
+	"version": "1.0.0",
 	"type": "module",
 	"engines": {
 		"node": ">= 22"
