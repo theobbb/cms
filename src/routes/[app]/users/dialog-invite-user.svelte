@@ -6,9 +6,9 @@
 	import FooterButtons from '$lib/ui/form/components/footer-buttons.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
+	import type { Pop } from '$lib/ui/pop/pop-context.svelte';
 
-	const { onclose } = $props();
-	const data_store = use_data_store();
+	const { pop }: { pop: Pop } = $props();
 
 	let name: string = $state('');
 
@@ -31,7 +31,8 @@
 
 			toaster.push('success');
 			//data_store.invalidate_collection('users');
-			onclose();
+			pop.close();
+			//onclose();
 		} catch (err) {
 			toaster.push('error');
 			console.error('Invitation failed:', err);
@@ -77,7 +78,7 @@
 	}
 </script>
 
-<Dialog {onclose}>
+<Dialog {pop}>
 	<div class="mb-gap-y">Inviter un nouvel utilisateur</div>
 	<div>1h + guide</div>
 
@@ -85,7 +86,7 @@
 		<div>
 			<Input placeholder="nom" name="name" required bind:value={name} />
 		</div>
-		<FooterButtons {onclose} action="Invite"></FooterButtons>
+		<FooterButtons action="Invite"></FooterButtons>
 		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
 	</form>
 </Dialog>
