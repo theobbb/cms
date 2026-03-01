@@ -1,7 +1,12 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import type { CollectionModel, RecordModel } from 'pocketbase';
 
-	const { record, collection }: { record: RecordModel; collection: CollectionModel } = $props();
+	const { record }: { record: RecordModel } = $props();
+
+	const collection: CollectionModel | undefined = $derived(
+		page.data.id_collections?.[record.collectionId]
+	);
 </script>
 
 {#if collection}

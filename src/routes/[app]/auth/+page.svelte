@@ -67,7 +67,7 @@
 	{#if register_user}
 		<Invitation name={register_user.name} />
 	{:else if pair_invite}
-		<Invitation name={pair_invite.expand?.user?.name} />
+		<Invitation name={pair_invite.name} />
 	{/if}
 
 	{#if data.error}

@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import DialogPasskeys from '$lib/components/auth/dialog-passkeys.svelte';
+	import DialogInvite from '$lib/components/auth/dialog-share-invite.svelte';
+
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import PairDevice from './pair-device.svelte';
 
 	const { data } = $props();
 	const { user } = $derived(data);
@@ -57,9 +59,11 @@
 	<div></div>
 	<!-- <div>Thème</div> -->
 
-	<Button onclick={dialog_passkey.show}>Se connecter autre device</Button>
+	<PairDevice />
+
+	<div>Supprimer le profil</div>
 </div>
 
 {#if dialog_passkey.open}
-	<DialogPasskeys pop={dialog_passkey} />
+	<DialogInvite pop={dialog_passkey} invite />
 {/if}

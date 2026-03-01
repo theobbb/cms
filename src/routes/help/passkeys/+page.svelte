@@ -1,5 +1,6 @@
 <script>
-	const appName = 'annuel';
+	import Box from '$lib/components/box.svelte';
+
 	const currentDomain = '';
 </script>
 
@@ -10,25 +11,95 @@
 			<div class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-black/70">
 				<div class="icon-[ri--key-line] text-3xl text-white"></div>
 			</div>
-			<h1 class="mb-2 text-4xl font-bold text-gray-900">Passkey Authentication</h1>
-			<p class="text-xl text-gray-600">Secure alternative to passwords</p>
+			<h1 class="mb-2 text-4xl font-semibold">
+				Authentification par <span class="italic">passkey</span>
+			</h1>
+			<p class="text-xl text-gray-600">
+				Une alternative sécurisée aux mots de passe — et aux emails
+			</p>
 		</div>
 
-		<!-- What are Passkeys? -->
-		<div class="rounded-xl- shadow-lg- mb-6 bg-white p-8">
-			<h2 class="mb-4 text-2xl font-bold text-gray-900">What are Passkeys?</h2>
+		<!-- Pourquoi pas les emails ? -->
+		<Box color="blue" class="px-6 py-5">
+			<h2 class="mb-4 text-2xl font-bold text-gray-900">Pas de emails ?</h2>
 			<p class="mb-4 text-gray-700">
-				Passkeys are a modern, secure way to sign in without passwords. They use your device's
-				built-in security (fingerprint, face recognition, or PIN) to verify it's really you.
+				La plupart des systèmes envoient des liens de connexion ou des codes par email. C'est
+				pratique en apparence, mais c'est une mauvaise idée en pratique :
+			</p>
+			<ul class="space-y-2 text-gray-700">
+				<li>
+					📬 <strong>Les emails ne sont pas sécurisés</strong> — ils transitent en clair sur des serveurs
+					tiers, peuvent être interceptés ou transférés sans votre accord.
+				</li>
+				<li>
+					🎣 <strong>Vecteur de phishing n°1</strong> — la majorité des attaques commencent par un email
+					frauduleux imitant un lien de connexion légitime.
+				</li>
+				<li>
+					⏳ <strong>Lents et peu fiables</strong> — les emails arrivent en retard, tombent dans les spams,
+					ou ne arrivent tout simplement pas.
+				</li>
+				<li>
+					🔑 <strong>Votre boîte mail devient un point de défaillance unique</strong> — si quelqu'un accède
+					à vos emails, il accède à tout.
+				</li>
+			</ul>
+			<div class="mt-4 border border-red-300 bg-red-100 p-4">
+				<p class="text-sm text-red-900">
+					<strong>Notre choix :</strong> on a supprimé les emails du processus d'authentification. Vous
+					n'avez pas besoin d'une boîte mail pour vous connecter — seulement de votre appareil et de vos
+					empreintes digitales (ou votre visage, ou votre code PIN).
+				</p>
+			</div>
+		</Box>
+		<div class="mb-6 border border-red-200 bg-red-50 p-8">
+			<h2 class="mb-4 text-2xl font-bold text-gray-900">Pourquoi on n'utilise pas les emails ?</h2>
+			<p class="mb-4 text-gray-700">
+				La plupart des systèmes envoient des liens de connexion ou des codes par email. C'est
+				pratique en apparence, mais c'est une mauvaise idée en pratique :
+			</p>
+			<ul class="space-y-2 text-gray-700">
+				<li>
+					📬 <strong>Les emails ne sont pas sécurisés</strong> — ils transitent en clair sur des serveurs
+					tiers, peuvent être interceptés ou transférés sans votre accord.
+				</li>
+				<li>
+					🎣 <strong>Vecteur de phishing n°1</strong> — la majorité des attaques commencent par un email
+					frauduleux imitant un lien de connexion légitime.
+				</li>
+				<li>
+					⏳ <strong>Lents et peu fiables</strong> — les emails arrivent en retard, tombent dans les spams,
+					ou ne arrivent tout simplement pas.
+				</li>
+				<li>
+					🔑 <strong>Votre boîte mail devient un point de défaillance unique</strong> — si quelqu'un accède
+					à vos emails, il accède à tout.
+				</li>
+			</ul>
+			<div class="mt-4 border border-red-300 bg-red-100 p-4">
+				<p class="text-sm text-red-900">
+					<strong>Notre choix :</strong> on a supprimé les emails du processus d'authentification. Vous
+					n'avez pas besoin d'une boîte mail pour vous connecter — seulement de votre appareil et de vos
+					empreintes digitales (ou votre visage, ou votre code PIN).
+				</p>
+			</div>
+		</div>
+
+		<!-- Qu'est-ce qu'une clé d'accès ? -->
+		<div class=" shadow-lg- mb-6 bg-white p-8">
+			<h2 class="mb-4 text-2xl font-bold text-gray-900">Qu'est-ce qu'une clé d'accès ?</h2>
+			<p class="mb-4 text-gray-700">
+				Les clés d'accès (passkeys) sont une méthode moderne et sécurisée pour se connecter sans mot
+				de passe. Elles utilisent la sécurité intégrée de votre appareil — empreinte digitale,
+				reconnaissance faciale ou code PIN — pour vérifier votre identité.
 			</p>
 			<div class="mt-6 grid gap-4 md:grid-cols-3">
-				<div class="flex flex-col items-center rounded-lg bg-green-50 p-4 text-center">
+				<div class="flex flex-col items-center bg-green-50 p-4 text-center">
 					<div class="mb-2 icon-[ri--shield-check-line] text-4xl text-green-600"></div>
-
-					<h3 class="mb-1 font-semibold text-gray-900">More Secure</h3>
-					<p class="text-sm text-gray-600">Phishing-resistant and unique per site</p>
+					<h3 class="mb-1 font-semibold text-gray-900">Plus sécurisé</h3>
+					<p class="text-sm text-gray-600">Résistant au phishing, unique par site</p>
 				</div>
-				<div class="flex flex-col items-center rounded-lg bg-blue-50 p-4 text-center">
+				<div class="flex flex-col items-center bg-blue-50 p-4 text-center">
 					<svg
 						class="mb-2 h-12 w-12 text-blue-600"
 						fill="none"
@@ -42,10 +113,10 @@
 							d="M13 10V3L4 14h7v7l9-11h-7z"
 						/>
 					</svg>
-					<h3 class="mb-1 font-semibold text-gray-900">Faster Login</h3>
-					<p class="text-sm text-gray-600">No passwords to remember or type</p>
+					<h3 class="mb-1 font-semibold text-gray-900">Connexion rapide</h3>
+					<p class="text-sm text-gray-600">Aucun mot de passe à retenir ou à saisir</p>
 				</div>
-				<div class="flex flex-col items-center rounded-lg bg-purple-50 p-4 text-center">
+				<div class="flex flex-col items-center bg-purple-50 p-4 text-center">
 					<svg
 						class="mb-2 h-12 w-12 text-purple-600"
 						fill="none"
@@ -59,39 +130,39 @@
 							d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
 						/>
 					</svg>
-					<h3 class="mb-1 font-semibold text-gray-900">Device-Based</h3>
-					<p class="text-sm text-gray-600">Uses your phone or computer's security</p>
+					<h3 class="mb-1 font-semibold text-gray-900">Lié à l'appareil</h3>
+					<p class="text-sm text-gray-600">Utilise la sécurité de votre téléphone ou ordinateur</p>
 				</div>
 			</div>
 		</div>
 
-		<!-- How to Invite Users -->
-		<div class="mb-6 rounded-xl bg-white p-8 shadow-lg">
+		<!-- Comment inviter des utilisateurs -->
+		<div class="mb-6 bg-white p-8 shadow-lg">
 			<div class="mb-6 flex items-center">
 				<div
 					class="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-lg font-bold text-white"
 				>
 					1
 				</div>
-				<h2 class="text-2xl font-bold text-gray-900">How to Invite Users</h2>
+				<h2 class="text-2xl font-bold text-gray-900">Comment inviter des utilisateurs</h2>
 			</div>
 
 			<div class="space-y-6">
 				<div class="flex">
 					<div
-						class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 font-semibold text-indigo-600"
+						class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 font-semibold text-indigo-600"
 					>
 						a
 					</div>
 					<div class="ml-4">
-						<h3 class="mb-2 text-lg font-semibold text-gray-900">Create User Account</h3>
+						<h3 class="mb-2 text-lg font-semibold text-gray-900">Créer le compte utilisateur</h3>
 						<p class="mb-3 text-gray-700">
-							As an admin, navigate to the Users section and create a new user account. Set their
-							email address and basic information.
+							En tant qu'administrateur, rendez-vous dans la section Utilisateurs et créez un
+							nouveau compte. Renseignez l'adresse email et les informations de base.
 						</p>
-						<div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+						<div class=" border border-gray-200 bg-gray-50 p-4">
 							<code class="text-sm text-gray-800"
-								>Users → Add New User → Enter email and details</code
+								>Utilisateurs → Ajouter un utilisateur → Saisir l'email et les informations</code
 							>
 						</div>
 					</div>
@@ -104,12 +175,12 @@
 						b
 					</div>
 					<div class="ml-4">
-						<h3 class="mb-2 text-lg font-semibold text-gray-900">Generate Registration Link</h3>
+						<h3 class="mb-2 text-lg font-semibold text-gray-900">Générer un lien d'inscription</h3>
 						<p class="mb-3 text-gray-700">
-							Copy the unique registration link that's generated for the new user. This link
-							contains their user ID for passkey setup.
+							Copiez le lien d'inscription unique généré pour le nouvel utilisateur. Ce lien
+							contient son identifiant pour configurer sa clé d'accès.
 						</p>
-						<div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
+						<div class=" border border-blue-200 bg-blue-50 p-4">
 							<p class="font-mono text-sm break-all text-blue-900">
 								https://{currentDomain}/auth?register=abc123xyz
 							</p>
@@ -124,15 +195,16 @@
 						c
 					</div>
 					<div class="ml-4">
-						<h3 class="mb-2 text-lg font-semibold text-gray-900">Send to User</h3>
+						<h3 class="mb-2 text-lg font-semibold text-gray-900">Envoyer à l'utilisateur</h3>
 						<p class="mb-3 text-gray-700">
-							Share the registration link with the user via email or secure messaging. They'll click
-							it to set up their passkey.
+							Partagez le lien d'inscription avec l'utilisateur par email ou messagerie sécurisée.
+							Il n'a qu'à cliquer dessus pour configurer sa clé d'accès.
 						</p>
-						<div class="rounded-lg border border-green-200 bg-green-50 p-4">
+						<div class=" border border-green-200 bg-green-50 p-4">
 							<p class="text-sm text-green-900">
-								💡 <strong>Tip:</strong> The link is single-use for initial setup. Once they register
-								their passkey, they can sign in normally.
+								💡 <strong>Astuce :</strong> Le lien est à usage unique pour la configuration initiale.
+								Une fois la clé d'accès enregistrée, l'utilisateur peut se connecter normalement — sans
+								email.
 							</p>
 						</div>
 					</div>
@@ -140,29 +212,27 @@
 			</div>
 		</div>
 
-		<!-- How to Connect from Another Device -->
-		<div class="mb-6 rounded-xl bg-white p-8 shadow-lg">
+		<!-- Se connecter depuis un autre appareil -->
+		<div class="mb-6 bg-white p-8 shadow-lg">
 			<div class="mb-6 flex items-center">
 				<div
 					class="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-lg font-bold text-white"
 				>
 					2
 				</div>
-				<h2 class="text-2xl font-bold text-gray-900">Connect from Another Device</h2>
+				<h2 class="text-2xl font-bold text-gray-900">Se connecter depuis un autre appareil</h2>
 			</div>
 
 			<p class="mb-6 text-gray-700">
-				Once you've registered a passkey on one device, you have several options to access the app
-				from other devices:
+				Une fois votre clé d'accès enregistrée sur un appareil, vous avez plusieurs options pour
+				accéder à l'application depuis d'autres appareils :
 			</p>
 
 			<div class="space-y-6">
-				<!-- Option 1: Same Device Passkey -->
-				<div class="rounded-lg border-2 border-indigo-200 p-6">
+				<!-- Option 1 -->
+				<div class=" border-2 border-indigo-200 p-6">
 					<div class="mb-3 flex items-start">
-						<div
-							class="mr-4 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-100"
-						>
+						<div class="mr-4 flex h-12 w-12 shrink-0 items-center justify-center bg-indigo-100">
 							<svg
 								class="h-6 w-6 text-indigo-600"
 								fill="none"
@@ -179,36 +249,34 @@
 						</div>
 						<div>
 							<h3 class="mb-1 text-lg font-bold text-gray-900">
-								Option 1: Use Device's Own Passkey
+								Option 1 : Clé d'accès propre à l'appareil
 							</h3>
 							<p class="mb-2 text-sm font-medium text-indigo-600">
-								Recommended for maximum security
+								Recommandé pour une sécurité maximale
 							</p>
 						</div>
 					</div>
 					<ol class="ml-16 list-inside list-decimal space-y-2 text-gray-700">
 						<li>
-							Visit <span class="rounded bg-gray-100 px-2 py-1 font-mono text-sm"
+							Visitez <span class=" bg-gray-100 px-2 py-1 font-mono text-sm"
 								>https://{currentDomain}</span
-							> on your new device
+							> sur votre nouvel appareil
 						</li>
-						<li>Request a new registration link from an admin</li>
-						<li>Click the link and register a passkey on this device</li>
-						<li>Each device will have its own passkey for maximum security</li>
+						<li>Demandez un nouveau lien d'inscription à un administrateur</li>
+						<li>Cliquez sur le lien et enregistrez une clé d'accès sur cet appareil</li>
+						<li>Chaque appareil aura sa propre clé pour une sécurité maximale</li>
 					</ol>
-					<div class="mt-4 ml-16 rounded-lg border border-green-200 bg-green-50 p-3">
+					<div class="mt-4 ml-16 border border-green-200 bg-green-50 p-3">
 						<p class="text-sm text-green-800">
-							<strong>✓ Most Secure:</strong> Each device has its own unique passkey
+							<strong>✓ Plus sécurisé :</strong> chaque appareil possède sa propre clé d'accès unique
 						</p>
 					</div>
 				</div>
 
-				<!-- Option 2: Cross-Device Passkey -->
-				<div class="rounded-lg border-2 border-blue-200 p-6">
+				<!-- Option 2 -->
+				<div class=" border-2 border-blue-200 p-6">
 					<div class="mb-3 flex items-start">
-						<div
-							class="mr-4 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100"
-						>
+						<div class="mr-4 flex h-12 w-12 shrink-0 items-center justify-center bg-blue-100">
 							<svg
 								class="h-6 w-6 text-blue-600"
 								fill="none"
@@ -225,35 +293,36 @@
 						</div>
 						<div>
 							<h3 class="mb-1 text-lg font-bold text-gray-900">
-								Option 2: Use Phone to Sign In on Computer
+								Option 2 : Utiliser son téléphone pour se connecter sur un ordinateur
 							</h3>
-							<p class="mb-2 text-sm font-medium text-blue-600">Convenient for trusted devices</p>
+							<p class="mb-2 text-sm font-medium text-blue-600">
+								Pratique pour les appareils de confiance
+							</p>
 						</div>
 					</div>
 					<ol class="ml-16 list-inside list-decimal space-y-2 text-gray-700">
 						<li>
-							Visit <span class="rounded bg-gray-100 px-2 py-1 font-mono text-sm"
+							Visitez <span class=" bg-gray-100 px-2 py-1 font-mono text-sm"
 								>https://{currentDomain}</span
-							> on your computer
+							> sur votre ordinateur
 						</li>
-						<li>Click "Sign in with Passkey"</li>
-						<li>Choose "Use a phone, tablet, or security key"</li>
-						<li>Scan the QR code with your phone</li>
-						<li>Approve the sign-in on your phone using biometrics</li>
+						<li>Cliquez sur « Se connecter avec une clé d'accès »</li>
+						<li>Choisissez « Utiliser un téléphone, une tablette ou une clé de sécurité »</li>
+						<li>Scannez le QR code avec votre téléphone</li>
+						<li>Approuvez la connexion avec votre biométrie</li>
 					</ol>
-					<div class="mt-4 ml-16 rounded-lg border border-blue-200 bg-blue-50 p-3">
+					<div class="mt-4 ml-16 border border-blue-200 bg-blue-50 p-3">
 						<p class="text-sm text-blue-800">
-							<strong>✓ Convenient:</strong> Use your phone's passkey to sign in on other devices
+							<strong>✓ Pratique :</strong> utilisez la clé de votre téléphone pour vous connecter sur
+							d'autres appareils
 						</p>
 					</div>
 				</div>
 
-				<!-- Option 3: Synced Passkeys -->
-				<div class="rounded-lg border-2 border-purple-200 p-6">
+				<!-- Option 3 -->
+				<div class=" border-2 border-purple-200 p-6">
 					<div class="mb-3 flex items-start">
-						<div
-							class="mr-4 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-purple-100"
-						>
+						<div class="mr-4 flex h-12 w-12 shrink-0 items-center justify-center bg-purple-100">
 							<svg
 								class="h-6 w-6 text-purple-600"
 								fill="none"
@@ -270,31 +339,31 @@
 						</div>
 						<div>
 							<h3 class="mb-1 text-lg font-bold text-gray-900">
-								Option 3: Synced Passkeys (Apple/Google)
+								Option 3 : Clés synchronisées (Apple / Google)
 							</h3>
 							<p class="mb-2 text-sm font-medium text-purple-600">
-								Automatic if using iCloud Keychain or Google Password Manager
+								Automatique si vous utilisez iCloud Keychain ou Google Password Manager
 							</p>
 						</div>
 					</div>
 					<div class="ml-16 space-y-3">
 						<p class="text-gray-700">
-							If you registered a passkey on an iPhone/Mac or Android device with sync enabled, your
-							passkey automatically syncs to other devices signed into the same account:
+							Si vous avez enregistré une clé d'accès sur un iPhone/Mac ou un appareil Android avec
+							la synchronisation activée, votre clé se synchronise automatiquement sur tous vos
+							appareils connectés au même compte :
 						</p>
 						<ul class="list-inside list-disc space-y-1 text-gray-700">
 							<li>
-								<strong>Apple:</strong> Passkeys sync via iCloud Keychain across iPhone, iPad, and Mac
+								<strong>Apple :</strong> synchronisation via iCloud Keychain sur iPhone, iPad et Mac
 							</li>
 							<li>
-								<strong>Google:</strong> Passkeys sync via Google Password Manager across Android and
-								Chrome
+								<strong>Google :</strong> synchronisation via Google Password Manager sur Android et Chrome
 							</li>
 						</ul>
-						<div class="rounded-lg border border-purple-200 bg-purple-50 p-3">
+						<div class=" border border-purple-200 bg-purple-50 p-3">
 							<p class="text-sm text-purple-800">
-								<strong>✓ Seamless:</strong> Sign in on any of your synced devices without additional
-								setup
+								<strong>✓ Transparent :</strong> connectez-vous sur n'importe lequel de vos appareils
+								synchronisés sans configuration supplémentaire
 							</p>
 						</div>
 					</div>
@@ -302,40 +371,17 @@
 			</div>
 		</div>
 
-		<!-- Common Questions -->
-		<div class="mb-6 rounded-xl bg-white p-8 shadow-lg">
-			<h2 class="mb-6 text-2xl font-bold text-gray-900">Common Questions</h2>
+		<!-- Questions fréquentes -->
+		<div class="mb-6 bg-white p-8 shadow-lg">
+			<h2 class="mb-6 text-2xl font-bold text-gray-900">Questions fréquentes</h2>
 
 			<div class="space-y-6">
 				<details class="group">
 					<summary
-						class="flex cursor-pointer list-none items-center justify-between rounded-lg bg-gray-50 p-4 transition hover:bg-gray-100"
-					>
-						<span class="font-semibold text-gray-900">What happens if I lose my device?</span>
-						<span class="text-gray-500 transition group-open:rotate-180">
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M19 9l-7 7-7-7"
-								/>
-							</svg>
-						</span>
-					</summary>
-					<div class="px-4 pt-4 pb-2 text-gray-700">
-						If you lose your device, contact an admin to generate a new registration link. You can
-						then register a passkey on a new device. If your passkeys were synced to iCloud or
-						Google, they'll be available on your other devices automatically.
-					</div>
-				</details>
-
-				<details class="group">
-					<summary
-						class="flex cursor-pointer list-none items-center justify-between rounded-lg bg-gray-50 p-4 transition hover:bg-gray-100"
+						class="flex cursor-pointer list-none items-center justify-between bg-gray-50 p-4 transition hover:bg-gray-100"
 					>
 						<span class="font-semibold text-gray-900"
-							>Can I have multiple passkeys for one app?</span
+							>Que se passe-t-il si je perds mon appareil ?</span
 						>
 						<span class="text-gray-500 transition group-open:rotate-180">
 							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,42 +395,19 @@
 						</span>
 					</summary>
 					<div class="px-4 pt-4 pb-2 text-gray-700">
-						Yes! You can register multiple passkeys for the same app—one for your phone, one for
-						your laptop, etc. Each registration link will add a new passkey to your account. When
-						signing in, you can choose which passkey to use.
+						En cas de perte, contactez un administrateur pour obtenir un nouveau lien d'inscription.
+						Vous pourrez alors enregistrer une clé d'accès sur votre nouvel appareil. Si vos clés
+						étaient synchronisées via iCloud ou Google, elles seront automatiquement disponibles sur
+						vos autres appareils.
 					</div>
 				</details>
 
 				<details class="group">
 					<summary
-						class="flex cursor-pointer list-none items-center justify-between rounded-lg bg-gray-50 p-4 transition hover:bg-gray-100"
-					>
-						<span class="font-semibold text-gray-900">Is this more secure than passwords?</span>
-						<span class="text-gray-500 transition group-open:rotate-180">
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M19 9l-7 7-7-7"
-								/>
-							</svg>
-						</span>
-					</summary>
-					<div class="px-4 pt-4 pb-2 text-gray-700">
-						Yes! Passkeys are resistant to phishing, can't be guessed or stolen in data breaches,
-						and require physical access to your device plus biometric verification. They're built on
-						industry-standard cryptography and are considered the most secure authentication method
-						available.
-					</div>
-				</details>
-
-				<details class="group">
-					<summary
-						class="flex cursor-pointer list-none items-center justify-between rounded-lg bg-gray-50 p-4 transition hover:bg-gray-100"
+						class="flex cursor-pointer list-none items-center justify-between bg-gray-50 p-4 transition hover:bg-gray-100"
 					>
 						<span class="font-semibold text-gray-900"
-							>Which browsers and devices support passkeys?</span
+							>Puis-je avoir plusieurs clés d'accès pour la même application ?</span
 						>
 						<span class="text-gray-500 transition group-open:rotate-180">
 							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -398,17 +421,70 @@
 						</span>
 					</summary>
 					<div class="px-4 pt-4 pb-2 text-gray-700">
-						Passkeys work on modern browsers including Chrome, Safari, Edge, and Firefox on iOS 16+,
-						macOS 13+, Android 9+, and Windows 10+. Most devices from the last few years support
-						passkeys.
+						Oui ! Vous pouvez enregistrer plusieurs clés d'accès pour la même application — une pour
+						votre téléphone, une pour votre ordinateur portable, etc. Chaque lien d'inscription
+						ajoutera une nouvelle clé à votre compte. Lors de la connexion, vous pourrez choisir
+						laquelle utiliser.
+					</div>
+				</details>
+
+				<details class="group">
+					<summary
+						class="flex cursor-pointer list-none items-center justify-between bg-gray-50 p-4 transition hover:bg-gray-100"
+					>
+						<span class="font-semibold text-gray-900"
+							>Est-ce plus sécurisé que les mots de passe ?</span
+						>
+						<span class="text-gray-500 transition group-open:rotate-180">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</span>
+					</summary>
+					<div class="px-4 pt-4 pb-2 text-gray-700">
+						Oui ! Les clés d'accès résistent au phishing, ne peuvent pas être devinées ni volées
+						lors de fuites de données, et nécessitent un accès physique à votre appareil ainsi
+						qu'une vérification biométrique. Elles reposent sur une cryptographie standard et sont
+						considérées comme la méthode d'authentification la plus sécurisée disponible
+						aujourd'hui.
+					</div>
+				</details>
+
+				<details class="group">
+					<summary
+						class="flex cursor-pointer list-none items-center justify-between bg-gray-50 p-4 transition hover:bg-gray-100"
+					>
+						<span class="font-semibold text-gray-900"
+							>Quels navigateurs et appareils prennent en charge les clés d'accès ?</span
+						>
+						<span class="text-gray-500 transition group-open:rotate-180">
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 9l-7 7-7-7"
+								/>
+							</svg>
+						</span>
+					</summary>
+					<div class="px-4 pt-4 pb-2 text-gray-700">
+						Les clés d'accès fonctionnent sur les navigateurs modernes : Chrome, Safari, Edge et
+						Firefox, sur iOS 16+, macOS 13+, Android 9+ et Windows 10+. La plupart des appareils
+						récents les prennent en charge.
 					</div>
 				</details>
 			</div>
 		</div>
 
-		<!-- Quick Reference -->
-		<div class="rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white shadow-lg">
-			<h2 class="mb-4 text-2xl font-bold">Quick Reference</h2>
+		<!-- Référence rapide -->
+		<div class=" bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white shadow-lg">
+			<h2 class="mb-4 text-2xl font-bold">Référence rapide</h2>
 			<div class="grid gap-6 md:grid-cols-2">
 				<div>
 					<h3 class="mb-2 flex items-center font-semibold">
@@ -420,12 +496,12 @@
 								d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
 							/>
 						</svg>
-						For Admins
+						Pour les administrateurs
 					</h3>
 					<ul class="space-y-1 text-indigo-100">
-						<li>• Create user account</li>
-						<li>• Generate registration link</li>
-						<li>• Send link securely to user</li>
+						<li>• Créer le compte utilisateur</li>
+						<li>• Générer un lien d'inscription</li>
+						<li>• Envoyer le lien de manière sécurisée</li>
 					</ul>
 				</div>
 				<div>
@@ -438,18 +514,18 @@
 								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
 							/>
 						</svg>
-						For Users
+						Pour les utilisateurs
 					</h3>
 					<ul class="space-y-1 text-indigo-100">
-						<li>• Click registration link</li>
-						<li>• Set up passkey with biometrics</li>
-						<li>• Sign in on other devices as needed</li>
+						<li>• Cliquer sur le lien d'inscription</li>
+						<li>• Configurer la clé d'accès avec votre biométrie</li>
+						<li>• Se connecter depuis d'autres appareils si besoin</li>
 					</ul>
 				</div>
 			</div>
 		</div>
 
-		<!-- Back Button -->
+		<!-- Bouton retour -->
 		<div class="mt-8 text-center">
 			<a
 				href="/"
@@ -463,7 +539,7 @@
 						d="M10 19l-7-7m0 0l7-7m-7 7h18"
 					/>
 				</svg>
-				Back to Dashboard
+				Retour au tableau de bord
 			</a>
 		</div>
 	</div>

@@ -3,11 +3,11 @@
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 	import { use_cvx } from '$lib/utils/tailwind';
 
-	type Variant = 'default' | 'action' | 'danger' | 'ghost' | 'discrete' | 'none';
+	export type ButtonVariant = 'default' | 'action' | 'danger' | 'ghost' | 'discrete' | 'none';
 	type Size = 'sm' | 'md' | 'lg';
 
 	type BaseProps = {
-		variant?: Variant;
+		variant?: ButtonVariant;
 		size?: Size;
 		icon?: string;
 		tooltip?: string;

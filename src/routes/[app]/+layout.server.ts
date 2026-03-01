@@ -14,6 +14,13 @@ export async function load({ locals: { app, pocketbase, super_pocketbase, user, 
 		...process_collections(collections),
 		user,
 		server_auth: pocketbase.authStore.exportToCookie({ httpOnly: false }),
-		public_route
+		public_route,
+		header_links: [
+			{
+				name: 'Data',
+				icon: 'icon-[ri--folder-2-line]',
+				href: `/`
+			}
+		]
 	};
 }

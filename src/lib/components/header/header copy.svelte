@@ -1,43 +1,44 @@
-<script lang="ts">
+<script>
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-
 	import { use_header } from './header-manager.svelte';
 	import Profile from './profile.svelte';
 
 	const { user } = $derived(page.data);
 
 	const header = use_header();
-
-	type Link = {
-		name: string;
-		href: string;
-		icon: string;
-	};
-
-	const base_links = [
-		{
-			name: 'Data',
-			icon: 'icon-[ri--folder-2-line]',
-			href: `/`
-		},
-		{
-			name: 'Membres',
-			icon: 'icon-[ri--group-line]',
-			href: `/members`
-		}
-	];
-
-	const links: Link[] = $derived([...base_links, ...(page.data.header_links || [])]);
+	header.push_start({
+		name: 'Data',
+		icon: 'icon-[ri--folder-2-line]',
+		href: `/`
+	});
+	header.push_start({
+		name: 'Membres',
+		icon: 'icon-[ri--group-line]',
+		href: `/members`
+	});
 </script>
 
 <header class="flex h-header items-center justify-between border-b px-gap">
 	<div class="flex items-center gap-gap">
-		{#each links as link}
-			<a href={link.href} class="flex items-center gap-1.5">
-				<div class={link.icon}></div>
-				{link.name}
-			</a>
+		{#each header.start_items as item}
+			{#if 'href' in item}
+				<a href={item.href} class="flex items-center gap-1.5">
+					<div class={item.icon}></div>
+					{item.name}
+				</a>
+			{:else}
+				<div>
+					<select onchange={(e) => goto('/' + e.target?.value)}>
+						<!-- {item.name} -->
+						{#each item.options as option}
+							<option value={option}>
+								{option}
+							</option>
+						{/each}
+					</select>
+				</div>
+			{/if}
 		{/each}
 		<!-- <a href="/{page.params.app}" class="flex items-center gap-1.5">
 			<div class="icon-[ri--folder-2-line]"></div>

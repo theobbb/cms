@@ -1,29 +1,16 @@
-import { getContext, setContext } from 'svelte';
+import { getContext, setContext, type Snippet } from 'svelte';
 
 type Link = {
-	href: string;
-};
-type Select = {
-	options: string[];
-	param: string;
-};
-
-export type HeaderItem = {
 	name: string;
+
 	icon: string;
-} & (Link | Select);
+} & ({ href: string } | { snippet: Snippet });
 
 export class HeaderManager {
-	start_items: HeaderItem[] = $state([]);
-	end_items: HeaderItem[] = $state([]);
+	links: (Link | undefined)[] = $state([]);
 
-	push_start(item: HeaderItem) {
-		if (this.start_items.find((i) => i.name == item.name)) return;
-		this.start_items.push(item);
-	}
-	push_end(item: HeaderItem) {
-		if (this.end_items.find((i) => i.name == item.name)) return;
-		this.end_items.push(item);
+	set_link(index: number, link: Link) {
+		this.links[index] = link;
 	}
 }
 

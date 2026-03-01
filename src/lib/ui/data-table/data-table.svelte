@@ -49,9 +49,7 @@
 					<th><Checkbox checked={list.all_checked} ontoggle={() => list.toggle_check_head()} /></th>
 					{#each list.fields as column}
 						<th onclick={() => list.set_sort(column)} class="cursor-pointer text-left">
-							<div
-								class="text-foreground-muted flex items-center justify-between gap-2 text-sm font-normal"
-							>
+							<div class="flex items-center justify-between gap-2 font-normal">
 								<div>{column.name}</div>
 								{#if list.sort_param === column.name}
 									<div class="icon-[ri--arrow-up-line]"></div>
@@ -67,13 +65,14 @@
 			<tbody>
 				{#each list.items as row}
 					<tr
-						onclick={() => editor.open({ type: 'update', collection, record: row })}
+						onclick={() => {
+							if (editor_mode) editor.open({ type: 'update', collection, record: row });
+						}}
 						class={[
 							'group border-b select-none first:border-t',
 							editor?.current?.type === 'update' && editor?.current?.record?.id === row.id
 								? 'bg-accent'
-								: editor_mode && 'hover:bg-accent/30',
-							collection.name === 'users' && row.id === page.data.user?.id && 'bg-accent'
+								: editor_mode && 'hover:bg-accent/30'
 						]}
 					>
 						<td>

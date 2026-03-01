@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Button from '$lib/ui/button.svelte';
-	import FooterButtons from '$lib/ui/form/components/footer-buttons.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
 	//import Select from '$lib/ui/pop/select.svelte';
 
 	const dialog = new Pop();
@@ -13,7 +13,7 @@
 	<Dialog pop={dialog}>
 		<div>ss</div>
 		<div>
-			<FooterButtons action="Action" />
+			<FooterButtons pop={dialog} action="Action" />
 		</div>
 	</Dialog>
 {/if}

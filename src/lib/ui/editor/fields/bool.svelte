@@ -2,17 +2,27 @@
 	import type { FieldProps } from '$config/field.types';
 	import Button from '$lib/ui/button.svelte';
 
-	let { id, name, value, onsubmit = $bindable() }: FieldProps<'bool'> = $props();
+	let {
+		id,
+		name,
+		value,
+		onsubmit = $bindable(),
+		ontoggle
+	}: FieldProps<'bool'> & { ontoggle?: (value: boolean) => void } = $props();
 
 	let checked = $state(value);
 
 	onsubmit = async (form_data: FormData) => {
 		form_data.set(name, String(checked));
 	};
+
+	function onchange() {
+		if (ontoggle) ontoggle(checked);
+	}
 </script>
 
 <div class="flex items-center gap-2">
-	<input class="hidden" {id} type="checkbox" {name} bind:checked />
+	<input class="hidden" {id} type="checkbox" {name} bind:checked {onchange} />
 
 	<Button onclick={() => (checked = !checked)} variant="none">
 		<span class={['text-3xl', checked ? 'icon-[ri--toggle-fill]' : 'icon-[ri--toggle-line]']}

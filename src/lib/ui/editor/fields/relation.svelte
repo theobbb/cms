@@ -148,7 +148,7 @@
 				{#each items as item (item.id)}
 					<div class="flex h-10 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5">
 						<div class="truncate">
-							<RecordPresentable record={item} {collection} />
+							<RecordPresentable record={item} />
 						</div>
 						<Button
 							size="sm"
@@ -195,7 +195,7 @@
 								<span class="text-muted-foreground icon-[ri--checkbox-blank-line] text-xl"></span>
 							{/if}
 							<div class="flex-1 truncate text-left">
-								<RecordPresentable record={item} {collection} />
+								<RecordPresentable record={item} />
 							</div>
 						</button>
 					{/each}
@@ -215,7 +215,7 @@
 								class="bg-surface-100 flex w-fit items-center gap-1.5 rounded-full border py-0.5 pr-1 pl-2 text-xs"
 							>
 								<span class="max-w-24 truncate">
-									<RecordPresentable record={selected} {collection} />
+									<RecordPresentable record={selected} />
 								</span>
 								<button
 									class="hover:bg-surface-200 flex shrink-0 items-center rounded-full p-0.5"

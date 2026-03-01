@@ -22,15 +22,11 @@ export async function load({ url, cookies, locals: { app, super_pocketbase } }) 
 	// Registration Flow
 	if (register_id) {
 		try {
-			const register_user = await super_pocketbase.collection('_user_invites').getOne(register_id);
-
+			const register_user = await super_pocketbase.collection('users').getOne(register_id);
 			cookies.set('registration_challenge', challenge, COOKIE_OPTIONS);
-
 			const options = get_registration_options(challenge, rpId, app.title, register_user);
-
 			return { register: register_user, pair: null, options };
 		} catch (e) {
-			// Handle invalid user ID or verified user
 			return { register: null, options: null, error: 'Invalid registration link' };
 		}
 	}
@@ -38,22 +34,25 @@ export async function load({ url, cookies, locals: { app, super_pocketbase } }) 
 	// Device Connect Flow
 	if (pair_id) {
 		try {
-			const device_invite = await super_pocketbase
-				.collection('_passkey_invites')
-				.getOne(pair_id, { expand: 'user' });
+			const token = url.searchParams.get('token');
+			if (!token) throw new Error('Missing token');
 
-			const existing_user = await super_pocketbase.collection('users').getOne(device_invite.user);
+			const existing_user = await super_pocketbase.collection('users').getOne(pair_id);
+
+			if (existing_user.device_invite_token !== token) throw new Error('Invalid token');
+			if (new Date(existing_user.device_invite_expires) < new Date())
+				throw new Error('Token expired');
 
 			cookies.set('registration_challenge', challenge, COOKIE_OPTIONS);
 			const options = get_registration_options(challenge, rpId, app.title, existing_user);
 
-			return { register: null, pair: device_invite, options };
+			return { register: null, pair: existing_user, options };
 		} catch (e) {
 			return {
 				register: null,
 				pair: null,
 				options: null,
-				error: 'Invalid pairing link'
+				error: 'Invalid or expired pairing link'
 			};
 		}
 	}
@@ -94,17 +93,13 @@ export const actions: Actions = {
 		try {
 			if (isRegistration) {
 				const invite_id = url.searchParams.get('register')!;
-				const user_invite = await super_pocketbase.collection('_user_invites').getOne(invite_id);
 
 				const verified = await server.verifyRegistration(credential, {
 					challenge,
 					origin: url.origin
 				});
 
-				await super_pocketbase.collection('_user_invites').delete(invite_id);
-
-				const user = await super_pocketbase.collection('users').create({
-					name: user_invite.name,
+				const user = await super_pocketbase.collection('users').update(invite_id, {
 					password: PASSKEY_AUTH_SECRET,
 					passwordConfirm: PASSKEY_AUTH_SECRET,
 					verified: true
@@ -114,22 +109,32 @@ export const actions: Actions = {
 				userId = user.id;
 			} else if (isPairing) {
 				const pair_id = url.searchParams.get('pair')!;
-				const device_invite = await super_pocketbase.collection('_passkey_invites').getOne(pair_id);
+				const token = url.searchParams.get('token');
+
+				const existing_user = await super_pocketbase.collection('users').getOne(pair_id);
+
+				if (existing_user.device_invite_token !== token) throw new Error('Invalid token');
+				if (new Date(existing_user.device_invite_expires) < new Date())
+					throw new Error('Token expired');
 
 				const verified = await server.verifyRegistration(credential, {
 					challenge,
 					origin: url.origin
 				});
 
-				await super_pocketbase.collection('_passkey_invites').delete(pair_id);
+				// Consume the token
+				await super_pocketbase.collection('users').update(pair_id, {
+					device_invite_token: null,
+					device_invite_expires: null
+				});
 
-				await save_passkey(super_pocketbase, device_invite.user, verified);
+				await save_passkey(super_pocketbase, pair_id, verified);
 
-				userId = device_invite.user;
+				userId = pair_id;
 			} else {
 				if (!/^[A-Za-z0-9_-]+$/.test(credential.id))
 					return fail(400, { message: 'Invalid credential' });
-				// Search for passkey by credential ID
+
 				const storedPasskey = await super_pocketbase
 					.collection('_passkeys')
 					.getFirstListItem(`credential_id = "${credential.id}"`)
@@ -163,7 +168,6 @@ export const actions: Actions = {
 			throw redirect(303, '/');
 		} catch (err: any) {
 			console.error('Auth Error:', err);
-			// Do not leak internal server errors, but give hints
 			const msg = err.status === 303 ? 'Redirecting' : err.message || 'Authentication failed';
 			if (err.status === 303) throw err;
 			return fail(400, { message: msg });
@@ -182,8 +186,8 @@ function get_registration_options(
 		rp: { name: appTitle, id: rpId },
 		user: { id: user.id, name: user.name, displayName: user.name },
 		pubKeyCredParams: [
-			{ type: 'public-key', alg: -7 }, // ES256
-			{ type: 'public-key', alg: -257 } // RS256
+			{ type: 'public-key', alg: -7 },
+			{ type: 'public-key', alg: -257 }
 		],
 		timeout: 60000,
 		attestation: 'none',
@@ -193,6 +197,7 @@ function get_registration_options(
 		}
 	};
 }
+
 async function save_passkey(
 	super_pocketbase: any,
 	userId: string,

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/button.svelte';
@@ -6,32 +7,33 @@
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 	import { Pop } from '$lib/ui/pop/pop-context.svelte';
 	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
+	import type { RecordModel } from 'pocketbase';
 
-	const { pop }: { pop: Pop } = $props();
-
-	let name: string = $state('');
+	const { pop, callback }: { pop: Pop; callback: (record: RecordModel) => void } = $props();
 
 	const pocketbase = use_pocketbase();
 	const toaster = use_toaster();
 
+	let name: string = $state('');
+
+	const pop_share_invite = new Pop();
+	let invite_created: RecordModel | null = $state(null);
+
 	async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
 		event.preventDefault();
 
+		const temp_password = Math.random().toString(36).slice(-12);
 		try {
-			await pocketbase.collection('_user_invites').create({
+			const created = await pocketbase.collection('users').create({
 				name,
-				created_by: pocketbase.authStore.record?.id
+				password: temp_password,
+				passwordConfirm: temp_password
 			});
-
-			// 1. Create the user with a random temporary password
-
-			// 2. Trigger the "Invitation" (Password Reset) email
-			//await pocketbase.collection('users').requestPasswordReset(email);
-
-			toaster.push('success');
-			//data_store.invalidate_collection('users');
 			pop.close();
-			//onclose();
+			toaster.push('success');
+			callback(created);
+			//pop_share_invite.show();
+			//data_store.invalidate_collection('users');
 		} catch (err) {
 			toaster.push('error');
 			console.error('Invitation failed:', err);
@@ -80,14 +82,14 @@
 
 <Dialog {pop}>
 	<Button onclick={pop2.show}>test</Button>
-	<div class="mb-gap-y">Inviter un nouvel utilisateur</div>
+	<div class="mb-gap-y">Inviter un nouvel membre</div>
 	<div>1h + guide</div>
 
 	<form class="space-y-gap-y" {onsubmit}>
 		<div>
-			<Input placeholder="nom" name="name" required bind:value={name} />
+			<Input autofocus placeholder="nom" label="Nom" name="name" required bind:value={name} />
 		</div>
-		<FooterButtons action="Invite"></FooterButtons>
+		<FooterButtons {pop} action="Invite"></FooterButtons>
 		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
 	</form>
 </Dialog>

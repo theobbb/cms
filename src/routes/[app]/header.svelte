@@ -1,13 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 
-	import { use_header } from './header-manager.svelte';
-	import Profile from './profile.svelte';
-
 	const { user } = $derived(page.data);
-
-	const header = use_header();
 
 	type Link = {
 		name: string;
@@ -20,15 +14,10 @@
 			name: 'Data',
 			icon: 'icon-[ri--folder-2-line]',
 			href: `/`
-		},
-		{
-			name: 'Membres',
-			icon: 'icon-[ri--group-line]',
-			href: `/members`
 		}
 	];
 
-	const links: Link[] = $derived([...base_links, ...(page.data.header_links || [])]);
+	const links: Link[] = $derived(page.data.header_links || []);
 </script>
 
 <header class="flex h-header items-center justify-between border-b px-gap">
@@ -62,9 +51,14 @@
 		<div>Données</div>
 		<div>Facturation</div> -->
 	</div>
-
-	<a href="/profile" class="flex items-center gap-1">
-		<span class="icon-[ri--user-line]"></span>
-		{user?.name}
-	</a>
+	<div class="flex gap-6">
+		<a href="/members" class="flex items-center gap-1">
+			<span class="icon-[ri--group-line]"></span>
+			Membres
+		</a>
+		<a href="/profile" class="flex items-center gap-1">
+			<span class="icon-[ri--user-line]"></span>
+			{user?.name}
+		</a>
+	</div>
 </header>

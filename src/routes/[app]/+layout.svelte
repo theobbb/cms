@@ -3,7 +3,7 @@
 	import { set_app } from '$lib/logic/ctx.svelte';
 	import { init_editor } from '$lib/ui/editor/editor-context.svelte';
 	import { init_header } from '$lib/components/header/header-manager.svelte';
-	import Header from '$lib/components/header/header.svelte';
+	import Header from './header.svelte';
 
 	let { data, children } = $props();
 	const { app, server_auth, public_route } = $derived(data);
