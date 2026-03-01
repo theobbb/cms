@@ -22,7 +22,7 @@
 	const toaster = use_toaster();
 
 	const invite_url = $derived(
-		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}${type == 'device' ? `&token=${record.token?.device_invite_token}` : ''}`
+		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}${type == 'device' ? `&token=${record.device_invite_token}` : ''}`
 	);
 
 	let QR: string | null = $state(null);

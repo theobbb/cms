@@ -17,7 +17,7 @@
 
 	let token: Token | null = $state(null);
 
-	const user = $derived({ ...page.data.user, token });
+	const user = $derived({ ...page.data.user, ...(token ?? {}) });
 
 	async function refresh_token() {
 		if (user.device_invite_token && new Date(user.device_invite_expires) > new Date()) return;
@@ -42,6 +42,7 @@
 	});
 </script>
 
+Check si meme systeme (apple, google, etc) avant de generer nouveau lien device
 <Button onclick={pop.show}>Se connecter avec un autre appareil</Button>
 
 {#if pop.open}
