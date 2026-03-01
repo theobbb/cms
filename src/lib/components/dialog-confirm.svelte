@@ -21,8 +21,8 @@
 				{dialog_confirm.message}
 			</div>
 			<div class="flex justify-end gap-2">
-				<Button size="lg" variant="ghost" onclick={cancel}>Non</Button>
-				<Button size="lg" autofocus variant="danger" type="submit">Oui</Button>
+				<Button size="lg" variant="ghost" type="reset" onclick={cancel}>Non</Button>
+				<Button size="lg" autofocus variant={dialog_confirm.variant} type="submit">Oui</Button>
 			</div>
 		</form>
 	</Dialog>
