@@ -22,17 +22,15 @@
 	const toaster = use_toaster();
 
 	const invite_url = $derived(
-		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}${type == 'device' ? `&token=${record.device_invite_token}` : ''}`
+		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}${type == 'device' ? `&token=${record.token?.device_invite_token}` : ''}`
 	);
 
 	let QR: string | null = $state(null);
 
 	async function generate_QR() {
-		if (!invite) return;
-		const url = `${page.url.origin}/auth?pair=${record.id}`;
-		console.log(url);
+		if (!invite_url) return;
 		try {
-			QR = await QRCode.toString(url, {
+			QR = await QRCode.toString(invite_url, {
 				type: 'svg',
 				color: {
 					dark: '#242424',
