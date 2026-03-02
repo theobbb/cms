@@ -5,6 +5,7 @@
 	import { marked } from 'marked';
 	import { tick } from 'svelte';
 	import Dialog from '../pop/dialog.svelte';
+	import { Pop } from '../pop/pop-context.svelte';
 
 	let {
 		value = $bindable(''),
@@ -28,7 +29,7 @@
 	let view: ViewState = $state('input');
 	let textarea: HTMLTextAreaElement | null = $state(null);
 
-	let fullscreen = $state(false);
+	const fullscreen = new Pop();
 	// --- History State ---
 	type HistorySnapshot = {
 		text: string;
@@ -342,7 +343,7 @@
 					</div>
 				{/if}
 				<Button
-					onclick={() => (fullscreen = !fullscreen)}
+					onclick={fullscreen.toggle}
 					icon={fullscreen ? 'icon-[ri--fullscreen-exit-line]' : 'icon-[ri--fullscreen-line]'}
 					variant="ghost"
 				/>
@@ -380,8 +381,8 @@
 	</div>
 {/snippet}
 
-{#if fullscreen}
-	<Dialog onclose={() => (fullscreen = false)} size="3xl">
+{#if fullscreen.open}
+	<Dialog pop={fullscreen} size="3xl">
 		<div class="-mx-gap -my-gap-y max-w-3xl">{@render content(true)}</div>
 	</Dialog>
 {/if}

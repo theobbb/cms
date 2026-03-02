@@ -4,6 +4,7 @@
 	import Button from '$lib/ui/button.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';
+	import Loader from '$lib/ui/loader.svelte';
 
 	const { data } = $props();
 	const options = $derived(data.options);
@@ -38,6 +39,7 @@
 			if (!credential) throw new Error('Login cancelled');
 			formData.set('credential', JSON.stringify((credential as any).toJSON()));
 		} catch (err: any) {
+			submitting = false;
 			toaster.push('error');
 			console.error(err);
 			cancel();
@@ -61,8 +63,10 @@
 	);
 </script>
 
-<div class="mx-auto my-24 flex max-w-2xl flex-col items-center gap-6">
-	<div class="text-xl">Authentication</div>
+<div class="mx-auto my-24 flex max-w-2xl flex-col items-center gap-4">
+	<div class="text-center text-xl">
+		<div>{data.app.title}</div>
+	</div>
 
 	{#if register_user}
 		<Invitation name={register_user.name} />
@@ -74,9 +78,20 @@
 		<div class="text-red-500">{data.error}</div>
 	{:else}
 		<form method="POST" use:enhance={onsubmit}>
-			<Button size="lg" class="flex w-full items-center gap-2" type="submit" disabled={submitting}>
-				<div class="icon-[ri--key-line] text-xl"></div>
-				{button_label}
+			<Button
+				size="lg"
+				class="flex w-full items-center gap-1.5"
+				type="submit"
+				disabled={submitting}
+			>
+				<div class="-ml-1 flex size-5 items-center justify-center">
+					{#if submitting}
+						<Loader />
+					{:else}
+						<div class="icon-[ri--key-line] text-xl"></div>
+					{/if}
+				</div>
+				Connexion
 			</Button>
 		</form>
 	{/if}

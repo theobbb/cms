@@ -13,6 +13,7 @@
 		tooltip?: string;
 		loading?: boolean;
 		disabled?: boolean;
+
 		children?: Snippet;
 	};
 
@@ -60,6 +61,7 @@
 		disabled = false,
 		loading = false,
 		tooltip,
+
 		children,
 		...props
 	}: Props = $props();

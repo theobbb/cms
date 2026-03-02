@@ -4,9 +4,16 @@
 	type Link = {
 		name: string;
 		param: string;
+		icon?: string;
 	};
 
-	const { name, param, base_path = '' }: Link & { base_path?: string } = $props();
+	const {
+		name,
+		href: path,
+		param,
+		icon = 'icon-[ri--folder-2-line]',
+		base_path = ''
+	}: Link & { base_path?: string } = $props();
 
 	const href = $derived('/' + [base_path, param].filter((i) => Boolean(i)).join('/'));
 
@@ -21,7 +28,7 @@
 		]}
 		{href}
 	>
-		<div class="icon-[ri--folder-2-line] shrink-0"></div>
+		<div class={[' shrink-0', icon]}></div>
 		{name}
 	</a>
 </div>

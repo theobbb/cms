@@ -50,7 +50,7 @@
 					{#each list.fields as column}
 						<th onclick={() => list.set_sort(column)} class="cursor-pointer text-left">
 							<div class="flex items-center justify-between gap-2 font-normal">
-								<div>{column.name}</div>
+								<div>{column.label || column.name}</div>
 								{#if list.sort_param === column.name}
 									<div class="icon-[ri--arrow-up-line]"></div>
 								{:else if list.sort_param === '-' + column.name}

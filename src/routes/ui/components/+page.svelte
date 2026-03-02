@@ -9,11 +9,10 @@
 </script>
 
 <Button onclick={dialog.show}>Dialog</Button>
-{#if dialog.open}
-	<Dialog pop={dialog}>
-		<div>ss</div>
-		<div>
-			<FooterButtons pop={dialog} action="Action" />
-		</div>
-	</Dialog>
-{/if}
+
+<Dialog pop={dialog}>
+	<div>ss</div>
+	<div>
+		<FooterButtons pop={dialog} action="Action" />
+	</div>
+</Dialog>

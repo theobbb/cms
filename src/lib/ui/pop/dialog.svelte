@@ -6,8 +6,15 @@
 		pop,
 		size = 'md',
 		onclose: outer_onclose,
+		header,
 		children
-	}: { pop: Pop; size?: Size; onclose?: () => void; children: Snippet } = $props();
+	}: {
+		pop: Pop;
+		size?: Size;
+		onclose?: () => void;
+		header?: Snippet;
+		children: Snippet;
+	} = $props();
 
 	set_pop_context(pop);
 
@@ -32,11 +39,16 @@
 	}
 </script>
 
-<dialog use:open closedby="any" class={['m-auto', sizes[size]]} {onclose}>
-	<div class="bg-background px-gap py-gap-y">
-		{@render children()}
-	</div>
-</dialog>
+{#if pop.open}
+	<dialog use:open closedby="any" class={['m-auto shadow-none!', sizes[size]]} {onclose}>
+		<div class="bg-background divide-y-gap-y px-gap py-gap-y">
+			{#if header}
+				<div class="text-lg">{@render header()}</div>
+			{/if}
+			<div class="">{@render children()}</div>
+		</div>
+	</dialog>
+{/if}
 
 <style>
 	dialog::backdrop {

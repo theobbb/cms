@@ -21,12 +21,14 @@
 		minSelect,
 		maxSelect,
 		record,
+		query,
 		on_change,
 		onsubmit = $bindable()
 	}: FieldProps<'relation'> & {
 		on_change?: (ids: string[]) => void;
 		label?: string;
 		record: any;
+		query?: RecordListOptions;
 	} = $props();
 
 	const pocketbase = use_pocketbase();
@@ -66,9 +68,15 @@
 
 		search = search.trim();
 		try {
-			const options: RecordListOptions = { sort: '-created' };
-			options.filter = get_search_keys(search, collection.presentable_keys);
+			const { filter, ...rest_query } = query || {};
 
+			const options: RecordListOptions = { sort: '-created', ...rest_query };
+
+			const search_filter = get_search_keys(search, collection.presentable_keys);
+
+			options.filter = [search_filter, filter].filter((f) => Boolean(f)).join(' && ');
+
+			console.log(options.filter);
 			const res = await pocketbase.collection(collectionId).getList<RecordModel>(1, 32, options);
 			available_records = res.items;
 		} catch (error) {

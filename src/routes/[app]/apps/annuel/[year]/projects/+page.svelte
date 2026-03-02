@@ -7,10 +7,14 @@
 	const { data } = $props();
 	const toaster = use_toaster();
 
+	data.collections.projects.field_map.students.query = { filter: `year = "${page.params.year}"` };
+
 	const fields = $derived([
 		{ name: 'link', type: 'snippet', snippet: draft_link, table_only: true },
 		...data.collections.projects.fields
 	]);
+
+	$inspect(data);
 
 	async function copy_link(id: string) {
 		const url = page.url.host + '/public/' + page.params.year + '/projets?draft=' + id;

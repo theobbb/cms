@@ -69,6 +69,7 @@ export type FieldBase<Record, T extends FieldType> = {
 	presentable: boolean;
 	system: boolean;
 
+	label?: string;
 	table_only?: true;
 	editor_only?: true;
 };

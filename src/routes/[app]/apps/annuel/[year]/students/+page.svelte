@@ -33,8 +33,4 @@
 <DataTable
 	collection={{ ...data.collections.students, fields }}
 	query={{ sort: 'created', filter: `year = "${page.params.year}"` }}
->
-	<!-- {#snippet header()}
-
-{/snippet} -->
-</DataTable>
+></DataTable>

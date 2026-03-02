@@ -52,6 +52,10 @@
 		<div>Facturation</div> -->
 	</div>
 	<div class="flex gap-6">
+		<a href="/settings" class="flex items-center gap-1">
+			<span class="icon-[ri--settings-line]"></span>
+			Paramètres
+		</a>
 		<a href="/members" class="flex items-center gap-1">
 			<span class="icon-[ri--group-line]"></span>
 			Membres
