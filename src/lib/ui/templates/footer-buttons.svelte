@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
-	import { get_pop_context, Pop } from '$lib/ui/pop/pop-context.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
+	import { get_pop_context, Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 
 	const { action, cancel = 'Cancel' }: { action: string; cancel?: string } = $props();
 

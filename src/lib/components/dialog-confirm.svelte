@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { dialog_confirm } from '$lib/logic/confirm.svelte';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
 
 	function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {

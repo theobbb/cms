@@ -1,7 +1,6 @@
 <script lang="ts">
-	import Info from './info.svelte';
 	import type { Social } from '$lib/types';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Textarea from '$lib/ui/form/textarea.svelte';
 	import Socials from './socials.svelte';
 	import { page } from '$app/state';
@@ -10,6 +9,7 @@
 	import Input from '$lib/ui/form/input.svelte';
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
 	import Box from '$lib/components/box.svelte';
+	import Info from '$lib/ui/templates/box/info.svelte';
 
 	const { data } = $props();
 	const { student, draft, collections } = $derived(data);
@@ -94,9 +94,8 @@
 	/>
 
 	<div class="space-y-3">
-		<Box color="blue" class="px-3 py-2 text-sm">
-			Tu peux ajouter des liens vers tes réseaux sociaux ou autres ressources (optionel)
-		</Box>
+		<Info>Tu peux ajouter des liens vers tes réseaux sociaux ou autres ressources (optionel)</Info>
+
 		<div>
 			<Socials bind:socials={values.socials} />
 		</div>
@@ -123,10 +122,6 @@
 			{/each}
 		</div>
 	{:else}
-		<Box color="blue">
-			<div class="px-3 py-2 text-sm">
-				<div>Tu pourras ajouter tes projets une fois que ton brouillon sera validé.</div>
-			</div>
-		</Box>
+		<Info>Tu pourras ajouter tes projets une fois que ton brouillon sera validé.</Info>
 	{/if}
 </form>

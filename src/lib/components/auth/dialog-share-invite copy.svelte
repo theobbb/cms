@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import QRCode from 'qrcode';
 	import { use_toaster } from '../toaster/toaster-context.svelte';
+	import Box from '../box.svelte';
 	import type { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 	import RecordPresentable from '../record-presentable.svelte';
 	import Warning from '$lib/ui/templates/box/warning.svelte';
@@ -23,7 +24,7 @@
 	const toaster = use_toaster();
 
 	const invite_url = $derived(
-		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}`
+		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}${type == 'device' ? `&token=${record.device_invite_token}` : ''}`
 	);
 
 	let QR: string | null = $state(null);
@@ -48,53 +49,64 @@
 
 <Dialog {pop} size="sm">
 	{#snippet header()}
-		<div>
-			<span class="mr-0.5 icon-[ri--key-line] translate-y-0.5"></span>
-			{#if type == 'user'}
-				Partager l'invitation
-			{:else}
-				Connecter un nouvel appareil
-			{/if}
-		</div>
-	{/snippet}
-	<div class="mt-2 space-y-gap-y">
 		{#if type == 'user'}
-			<div class="mb-8 flex items-center gap-1.5">
+			<div>Partager l'invitation</div>
+		{:else}
+			<div>
+				<div>Connecter un autre appareil</div>
+			</div>
+		{/if}
+	{/snippet}
+	<div class="space-y-gap-y">
+		{#if type == 'user'}
+			<div class="flex items-center gap-1.5">
 				<div class="icon-[ri--user-line]"></div>
 				<div>
 					<RecordPresentable {record} />
 				</div>
 			</div>
-			<div class="mb-4"><Info>Partagez ce lien manuellement avec le nouveau membre</Info></div>
+			<Info>
+				Ce système n'envoie pas de courriel. C'est à vous de partager l'invitation avec le nouveau
+				membre.
+			</Info>
 		{/if}
 		<div class="space-y-3">
 			{#if type == 'device'}
-				<Warning
-					>Ce lien à usage unique expire dans 10 minutes. Ne le partagez à personne d’autre.</Warning
-				>
+				<Warning>
+					<div>Ce lien est valide pour 10 minutes. Ne le partagez pas</div>
+				</Warning>
 			{/if}
-
-			<div class="mb-6">
-				<div class="text-muted mb-2 text-sm">
-					À ouvrir sur l'appareil où le compte sera utilisé.
-				</div>
+			<div>
+				<div class="text-foreground mb-2">Lien de connexion à usage unique (recommandé)</div>
 				<Button
 					onclick={async () => {
 						await navigator.clipboard.writeText(invite_url);
 						toaster.push('info', 'Lien copié');
 					}}
 					variant="discrete"
-					class="bg-surface border-surface-foreground flex w-full items-start justify-start gap-3 border px-3 py-1.5 pr-2.5 text-left leading-tight break-all"
+					class="bg-surface border-surface-foreground flex w-full items-start justify-start gap-1.5 border px-2 py-0.5 text-left leading-tight"
 				>
-					<div>{invite_url}</div>
 					<div class="icon-[ri--file-copy-line] shrink-0 translate-y-1"></div>
+					<div class="">
+						{invite_url}
+					</div>
 				</Button>
 			</div>
 
-			<div class="text-muted text-sm">
-				Ce système utilise les passkeys pour l'authentification — aucun mot de passe requis. <a
-					class="text-indigo-600"
-					href="/help/passkeys">En savoir plus</a
+			<div class="my-12 space-y-2">
+				<div class="size-48">
+					{@html QR}
+				</div>
+				<div>
+					<Warning>
+						Utilisez le code QR seulement si le nouveau membre utilise des passkeys connectés entre
+						ses appareils
+					</Warning>
+				</div>
+			</div>
+			<div>
+				Ce système utilise les passkeys. <a class="text-indigo-600" href="/help/passkeys"
+					>En savoir plus</a
 				>
 			</div>
 		</div>

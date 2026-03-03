@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { icons } from '$lib/ui/icons';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import { use_toaster, type ToastType } from '$lib/components/toaster/toaster-context.svelte';
 
 	const toaster = use_toaster();

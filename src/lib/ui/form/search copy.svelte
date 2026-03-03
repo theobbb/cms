@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { url_query_param } from '$lib/utils/url';
-	import Button from '../button.svelte';
+	import Button from '../styled/button.svelte';
 	import Input from './input.svelte';
 
 	const {

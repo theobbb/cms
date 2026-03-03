@@ -1,18 +1,35 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
-	//import Select from '$lib/ui/pop/select.svelte';
+	import Anchor from '$lib/ui/primitives/pop/anchor.svelte';
+	import Tooltip from '$lib/ui/styled/tooltip.svelte';
+	import DropdownMenu from '$lib/ui/styled/dropdown-menu.svelte';
+
+	import Select from '$lib/ui/styled/select.svelte';
 
 	const dialog = new Pop();
+
+	let select_value = $state('');
 </script>
 
-<Button onclick={dialog.show}>Dialog</Button>
+<Button onclick={dialog.show} tooltip="Ceci est un dialog">Dialog</Button>
 
 <Dialog pop={dialog}>
 	<div>ss</div>
 	<div>
-		<FooterButtons pop={dialog} action="Action" />
+		<FooterButtons action="Action" />
 	</div>
 </Dialog>
+
+<!-- <DropdownMenu options={[{ name: 'Option 1', action: () => {} }]} /> -->
+
+<Select
+	bind:value={select_value}
+	options={[
+		{ label: 'options1', value: '1' },
+		{ label: 'options2', value: '2' },
+		{ label: 'options3', value: '3' }
+	]}
+/>

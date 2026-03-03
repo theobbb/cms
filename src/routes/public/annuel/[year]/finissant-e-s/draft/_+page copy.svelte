@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Info from './info.svelte';
 	import type { Social } from '$lib/types';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Textarea from '$lib/ui/form/textarea.svelte';
 	import Socials from './socials.svelte';
 	import { page } from '$app/state';

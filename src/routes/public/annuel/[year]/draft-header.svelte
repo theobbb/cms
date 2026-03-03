@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import { format_date } from '$lib/utils/format-date';
 
 	let { draft, has_changed, is_virgin_record, children } = $props();

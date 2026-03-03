@@ -1,6 +1,8 @@
 <script>
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
+	import Info from '$lib/ui/templates/box/info.svelte';
+	import Warning from '$lib/ui/templates/box/warning.svelte';
 
 	const { name } = $props();
 
@@ -14,29 +16,21 @@
 	];
 </script>
 
-<div class="w-full">
+<Box color="surface" class="w-full px-4 py-3">
 	<div class="mb-4 flex items-start">
-		<div class=" flex-1">
-			<div class="flex items-center gap-1.5">
+		<div class="flex-1 text-center">
+			<div class="flex items-center justify-center gap-1.5">
 				<span class="icon-[ri--user-line]"></span>
 				<div>{name}</div>
 			</div>
-			<div class="mb-2 text-lg">
-				Tu es invité(e) à rejoindre l'application
-				<span class="underline"> {page.data.app.title}</span> !
-			</div>
-			<div class="space-y-2 text-sm">
-				<p class="flex items-center gap-1.5">
-					<span class="icon-[ri--information-line]"></span>
-					<span
-						>This invitation link works <strong>one time only</strong> to set up your passkey.</span
-					>
-				</p>
-			</div>
+			<div class="mt-2">Tu as reçu une invitation !</div>
 		</div>
 	</div>
-
-	<Box color="blue">
+	<Warning>
+		Assure-toi d'être sur l'appareil où tu utiliseras l'application — ton accès (passkey) sera créé
+		sur cet appareil.
+	</Warning>
+	<!-- <Box color="blue">
 		<div class="px-4 py-3 text-sm">
 			<div>
 				<div>Fonctionnement:</div>
@@ -54,9 +48,5 @@
 				</div>
 			</div>
 		</div>
-	</Box>
-	<div class="text-center">
-		Ce système d’authentification utilise les <span class="font-semibold">passkeys</span>.
-		<a class="text-indigo-600" href="/help/passkeys">en savoir plus →</a>
-	</div>
-</div>
+	</Box> -->
+</Box>

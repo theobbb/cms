@@ -2,9 +2,9 @@
 	import { page } from '$app/state';
 	import DialogInvite from '$lib/components/auth/dialog-share-invite.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import { onMount } from 'svelte';
 

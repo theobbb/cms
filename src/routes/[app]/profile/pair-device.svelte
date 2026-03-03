@@ -2,9 +2,10 @@
 	import { page } from '$app/state';
 	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/button.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 	import { onMount } from 'svelte';
+	import type { RecordModel } from 'pocketbase';
 
 	type Token = {
 		device_invite_token: string;
@@ -15,36 +16,44 @@
 
 	const pop = new Pop();
 
-	let token: Token | null = $state(null);
+	let invite: RecordModel | null = $state(null);
 
-	const user = $derived({ ...page.data.user, ...(token ?? {}) });
+	const user = $derived(page.data.user);
 
-	async function refresh_token() {
-		if (user.device_invite_token && new Date(user.device_invite_expires) > new Date()) return;
+	$inspect(page.data.user);
 
-		token = {
-			device_invite_token: crypto.randomUUID(),
-			device_invite_expires: new Date(Date.now() + 10 * 60 * 1000).toISOString()
-		};
-		sync_token(token);
+	async function fetch_invite() {
+		invite = await get_existing_invite();
+		if (!invite) invite = await create_invite();
 	}
 
-	async function sync_token(new_token: Token) {
+	async function get_existing_invite() {
 		try {
-			await pocketbase.collection('users').update(user.id, new_token);
+			const record = await pocketbase
+				.collection('_passkey_invites')
+				.getFirstListItem(`user = "${user.id}"`);
+			if (record && new Date(record.created) > new Date()) return null;
+			return record;
 		} catch (err) {
 			return null;
 		}
 	}
 
+	async function create_invite() {
+		try {
+			return await pocketbase.collection('_passkey_invites').create({ user: user.id });
+		} catch {
+			return null;
+		}
+	}
+
 	onMount(() => {
-		refresh_token();
+		fetch_invite();
 	});
 </script>
 
-Check si meme systeme (apple, google, etc) avant de generer nouveau lien device
-<Button onclick={pop.show}>Se connecter avec un autre appareil</Button>
+<Button onclick={pop.show}>Connecter un autre appareil</Button>
 
-{#if pop.open}
-	<DialogShareInvite {pop} invite={{ type: 'device', record: user }} />
+{#if pop.open && invite}
+	<DialogShareInvite {pop} invite={{ type: 'device', record: invite }} />
 {/if}

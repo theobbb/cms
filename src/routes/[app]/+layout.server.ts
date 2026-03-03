@@ -1,5 +1,4 @@
 import { process_collections } from '$config/utils';
-import { super_auth_pocketbase } from '$lib/server/super-pocketbase';
 
 export async function load({ locals: { app, pocketbase, super_pocketbase, user, public_route } }) {
 	//const super_pocketbase = await super_auth_pocketbase(app.pocketbase.url);

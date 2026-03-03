@@ -1,7 +1,7 @@
 // confirm.svelte.ts
 
-import type { ButtonVariant } from '$lib/ui/button.svelte';
-import { Pop } from '$lib/ui/pop/pop-context.svelte';
+import type { ButtonVariant } from '$lib/ui/styled/button.svelte';
+import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 
 class DialogConfirm extends Pop {
 	message = $state('');

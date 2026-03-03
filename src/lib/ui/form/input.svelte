@@ -23,6 +23,8 @@
 
 	<input
 		{...props}
+		{type}
+		{placeholder}
 		class={[
 			'placeholder-surface-foreground/50 border px-2.5 py-1.5 outline-none',
 			label && '-mt-1.5 border-t-0',

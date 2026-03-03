@@ -11,6 +11,7 @@
 	import DraftHeader from '../../draft-header.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import Box from '$lib/components/box.svelte';
+	import Warning from '$lib/ui/templates/box/warning.svelte';
 
 	const { data } = $props();
 	let { collections, project, draft } = $derived(data);
@@ -88,11 +89,9 @@
 		{project?.name}
 	</DraftHeader>
 
-	<Box color="yellow">
-		<div>
-			Assurez-vous d'avoir créé votre profil (et qu'il ait été validé) AVANT de créer vos projets.
-		</div>
-	</Box>
+	<Warning>
+		Assures-toi de créer ton profil (et qu'il ait été validé) AVANT de créer tes projets.
+	</Warning>
 
 	<Input name="name" label="titre" required bind:value={name} autocomplete="off" />
 

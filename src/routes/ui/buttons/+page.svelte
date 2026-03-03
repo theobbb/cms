@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 
 	const sizes = ['sm', 'md', 'lg'];
 	const variants = ['default', 'action', 'discrete', 'danger', 'ghost', 'none'];
@@ -31,7 +31,7 @@
 								icon={type_i == 1 ? 'icon-[ri--menu-line]' : ''}
 							>
 								{#if type_i != 1}
-									This is a button
+									Click me
 								{/if}
 							</Button>
 						</div>
