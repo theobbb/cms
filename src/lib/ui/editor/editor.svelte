@@ -1,14 +1,14 @@
 <script lang="ts">
-	import DropdownMenu from '$lib/ui/pop/dropdown-menu.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import { FieldComponents } from './field.components';
-	import Button from '../button.svelte';
+	import Button from '../styled/button.svelte';
 	import Section from '$lib/components/section.svelte';
 	import { use_editor, type EditorTarget } from '$lib/ui/editor/editor-context.svelte';
 
-	import { Pop } from '../pop/pop-context.svelte';
+	import { Pop } from '../primitives/pop/pop-context.svelte';
+	import DropdownMenu from '../styled/dropdown-menu.svelte';
 
 	const { editor }: { editor: EditorTarget } = $props();
 	const props_id = $props.id();
@@ -106,7 +106,7 @@
 
 		//ctx.close_drawer();
 	}
-	const pop = new Pop();
+	const pop_controls = new Pop();
 
 	const field_on_submit: Array<(fd: FormData, cancel: () => void) => Promise<void>> = $state([]);
 </script>
@@ -124,23 +124,34 @@
 							icon="icon-[ri--more-fill]"
 							variant="ghost"
 							style="anchor-name: --editor-{props_id}"
+							onclick={pop_controls.toggle}
 						/>
 
-						{#if pop.open}
-							<DropdownMenu
-								anchor="editor-{props_id}"
-								options={[
-									{ title: 'Copier raw JSON', action: copy_record_to_clipboard },
-									{
-										title: 'Dupliquer',
-										action: () => {
-											toaster.push('warning', 'Pas encore fait');
-										}
+						<DropdownMenu
+							pop={pop_controls}
+							anchor="--editor-{props_id}"
+							right="end"
+							top="bottom"
+							class="my-1"
+							options={[
+								{ label: 'Copier raw JSON', action: copy_record_to_clipboard, type: 'button' },
+								{
+									label: 'Dupliquer',
+									action: () => {
+										toaster.push('warning', 'Pas encore fait');
 									},
-									{ title: 'Supprimer', action: () => delete_record() }
-								]}
-							/>
-						{/if}
+									type: 'button'
+								},
+								{ type: 'divider' },
+								{
+									label: 'Supprimer',
+									icon: 'icon-[ri--delete-bin-line]',
+									class: 'text-red-500',
+									action: () => delete_record(),
+									type: 'button'
+								}
+							]}
+						/>
 					</div>
 				{/if}
 			</div>

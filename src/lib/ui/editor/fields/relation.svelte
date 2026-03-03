@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Label from '$lib/ui/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
 	import type { CollectionModel, RecordListOptions, RecordModel } from 'pocketbase';
@@ -9,7 +9,7 @@
 	import RecordPresentable from '$lib/components/record-presentable.svelte';
 	import { page } from '$app/state';
 	import { get_search_keys } from '$config/utils';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 
 	let {
 		id,

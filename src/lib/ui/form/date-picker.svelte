@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '../button.svelte';
-	import Anchor from '../pop/anchor.svelte';
+	import Button from '../styled/button.svelte';
+	import Anchor from '../primitives/pop/anchor.svelte';
 	import Input from './input.svelte';
 
 	let {

@@ -1,6 +1,6 @@
 <script lang="ts" generics="T">
 	import type { Snippet } from 'svelte';
-	import Button from '../button.svelte';
+	import Button from '../styled/button.svelte';
 	import Label from './label.svelte';
 
 	const {

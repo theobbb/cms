@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Button, { type Props as ButtonProps } from '../button.svelte';
-	import { Pop } from './pop-context.svelte';
-	import Anchor, { type AnchorProps } from './anchor.svelte';
+	import Button, { type Props as ButtonProps } from '../styled/button.svelte';
+	import { Pop } from '../primitives/pop/pop-context.svelte';
+	import Anchor, { type AnchorProps } from '../primitives/pop/anchor.svelte';
 	import Box from '$lib/components/box.svelte';
 
 	const {

@@ -1,6 +1,6 @@
 <script>
 	import { get_collection } from '$lib/logic/ctx.svelte';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 	import Search from '$lib/ui/form/search.svelte';
 

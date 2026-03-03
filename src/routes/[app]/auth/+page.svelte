@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';
-	import Loader from '$lib/ui/loader.svelte';
+	import Loader from '$lib/ui/styled/loader.svelte';
 
 	const { data } = $props();
+
 	const options = $derived(data.options);
+
 	const register_user = $derived(data.register);
 	const pair_invite = $derived(data.pair);
+
 	const is_new_credential = $derived(!!register_user || !!pair_invite);
+
 	const toaster = use_toaster();
 	let submitting = $state(false);
 
@@ -63,45 +67,43 @@
 	);
 </script>
 
-<div class="mx-auto my-24 flex max-w-2xl flex-col items-center gap-4">
-	<div class="text-center text-xl">
-		<div>{data.app.title}</div>
+<div class="mx-auto grid h-screen max-w-xs grid-rows-[1fr_auto] items-center">
+	<div class="flex flex-col justify-center gap-4 py-12">
+		<div class="text-center text-xl">
+			<div>{data.app.title}</div>
+		</div>
+
+		{#if register_user}
+			<Invitation name={register_user.name} />
+		{:else if pair_invite}
+			<Invitation name={pair_invite.name} />
+		{/if}
+
+		{#if data.error}
+			<div class="text-red-500">{data.error}</div>
+		{:else}
+			<form class="mt-4 flex justify-center" method="POST" use:enhance={onsubmit}>
+				<Button size="lg" class="flex items-center gap-1.5" type="submit" disabled={submitting}>
+					<div class="-ml-1 flex size-5 items-center justify-center">
+						{#if submitting}
+							<Loader />
+						{:else}
+							<div class="icon-[ri--key-line] text-xl"></div>
+						{/if}
+					</div>
+					Connexion
+				</Button>
+			</form>
+		{/if}
 	</div>
 
-	{#if register_user}
-		<Invitation name={register_user.name} />
-	{:else if pair_invite}
-		<Invitation name={pair_invite.name} />
-	{/if}
+	<div class="py-12">
+		<div class="text-center leading-snug text-balance">
+			<div>
+				Ce système d’authentification utilise les <span class="font-semibold">passkeys</span>.
+			</div>
 
-	{#if data.error}
-		<div class="text-red-500">{data.error}</div>
-	{:else}
-		<form method="POST" use:enhance={onsubmit}>
-			<Button
-				size="lg"
-				class="flex w-full items-center gap-1.5"
-				type="submit"
-				disabled={submitting}
-			>
-				<div class="-ml-1 flex size-5 items-center justify-center">
-					{#if submitting}
-						<Loader />
-					{:else}
-						<div class="icon-[ri--key-line] text-xl"></div>
-					{/if}
-				</div>
-				Connexion
-			</Button>
-		</form>
-	{/if}
-
-	<div>
-		<p class="text-center text-sm text-gray-600">
-			Need help?
-			<a href="/help/passkeys" class="font-medium text-indigo-600 hover:text-indigo-700">
-				View guide →
-			</a>
-		</p>
+			<div><a class="text-indigo-600" href="/help/passkeys">En savoir plus →</a></div>
+		</div>
 	</div>
 </div>

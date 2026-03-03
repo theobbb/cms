@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Pop from './pop.svelte';
-	import Button, { type Props as ButtonProps } from '../button.svelte';
+	import Button, { type Props as ButtonProps } from '../styled/button.svelte';
 
 	const {
 		pop_offset = [0, 0],

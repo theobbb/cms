@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import type { RecordModel } from 'pocketbase';
 
 	const pocketbase = use_pocketbase();

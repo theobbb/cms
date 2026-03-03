@@ -2,10 +2,10 @@
 	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
 	import type { RecordModel } from 'pocketbase';
 
@@ -81,15 +81,15 @@
 </script>
 
 <Dialog {pop}>
-	<Button onclick={pop2.show}>test</Button>
-	<div class="mb-gap-y">Inviter un nouvel membre</div>
-	<div>1h + guide</div>
+	{#snippet header()}
+		Inviter un nouveau membre
+	{/snippet}
 
-	<form class="space-y-gap-y" {onsubmit}>
+	<form class="mt-2 space-y-gap-y" {onsubmit}>
 		<div>
-			<Input autofocus placeholder="nom" label="Nom" name="name" required bind:value={name} />
+			<Input autofocus label="Nom" name="name" required bind:value={name} />
 		</div>
-		<FooterButtons {pop} action="Invite"></FooterButtons>
+		<FooterButtons action="Invite"></FooterButtons>
 		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
 	</form>
 </Dialog>

@@ -6,12 +6,12 @@
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte.js';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 	import Bool from '$lib/ui/editor/fields/bool.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte.js';
 	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import Dropdown from './dropdown.svelte';
@@ -23,6 +23,8 @@
 
 	const pocketbase = use_pocketbase();
 	const toaster = use_toaster();
+
+	const is_admin = $derived(data.user.role == 0);
 
 	const pop_create = new Pop();
 
@@ -63,9 +65,11 @@
 
 <Section size="full">
 	<div class="mx-auto max-w-3xs">
-		<div>
-			<Button onclick={pop_create.show}>Nouveau</Button>
-		</div>
+		{#if is_admin}
+			<div>
+				<Button onclick={pop_create.show}>Nouveau</Button>
+			</div>
+		{/if}
 		<div class="">
 			{#each years as year}
 				<div class="min-h-24- flex items-center justify-between">

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Checkbox from './checkbox.svelte';
 	import { page } from '$app/state';
-	import Button from '../button.svelte';
+	import Button from '../styled/button.svelte';
 	import Search from '../form/search.svelte';
 	import { ColumnComponents } from './field.components';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';

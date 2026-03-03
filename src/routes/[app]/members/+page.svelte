@@ -1,14 +1,15 @@
 <script lang="ts">
 	import DialogInvitation from '$lib/components/auth/dialog-share-invite.svelte';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte.js';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte.js';
 	import type { RecordModel } from 'pocketbase';
 	import DialogInviteUser from './dialog-invite-user.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_pocketbase } from '$lib/pocketbase.js';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
+	import Controls from './controls.svelte';
 
 	const { data } = $props();
 
@@ -46,6 +47,8 @@
 				onclick={() => delete_invite(row.id)}
 			></Button>
 			<Button icon="icon-[ri--share-box-line]" variant="ghost" onclick={() => see_invite(row)} />
+		{:else}
+			<Controls user={row} />
 		{/if}
 	</div>
 {/snippet}

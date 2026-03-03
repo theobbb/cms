@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FieldProps } from '$config/field.types';
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 
 	let {
 		id,

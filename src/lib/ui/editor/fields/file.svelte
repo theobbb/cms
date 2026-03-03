@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Label from '$lib/ui/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
 	import Attachment from './lib/attachment.svelte';

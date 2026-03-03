@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
-	import Anchor from '$lib/ui/pop/anchor.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
+	import Anchor from '$lib/ui/primitives/pop/anchor.svelte';
 	import DropdownMenu from '$lib/ui/pop/dropdown-menu.svelte';
-	import { Pop } from '$lib/ui/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
 
 	const { year } = $props();
 	const props_id = $props.id();

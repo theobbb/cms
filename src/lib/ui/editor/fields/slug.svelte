@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Input from '$lib/ui/form/input.svelte';
 	import { slugify } from '$lib/utils/slugify';
 	import type { FieldProps } from '$config/field.types';

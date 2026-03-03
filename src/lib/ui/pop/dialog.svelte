@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
-	import { set_pop_context, type Pop } from './pop-context.svelte';
+	import { set_pop_context, type Pop } from '../primitives/pop/pop-context.svelte';
 
 	let {
 		pop,

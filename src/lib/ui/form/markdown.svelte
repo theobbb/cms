@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Button from '$lib/ui/button.svelte';
+	import Button from '$lib/ui/styled/button.svelte';
 	import Label from '$lib/ui/form/label.svelte';
 	import Textarea from '$lib/ui/form/textarea.svelte';
 	import { marked } from 'marked';
 	import { tick } from 'svelte';
 	import Dialog from '../pop/dialog.svelte';
-	import { Pop } from '../pop/pop-context.svelte';
+	import { Pop } from '../primitives/pop/pop-context.svelte';
 
 	let {
 		value = $bindable(''),
