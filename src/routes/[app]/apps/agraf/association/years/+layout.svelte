@@ -3,7 +3,7 @@
 
 	const { data, children } = $props();
 
-	const links = $derived(data.years.map((year) => ({ name: year.id, param: year.id })));
+	const links = $derived(data.years.map((year) => ({ name: year.id, slug: year.id })));
 </script>
 
 <Nav {links} base_path="association/years" />

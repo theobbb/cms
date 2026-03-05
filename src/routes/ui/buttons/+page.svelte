@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 
 	const sizes = ['sm', 'md', 'lg'];
 	const variants = ['default', 'action', 'discrete', 'danger', 'ghost', 'none'];

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import DialogInvitation from '$lib/components/auth/dialog-share-invite.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte.js';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import type { RecordModel } from 'pocketbase';
 	import DialogInviteUser from './dialog-invite-user.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
@@ -21,6 +21,13 @@
 
 	let invite: RecordModel | null = $state(null);
 
+	const field_verified = data.collections.users.field_map.verified;
+	if (field_verified) {
+		field_verified.type = 'snippet';
+		field_verified.snippet = verified;
+	}
+	//data.collections.users.field_map.verified.type = 'snippet';
+	$inspect(data.collections.users.field_map.verified.type);
 	const fields = $derived([
 		...data.collections.users.fields.filter((f) => f.name != 'email'),
 		{ type: 'snippet', snippet: controls }
@@ -49,6 +56,14 @@
 			<Button icon="icon-[ri--share-box-line]" variant="ghost" onclick={() => see_invite(row)} />
 		{:else}
 			<Controls user={row} />
+		{/if}
+	</div>
+{/snippet}
+
+{#snippet verified(row: RecordModel)}
+	<div>
+		{#if !row.verified}
+			<div class="bg-blue w-fit px-2 text-sm">En attente</div>
 		{/if}
 	</div>
 {/snippet}

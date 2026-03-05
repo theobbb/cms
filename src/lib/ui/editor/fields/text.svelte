@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Textarea from '$lib/ui/form/textarea.svelte';
+	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
 	import type { FieldProps } from '$config/field.types';
 
 	const { id, name, required, value }: FieldProps<'text'> = $props();

@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
+	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 
 	const { data } = $props();
 	const toaster = use_toaster();
+	const editor = use_editor();
+
+	editor.defaults = { year: page.params.year || '' };
 
 	const fields = $derived([
 		{ name: 'link', type: 'snippet', snippet: draft_link, table_only: true },
@@ -33,4 +37,5 @@
 <DataTable
 	collection={{ ...data.collections.students, fields }}
 	query={{ sort: 'created', filter: `year = "${page.params.year}"` }}
-></DataTable>
+	editor_defaults={{ year: page.params.year }}
+/>

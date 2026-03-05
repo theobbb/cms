@@ -52,7 +52,7 @@
 		<div>Facturation</div> -->
 	</div>
 	<div class="flex gap-6">
-		<a href="/settings" class="flex items-center gap-1">
+		<a href="/settings/profile" class="flex items-center gap-1">
 			<span class="icon-[ri--settings-line]"></span>
 			Paramètres
 		</a>

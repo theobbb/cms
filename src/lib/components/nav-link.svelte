@@ -3,38 +3,23 @@
 
 	type Link = {
 		name: string;
-		param: string;
+		href: string;
 		icon?: string;
 	};
 
-	const {
-		name,
-		href: path,
-		param,
-		icon = 'icon-[ri--folder-2-line]',
-		base_path = ''
-	}: Link & { base_path?: string } = $props();
+	const { name, href, icon = 'icon-[ri--folder-2-line]' }: Link & { base_path?: string } = $props();
 
-	const href = $derived('/' + [base_path, param].filter((i) => Boolean(i)).join('/'));
-
-	const active = $derived(page.url.pathname.startsWith(href));
+	//const href = $derived(['', base_path, slug].filter(Boolean).join('/'));
+	const active = $derived(page.url.pathname === href);
 </script>
 
-<div class="block">
-	<a
-		class={[
-			'-mx-1.5 flex items-center gap-1.5 truncate px-1.5 py-0.5 whitespace-nowrap',
-			active ? 'bg-accent' : 'hover:bg-accent/30'
-		]}
-		{href}
-	>
-		<div class={[' shrink-0', icon]}></div>
-		{name}
-	</a>
-</div>
-
-<!-- <div>
-	<a {href} class={[active && 'active']}>
-		{name}
-	</a>
-</div> -->
+<a
+	class={[
+		'-mx-1.5 flex items-center gap-1.5 truncate px-1.5 py-0.5 whitespace-nowrap',
+		active ? 'bg-accent' : 'hover:bg-accent/30'
+	]}
+	{href}
+>
+	<div class={['shrink-0', icon]}></div>
+	{name}
+</a>

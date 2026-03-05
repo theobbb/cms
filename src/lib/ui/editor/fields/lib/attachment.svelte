@@ -2,7 +2,7 @@
 	import Media from '$lib/components/media.svelte';
 	import { get_app, get_collection } from '$lib/logic/ctx.svelte';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 
 	const { file, on_remove }: { file: string | File; on_remove?: () => void } = $props();
 

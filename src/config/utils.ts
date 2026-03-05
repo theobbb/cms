@@ -1,29 +1,5 @@
 import type { CollectionModel } from 'pocketbase';
 
-// export function process_collections(
-// 	collections: CollectionModel[]
-// ): Record<string, CollectionModel> {
-// 	for (const collection of collections) {
-// 		collection.fields = collection.fields.filter(
-// 			(field) => !field.hidden && field.name != 'id' && field.name != 'emailVisibility'
-// 		);
-// 		collection.field_map = Object.fromEntries(
-// 			collection.fields.map((field) => [field.name, field])
-// 		);
-
-// 		collection.presentable_keys = get_collection_presentable_keys(collection);
-// 	}
-// 	return Object.fromEntries(
-// 		collections.map((col) => [
-// 			col.name,
-// 			{
-// 				...col,
-// 				// We ensure 'name' is present in the value as well
-// 				name: col.name
-// 			}
-// 		])
-// 	);
-// }
 export function process_collections(collections: CollectionModel[]): {
 	collections: Record<string, CollectionModel>;
 	id_collections: Record<string, CollectionModel>;

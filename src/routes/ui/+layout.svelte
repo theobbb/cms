@@ -9,11 +9,11 @@
 	<div class="fixed top-0 left-0 w-xs">
 		<Nav
 			links={[
-				{ name: 'text', param: 'text' },
-				{ name: 'fields', param: 'fields' },
-				{ name: 'colors', param: 'colors' },
-				{ name: 'buttons', param: 'buttons' },
-				{ name: 'components', param: 'components' }
+				{ name: 'text', slug: 'text' },
+				{ name: 'fields', slug: 'fields' },
+				{ name: 'colors', slug: 'colors' },
+				{ name: 'buttons', slug: 'buttons' },
+				{ name: 'components', slug: 'components' }
 			]}
 			base_path="ui"
 		/>

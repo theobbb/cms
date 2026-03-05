@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Input from '$lib/ui/form/input.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import type { FieldProps } from '$config/field.types';
 	import Text from './text.svelte';
 

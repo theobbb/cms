@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';
-	import Loader from '$lib/ui/styled/loader.svelte';
+	import Loader from '$lib/ui/components/loader.svelte';
 
 	const { data } = $props();
 

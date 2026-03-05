@@ -8,8 +8,8 @@
 	import String from '$lib/ui/editor/fields/string.svelte';
 	import Text from '$lib/ui/editor/fields/text.svelte';
 	import Url from '$lib/ui/editor/fields/url.svelte';
-	import DatePicker from '$lib/ui/form/date-picker.svelte';
-	import Search from '$lib/ui/form/search.svelte';
+	import DatePicker from '$lib/ui/components/form/fields/date-picker.svelte';
+	import Search from '$lib/ui/components/search.svelte';
 
 	const fields = [
 		{ name: 'string', Component: String, value: 'Business-focused optimal migration' },

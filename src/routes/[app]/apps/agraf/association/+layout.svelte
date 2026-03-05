@@ -4,8 +4,8 @@
 	const { children } = $props();
 
 	const links = [
-		{ name: 'Années', param: 'years' },
-		{ name: 'Postes', param: 'roles' }
+		{ name: 'Années', slug: 'years' },
+		{ name: 'Postes', slug: 'roles' }
 	];
 </script>
 

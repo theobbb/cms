@@ -1,99 +1,43 @@
 <script lang="ts">
-	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
-	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
-	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Input from '$lib/ui/form/input.svelte';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
-	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
-	import type { RecordModel } from 'pocketbase';
+	import { init_form_action } from '$lib/logic/form-action.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
+	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
+	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
+	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
+	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
+	import { type RecordModel } from 'pocketbase';
 
 	const { pop, callback }: { pop: Pop; callback: (record: RecordModel) => void } = $props();
 
-	const pocketbase = use_pocketbase();
-	const toaster = use_toaster();
-
 	let name: string = $state('');
 
-	const pop_share_invite = new Pop();
-	let invite_created: RecordModel | null = $state(null);
+	const form_action = init_form_action();
 
-	async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
-		event.preventDefault();
-
-		const temp_password = Math.random().toString(36).slice(-12);
-		try {
-			const created = await pocketbase.collection('users').create({
-				name,
-				password: temp_password,
-				passwordConfirm: temp_password
-			});
-			pop.close();
-			toaster.push('success');
-			callback(created);
-			//pop_share_invite.show();
-			//data_store.invalidate_collection('users');
-		} catch (err) {
-			toaster.push('error');
-			console.error('Invitation failed:', err);
-		}
-	}
-
-	async function create_user(email: string) {
+	async function create_user() {
 		const temp_password = Math.random().toString(36).slice(-12);
 
-		try {
-			await pocketbase.collection('users').create({
-				email,
-				password: temp_password,
-				passwordConfirm: temp_password
-			});
-			console.log('created');
-		} catch (err: any) {
-			// If the error is 400 (validation error/already exists), we ignore it.
-			// This allows the invite() function to proceed to the reset email.
-			if (err.status === 400) {
-				console.log('User already exists, moving to send reset email.');
-				return;
-			}
-			// If it's a different error (e.g. 403 Forbidden), throw it so invite() catches it.
-			throw err;
-		}
+		const created = await form_action.pocketbase.collection('users').create({
+			name,
+			password: temp_password,
+			passwordConfirm: temp_password
+		});
+		pop.close();
+		form_action.toaster.push('success');
+		callback(created);
 	}
-
-	async function invite(email: string) {
-		if (!email) return toaster.push('error', 'Email manquant');
-		console.log(email);
-
-		try {
-			await create_user(email);
-
-			// 2. Trigger the "Invitation" (Password Reset) email
-			await pocketbase.collection('users').requestPasswordReset(email);
-			toaster.push('success', 'Un courriel à été envoyé à ' + email);
-		} catch (err) {
-			toaster.push('error', 'Dsl, une erreur est survenue');
-			console.error('Invitation failed:', err);
-		}
-	}
-	const pop2 = new Pop();
 </script>
 
-<Dialog {pop}>
-	{#snippet header()}
-		Inviter un nouveau membre
-	{/snippet}
+<form class="contents" onsubmit={form_action.submit(create_user)}>
+	<Dialog {pop}>
+		<DialogHeader>
+			<DialogTitle>Inviter un nouveau membre</DialogTitle>
+			<DialogDescription>Inviter un nouveau membre</DialogDescription>
+		</DialogHeader>
 
-	<form class="mt-2 space-y-gap-y" {onsubmit}>
-		<div>
-			<Input autofocus label="Nom" name="name" required bind:value={name} />
-		</div>
-		<FooterButtons action="Invite"></FooterButtons>
-		<!-- <Button size="lg" variant="action">Ajouter users</Button> -->
-	</form>
-</Dialog>
+		<Input autofocus label="Nom" name="name" required bind:value={name} />
 
-<!-- {#if pop2.open}
-	<Dialog pop={pop2}>gregre</Dialog>
-{/if} -->
+		<ConfirmCancel confirm="Inviter"></ConfirmCancel>
+	</Dialog>
+</form>

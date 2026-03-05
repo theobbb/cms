@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Button from '$lib/ui/styled/button.svelte';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
-	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
-	import Anchor from '$lib/ui/primitives/pop/anchor.svelte';
-	import Tooltip from '$lib/ui/styled/tooltip.svelte';
-	import DropdownMenu from '$lib/ui/styled/dropdown-menu.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
+	import FooterButtons from '$lib/ui/templates/confirm-cancel.svelte';
+	import Anchor from '$lib/ui/components/pop/anchor.svelte';
+	import Tooltip from '$lib/ui/components/tooltip.svelte';
+	import DropdownMenu from '$lib/ui/components/pop/dropdown-menu/dropdown-menu.svelte';
 
-	import Select from '$lib/ui/styled/select.svelte';
+	import Select from '$lib/ui/components/pop/select/select.svelte';
 
 	const dialog = new Pop();
 

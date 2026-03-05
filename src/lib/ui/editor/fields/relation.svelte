@@ -1,15 +1,17 @@
 <script lang="ts">
-	import Button from '$lib/ui/styled/button.svelte';
-	import Label from '$lib/ui/form/label.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Label from '$lib/ui/components/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
 	import type { CollectionModel, RecordListOptions, RecordModel } from 'pocketbase';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Search from '$lib/ui/form/search.svelte';
+	import Search from '$lib/ui/components/search.svelte';
 	import RecordPresentable from '$lib/components/record-presentable.svelte';
 	import { page } from '$app/state';
 	import { get_search_keys } from '$config/utils';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
+	import { use_form_action } from '$lib/logic/form-action.svelte';
+	import Error from '$lib/ui/components/form/error.svelte';
 
 	let {
 		id,
@@ -22,8 +24,7 @@
 		maxSelect,
 		record,
 		query,
-		on_change,
-		onsubmit = $bindable()
+		on_change
 	}: FieldProps<'relation'> & {
 		on_change?: (ids: string[]) => void;
 		label?: string;
@@ -132,47 +133,67 @@
 		close_picker();
 	}
 
-	// Form submission handler
-	onsubmit = async (form_data: FormData) => {
-		// Clean existing entries for this name to prevent duplicates if called multiple times
-		form_data.delete(name);
+	const form_action = use_form_action();
 
-		if (selected_ids.length === 0) {
-			form_data.append(name, '');
-		} else {
-			selected_ids.forEach((id) => form_data.append(name, id));
-		}
-	};
+	$effect(() => {
+		if (!name) return;
+		const unregister = form_action?.register_hook(async ({ form_data, cancel }) => {
+			form_data.delete(name);
+
+			if (selected_ids.length === 0) {
+				form_data.append(name, '');
+			} else {
+				selected_ids.forEach((id) => form_data.append(name, id));
+			}
+		});
+		return unregister;
+	});
+	// Form submission handler
+	// onsubmit = async (form_data: FormData) => {
+	// 	// Clean existing entries for this name to prevent duplicates if called multiple times
+	// 	form_data.delete(name);
+
+	// 	if (selected_ids.length === 0) {
+	// 		form_data.append(name, '');
+	// 	} else {
+	// 		selected_ids.forEach((id) => form_data.append(name, id));
+	// 	}
+	// };
 </script>
 
 {#if collection}
-	<div class="bg-surface text-surface-foreground">
-		{#if name}
-			<Label {id} label={label || name} {required} icon="icon-[ri--mind-map]" />
-		{/if}
+	<div>
+		<div class="bg-surface text-surface-foreground">
+			{#if name}
+				<Label {id} label={label || name} {required} icon="icon-[ri--mind-map]" />
+			{/if}
 
-		{#if items.length > 0}
-			<div class="flex flex-col">
-				{#each items as item (item.id)}
-					<div class="flex h-10 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5">
-						<div class="truncate">
-							<RecordPresentable record={item} />
+			{#if items.length > 0}
+				<div class="flex flex-col">
+					{#each items as item (item.id)}
+						<div
+							class="flex h-10 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5"
+						>
+							<div class="truncate">
+								<RecordPresentable record={item} />
+							</div>
+							<Button
+								size="sm"
+								onclick={() => remove_item(item)}
+								variant="ghost"
+								icon="icon-[ri--close-fill]"
+								aria-label="Remove item"
+							/>
 						</div>
-						<Button
-							size="sm"
-							onclick={() => remove_item(item)}
-							variant="ghost"
-							icon="icon-[ri--close-fill]"
-							aria-label="Remove item"
-						/>
-					</div>
-				{/each}
-			</div>
-		{/if}
+					{/each}
+				</div>
+			{/if}
 
-		<div>
-			<Button size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
+			<div>
+				<Button size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
+			</div>
 		</div>
+		<Error {name} />
 	</div>
 
 	{#if dialog_picker.open}

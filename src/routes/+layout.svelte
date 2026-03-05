@@ -9,7 +9,7 @@
 
 	import { init_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Toaster from '$lib/components/toaster/toaster.svelte';
-	import DialogConfirm from '$lib/components/dialog-confirm.svelte';
+	import DialogConfirm from '$lib/ui/templates/dialog-confirm.svelte';
 
 	let { data, children } = $props();
 	// $inspect(data);

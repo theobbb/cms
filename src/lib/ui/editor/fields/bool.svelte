@@ -1,27 +1,30 @@
 <script lang="ts">
 	import type { FieldProps } from '$config/field.types';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Switch from '$lib/ui/components/form/fields/switch.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 
 	let {
 		id,
 		name,
 		value,
-		onsubmit = $bindable(),
+		// onsubmit = $bindable(),
 		ontoggle
 	}: FieldProps<'bool'> & { ontoggle?: (value: boolean) => void } = $props();
 
-	let checked = $state(value);
+	let checked = $state(value ?? false);
 
-	onsubmit = async (form_data: FormData) => {
-		form_data.set(name, String(checked));
-	};
+	// onsubmit = async (form_data: FormData) => {
+	// 	form_data.set(name, String(checked));
+	// };
 
 	function onchange() {
 		if (ontoggle) ontoggle(checked);
 	}
 </script>
 
-<div class="flex items-center gap-2">
+<Switch {id} {name} bind:checked label={name} />
+
+<!-- <div class="flex items-center gap-2">
 	<input class="hidden" {id} type="checkbox" {name} bind:checked {onchange} />
 
 	<Button onclick={() => (checked = !checked)} variant="none">
@@ -30,4 +33,4 @@
 	</Button>
 
 	<label class="select-none" for={id}>{name}</label>
-</div>
+</div> -->

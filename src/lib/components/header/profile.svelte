@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Anchor from '$lib/ui/primitives/pop/anchor.svelte';
-	import DropdownMenu from '$lib/ui/pop/dropdown-menu.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Anchor from '$lib/ui/components/pop/anchor.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 
 	const { user } = $derived(page.data);
 

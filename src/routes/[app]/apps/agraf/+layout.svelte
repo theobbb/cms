@@ -4,12 +4,12 @@
 	const { children } = $props();
 
 	const links = [
-		{ name: 'Affiches', param: 'posters' },
-		{ name: 'Association', param: 'association' },
-		{ name: 'Membres', param: 'members' },
-		{ name: 'Postes', param: 'roles' },
-		{ name: 'Chat', param: 'chat' },
-		{ name: 'Commentaires', param: 'comments' }
+		{ name: 'Affiches', slug: 'posters' },
+		{ name: 'Association', slug: 'association' },
+		{ name: 'Membres', slug: 'members' },
+		{ name: 'Postes', slug: 'roles' },
+		{ name: 'Chat', slug: 'chat' },
+		{ name: 'Commentaires', slug: 'comments' }
 	];
 </script>
 

@@ -2,8 +2,8 @@
 	import { page } from '$app/state';
 	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/styled/button.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import { onMount } from 'svelte';
 
 	type Token = {

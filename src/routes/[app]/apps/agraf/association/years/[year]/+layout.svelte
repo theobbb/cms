@@ -4,7 +4,7 @@
 
 	const { children } = $props();
 
-	const links = [{ name: 'Membres', param: 'membres' }];
+	const links = [{ name: 'Membres', slug: 'membres' }];
 </script>
 
 <Nav {links} base_path="association/years/{page.params.year}" />

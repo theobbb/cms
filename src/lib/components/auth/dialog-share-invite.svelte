@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import { onMount } from 'svelte';
 	import QRCode from 'qrcode';
 	import { use_toaster } from '../toaster/toaster-context.svelte';
-	import type { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
+	import type { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import RecordPresentable from '../record-presentable.svelte';
 	import Warning from '$lib/ui/templates/box/warning.svelte';
 	import Info from '$lib/ui/templates/box/info.svelte';
+	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
+	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
+	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
 
 	type Invite = {
 		type: 'user' | 'device';
@@ -46,8 +49,21 @@
 	});
 </script>
 
-<Dialog {pop} size="sm">
-	{#snippet header()}
+<Dialog {pop} size="md">
+	<DialogHeader>
+		<DialogTitle>
+			<div>
+				<span class="mr-0.5 icon-[ri--key-line] translate-y-0.5"></span>
+				{#if type == 'user'}
+					Inviter un membre
+				{:else}
+					Connecter un nouvel appareil
+				{/if}
+			</div>
+		</DialogTitle>
+		<DialogDescription>Partagez ce lien manuellement avec le nouveau membre</DialogDescription>
+	</DialogHeader>
+	<!-- {#snippet header()}
 		<div>
 			<span class="mr-0.5 icon-[ri--key-line] translate-y-0.5"></span>
 			{#if type == 'user'}
@@ -56,7 +72,7 @@
 				Connecter un nouvel appareil
 			{/if}
 		</div>
-	{/snippet}
+	{/snippet} -->
 	<div class="mt-2 space-y-gap-y">
 		{#if type == 'user'}
 			<div class="mb-8 flex items-center gap-1.5">

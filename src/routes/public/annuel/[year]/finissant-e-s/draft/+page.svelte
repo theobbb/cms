@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { Social } from '$lib/types';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Textarea from '$lib/ui/form/textarea.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
 	import Socials from './socials.svelte';
 	import { page } from '$app/state';
 	import DraftHeader from '../../draft-header.svelte';
 	import { DraftManager } from '../../draft.svelte';
-	import Input from '$lib/ui/form/input.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
 	import Box from '$lib/components/box.svelte';
 	import Info from '$lib/ui/templates/box/info.svelte';

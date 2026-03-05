@@ -6,15 +6,18 @@
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte.js';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import DataTable from '$lib/ui/data-table/data-table.svelte';
 	import Bool from '$lib/ui/editor/fields/bool.svelte';
-	import Input from '$lib/ui/form/input.svelte';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte.js';
-	import FooterButtons from '$lib/ui/templates/footer-buttons.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
+	import FooterButtons from '$lib/ui/templates/confirm-cancel.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import Dropdown from './dropdown.svelte';
+	import Switch from '$lib/ui/components/form/fields/switch.svelte';
+	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
+	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 
 	const { data } = $props();
 
@@ -67,10 +70,11 @@
 	<div class="mx-auto max-w-3xs">
 		{#if is_admin}
 			<div>
-				<Button onclick={pop_create.show}>Nouveau</Button>
+				<Button onclick={pop_create.show}>+ Nouveau</Button>
 			</div>
 		{/if}
-		<div class="">
+		<div class="mt-8">
+			<Switch label="Brouillon" />
 			{#each years as year}
 				<div class="min-h-24- flex items-center justify-between">
 					<a href="/{year.id}/years" class={['px-2', year.id == page.params.year && 'bg-accent']}>
@@ -84,7 +88,7 @@
 							variant="none"
 							icon="icon-[ri--more-fill]"
 						></Button>
-						toggle + delete
+
 						<Button onclick={() => ontoggle_draft(!year.draft, year)} variant="none">
 							<span
 								class={[
@@ -102,13 +106,16 @@
 
 {#if pop_create.open}
 	<Dialog pop={pop_create}>
+		<DialogHeader>
+			<DialogTitle>Initialiser une nouvelle année</DialogTitle>
+		</DialogHeader>
 		{#snippet header()}
 			<div>Initialiser une nouvelle année</div>
 		{/snippet}
 
 		<form {onsubmit}>
 			<Input name="id" label="année" required min={4} max={4} value={next_year} />
-			<FooterButtons pop={pop_create} action="Créer" />
+			<FooterButtons action="Créer" />
 		</form>
 	</Dialog>
 {/if}

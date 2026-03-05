@@ -1,8 +1,8 @@
 <script lang="ts">
 	import File from '$lib/ui/editor/fields/file.svelte';
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
-	import Input from '$lib/ui/form/input.svelte';
-	import Textarea from '$lib/ui/form/textarea.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
+	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { apps } from '$config/apps';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import { use_editor } from './splash-editor.svelte';
 
 	const editor = use_editor();

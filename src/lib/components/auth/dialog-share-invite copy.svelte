@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import { onMount } from 'svelte';
 	import QRCode from 'qrcode';
 	import { use_toaster } from '../toaster/toaster-context.svelte';
 	import Box from '../box.svelte';
-	import type { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
+	import type { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import RecordPresentable from '../record-presentable.svelte';
 	import Warning from '$lib/ui/templates/box/warning.svelte';
 	import Info from '$lib/ui/templates/box/info.svelte';

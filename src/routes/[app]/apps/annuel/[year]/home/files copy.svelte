@@ -1,6 +1,6 @@
 <script lang="ts">
 	import File from '$lib/ui/editor/fields/file.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import { FILE_TYPES, use_editor } from './splash-editor.svelte';
 
 	const editor = use_editor();

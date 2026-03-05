@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Markdown from '$lib/ui/form/markdown.svelte';
+	import Markdown from '$lib/ui/components/form/fields/markdown.svelte';
 
 	import type { FieldProps } from '$config/field.types';
 

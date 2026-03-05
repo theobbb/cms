@@ -6,9 +6,9 @@
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 	import { use_pocketbase } from '$lib/pocketbase';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Input from '$lib/ui/form/input.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte.js';
+	import Button from '$lib/ui/components/button.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import PairDevice from './pair-device.svelte';
 
 	const { data } = $props();

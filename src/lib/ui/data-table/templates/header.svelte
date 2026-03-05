@@ -1,8 +1,8 @@
 <script>
 	import { get_collection } from '$lib/logic/ctx.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
-	import Search from '$lib/ui/form/search.svelte';
+	import Search from '$lib/ui/components/search.svelte';
 
 	const collection = get_collection();
 	const editor = use_editor();

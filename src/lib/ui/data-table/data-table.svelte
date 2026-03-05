@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Checkbox from './checkbox.svelte';
 	import { page } from '$app/state';
-	import Button from '../styled/button.svelte';
-	import Search from '../form/search.svelte';
+	import Button from '../components/button.svelte';
+	import Search from '../components/search.svelte';
 	import { ColumnComponents } from './field.components';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 	import Editor from '../editor/editor.svelte';
@@ -70,7 +70,7 @@
 						}}
 						class={[
 							'group border-b select-none first:border-t',
-							editor?.current?.type === 'update' && editor?.current?.record?.id === row.id
+							editor?.target?.type === 'update' && editor?.target?.record?.id === row.id
 								? 'bg-accent'
 								: editor_mode && 'hover:bg-accent/30'
 						]}
@@ -153,9 +153,13 @@
 	{/snippet}
 </Section>
 
-{#if editor_mode && editor.current && page.url.searchParams.has('editor')}
-	<Editor editor={editor.current} />
+{#if editor_mode && editor.target && page.url.searchParams.has('editor')}
+	<Editor />
 {/if}
+
+<!-- {#if editor_mode && editor.current && page.url.searchParams.has('editor')}
+	<Editor editor={editor.current} />
+{/if} -->
 
 <style>
 	td,

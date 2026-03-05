@@ -2,11 +2,11 @@
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 	import type { Social } from '$lib/types';
-	import Button from '$lib/ui/styled/button.svelte';
-	import Input from '$lib/ui/form/input.svelte';
-	import OrderList from '$lib/ui/form/order-list.svelte';
-	import Dialog from '$lib/ui/pop/dialog.svelte';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
+	import OrderList from '$lib/ui/components/form/fields/order-list.svelte';
+	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 
 	let { socials = $bindable() }: { socials: Social[] } = $props();
 

@@ -4,9 +4,9 @@
 	import { page } from '$app/state';
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
-	import { Pop } from '$lib/ui/primitives/pop/pop-context.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
-	import DropdownMenu from '$lib/ui/styled/dropdown-menu.svelte';
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
+	import Button from '$lib/ui/components/button.svelte';
+	import DropdownMenu from '$lib/ui/components/pop/dropdown-menu/dropdown-menu.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import type { Snippet } from 'svelte';
 

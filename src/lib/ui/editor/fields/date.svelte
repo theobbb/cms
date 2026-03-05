@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FieldProps } from '$config/field.types';
-	import DatePicker from '$lib/ui/form/date-picker.svelte';
+	import DatePicker from '$lib/ui/components/form/fields/date-picker.svelte';
 
 	const { id, name, value, required }: FieldProps<'date'> = $props();
 

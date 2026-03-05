@@ -6,21 +6,21 @@
 	const { data, children } = $props();
 
 	const links = [
-		{ name: 'Projets', param: 'projects' },
-		{ name: 'Finissant-e-s', param: 'students' },
-		{ name: 'Finissant-e-s brouillons', param: 'student_drafts' },
-		{ name: 'Accueil + Remerciements', param: 'home' },
-		{ name: 'Programmes', param: 'programs' },
-		{ name: 'Liens', param: 'socials' }
+		{ name: 'Projets', slug: 'projects' },
+		{ name: 'Finissant-e-s', slug: 'students' },
+		{ name: 'Finissant-e-s brouillons', slug: 'student_drafts' },
+		{ name: 'Accueil + Remerciements', slug: 'home' },
+		{ name: 'Programmes', slug: 'programs' },
+		{ name: 'Liens', slug: 'socials' }
 	];
 
-	const year = $derived(page.params.year || data.year);
+	const year = $derived(page.params.year || data.years[0]?.id);
 
 	const processed_links = $derived(
-		[...links].map(({ name, param }) => ({ name, param: year + '/' + param }))
+		[...links].map(({ name, slug }) => ({ name, slug: year + '/' + slug }))
 	);
 </script>
 
-<Nav links={processed_links} />
+<Nav {links} base_path="/{year}" />
 
 {@render children()}

@@ -10,8 +10,10 @@ export type EditorTarget =
 	| { type: 'update'; collection: CollectionModel; record: RecordModel };
 
 export class Editor {
-	current: EditorTarget | null = $state(null);
+	target: EditorTarget | null = $state(null);
 	#pocketbase = use_pocketbase();
+
+	defaults: Record<string, string> = $state({});
 
 	constructor() {
 		// Read URL params once on init
@@ -30,7 +32,7 @@ export class Editor {
 		if (!collection) return;
 
 		if (type === 'create') {
-			this.current = { type: 'create', collection };
+			this.target = { type: 'create', collection };
 			return;
 		}
 
@@ -44,12 +46,12 @@ export class Editor {
 			if (relation_fields) query = { expand: relation_fields };
 
 			const record = await this.#pocketbase.collection(collection_name).getOne(record_id, query);
-			this.current = { type: 'update', collection, record };
+			this.target = { type: 'update', collection, record };
 		}
 	}
 
 	open(editor: EditorTarget) {
-		this.current = editor;
+		this.target = editor;
 
 		// Update URL for shareable state
 		let url = page.url.href;
@@ -60,7 +62,7 @@ export class Editor {
 	}
 
 	close() {
-		this.current = null;
+		this.target = null;
 
 		let url = page.url.href;
 		url = url_query_param(url, 'editor', null);

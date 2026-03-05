@@ -5,9 +5,9 @@
 	const { children } = $props();
 
 	const links = [
-		{ name: 'Projets', param: 'projects' },
-		{ name: 'Finissant-e-s', param: 'students' },
-		{ name: 'Accueil + remerciements', param: 'home' }
+		{ name: 'Projets', slug: 'projects' },
+		{ name: 'Finissant-e-s', slug: 'students' },
+		{ name: 'Accueil + remerciements', slug: 'home' }
 	];
 </script>
 

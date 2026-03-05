@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Media from '$lib/components/media.svelte';
-	import Label from '$lib/ui/form/label.svelte';
-	import Button from '$lib/ui/styled/button.svelte';
+	import Label from '$lib/ui/components/form/label.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 	import Info from '$lib/ui/templates/box/info.svelte';
 	import { FILE_TYPES, use_editor } from './splash-editor.svelte';
 
