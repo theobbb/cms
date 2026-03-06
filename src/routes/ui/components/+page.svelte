@@ -4,7 +4,7 @@
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import FooterButtons from '$lib/ui/templates/confirm-cancel.svelte';
 	import Anchor from '$lib/ui/components/pop/anchor.svelte';
-	import Tooltip from '$lib/ui/components/tooltip.svelte';
+	import Tooltip from '$lib/ui/components/pop/tooltip.svelte';
 	import DropdownMenu from '$lib/ui/components/pop/dropdown-menu/dropdown-menu.svelte';
 
 	import Select from '$lib/ui/components/pop/select/select.svelte';

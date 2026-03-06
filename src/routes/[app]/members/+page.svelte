@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DialogInvitation from '$lib/components/auth/dialog-share-invite.svelte';
 	import Button from '$lib/ui/components/button.svelte';
-	import DataTable from '$lib/ui/data-table/data-table.svelte';
+	import DataTable from '$lib/ui/data-table/section-table.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import type { RecordModel } from 'pocketbase';
 	import DialogInviteUser from './dialog-invite-user.svelte';

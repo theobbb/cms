@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { set_collection } from '$lib/logic/ctx.svelte';
-	import type { LayoutProps } from './$types';
 
-	const { data, children }: LayoutProps = $props();
+	const { data, children } = $props();
 
 	set_collection(data.collections.projects);
-
-	$inspect(data.collections);
 </script>
 
 {@render children()}

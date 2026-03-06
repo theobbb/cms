@@ -6,8 +6,8 @@ import type {
 } from './pocketbase.types';
 
 export type Record = {
-	id: string
-}
+	id: string;
+};
 
 export interface PaginationResult<T> {
 	page: number;
@@ -34,7 +34,5 @@ export type StudentsRecordExpanded = StudentsRecord & {
 		'projects(student)': ProjectsRecord[];
 	};
 };
-
-export type Social = { name: string; url: string };
 
 export type FormSubmitEvent = SubmitEvent & { currentTarget: EventTarget & HTMLFormElement };

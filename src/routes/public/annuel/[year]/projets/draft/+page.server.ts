@@ -1,7 +1,7 @@
 import type { RecordModel } from 'pocketbase';
 
 export async function load({ url, locals: { pocketbase }, depends }) {
-	depends('data:project_draft');
+	depends('data:projects');
 
 	const draft_id = url.searchParams.get('id');
 

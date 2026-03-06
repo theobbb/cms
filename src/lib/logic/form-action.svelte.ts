@@ -50,6 +50,7 @@ export class FormAction {
 				await Promise.all(this._hooks.map((fn) => fn(ctx)));
 				await fn(ctx);
 			} catch (err) {
+				console.log(err);
 				if (err instanceof ClientResponseError) {
 					this.errors = err.response?.data ?? {};
 					const first = Object.values(this.errors)[0];

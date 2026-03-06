@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Button from '$lib/ui/components/button.svelte';
-	import DataTable from '$lib/ui/data-table/data-table.svelte';
+	import DataTable from '$lib/ui/data-table/section-table.svelte';
 
 	const { data } = $props();
 

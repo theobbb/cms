@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 	import { use_cvx } from '$lib/utils/tailwind';
-	import Tooltip from './tooltip.svelte';
+	import Tooltip from './pop/tooltip.svelte';
 
 	export type ButtonVariant = 'default' | 'action' | 'danger' | 'ghost' | 'discrete' | 'none';
 	type Size = 'sm' | 'md' | 'lg';

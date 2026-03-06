@@ -5,16 +5,14 @@
 	import { FieldComponents } from './field.components';
 	import Button from '../components/button.svelte';
 	import Section from '$lib/components/section.svelte';
-	import { use_editor, type EditorTarget } from '$lib/ui/editor/editor-context.svelte';
-
+	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 	import { Pop } from '../components/pop/pop-context.svelte';
 	import DropdownMenu from '../components/pop/dropdown-menu/dropdown-menu.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte';
-	import FooterButtons from '../templates/confirm-cancel.svelte';
 	import ConfirmCancel from '../templates/confirm-cancel.svelte';
 
 	const editor = use_editor();
-	const { target, defaults } = $derived(editor);
+	const { target } = $derived(editor);
 
 	const props_id = $props.id();
 
@@ -53,7 +51,7 @@
 	async function delete_record() {
 		if (!collection) return;
 		if (!update_record?.id) return;
-		const confirmed = await confirm(`Veux-tu vraiment supprimer cette sélection?`);
+		const confirmed = await confirm(`Supprimer cette sélection ?`);
 		if (!confirmed) return;
 
 		await pocketbase.collection(collection.name).delete(update_record.id);

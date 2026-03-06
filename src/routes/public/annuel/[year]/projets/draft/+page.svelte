@@ -54,8 +54,8 @@
 
 	// --- 4. Submission Handler ---
 	const manager = new DraftManager({
-		collection: 'project_drafts',
-		invalidate_key: 'data:project_draft'
+		collection: 'projects',
+		invalidate_key: 'data:projects'
 	});
 
 	let onsubmit_students: SubmitCallback<any> = $state(() => {});

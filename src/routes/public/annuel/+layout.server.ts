@@ -2,9 +2,7 @@ import { process_collections } from '$config/utils';
 import { apps } from '$config/apps';
 import { super_auth_pocketbase } from '$lib/server/super-pocketbase';
 
-export async function load() {
-	const super_pocketbase = await super_auth_pocketbase(apps.annuel.pocketbase.url);
-
+export async function load({ locals: { super_pocketbase } }) {
 	const collections = await super_pocketbase.collections.getFullList({
 		filter: 'name = "students" || name = "projects" || name = "programs"',
 		sort: 'name',

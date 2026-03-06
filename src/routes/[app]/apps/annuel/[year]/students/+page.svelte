@@ -2,17 +2,22 @@
 	import { page } from '$app/state';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Button from '$lib/ui/components/button.svelte';
-	import DataTable from '$lib/ui/data-table/data-table.svelte';
+	import DataTable from '$lib/ui/data-table/section-table.svelte';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 
 	const { data } = $props();
 	const toaster = use_toaster();
 	const editor = use_editor();
 
-	editor.defaults = { year: page.params.year || '' };
+	editor.defaults.year = page.params.year || '';
 
 	const fields = $derived([
-		{ name: 'link', type: 'snippet', snippet: draft_link, table_only: true },
+		{
+			name: 'brouillon',
+			type: 'snippet',
+			snippet: draft_link,
+			table_only: true
+		},
 		...data.collections.students.fields
 	]);
 	async function copy_link(id: string) {
@@ -23,7 +28,7 @@
 	}
 </script>
 
-{#snippet draft_link(item: any)}
+<!-- {#snippet draft_link(item: any)}
 	<Button
 		icon="icon-[ri--draft-line]"
 		variant="ghost"
@@ -32,6 +37,15 @@
 			copy_link(item.id);
 		}}
 	></Button>
+{/snippet} -->
+{#snippet draft_link(item: any)}
+	<Button
+		href="/public/{page.params.year}/finissant-e-s/draft?id={item.id}"
+		icon="icon-[ri--draft-line]"
+		variant="ghost"
+		target="_blank"
+		tooltip="Ouvrir le brouillon"
+	/>
 {/snippet}
 
 <DataTable

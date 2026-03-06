@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 
 	import Nav from '$lib/components/nav.svelte';
+	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 
 	const { data, children } = $props();
 

@@ -1,21 +1,17 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import NavLink from '$lib/components/nav-link.svelte';
 	import Section from '$lib/components/section.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte.js';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/components/button.svelte';
-	import DataTable from '$lib/ui/data-table/data-table.svelte';
-	import Bool from '$lib/ui/editor/fields/bool.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
-	import FooterButtons from '$lib/ui/templates/confirm-cancel.svelte';
+	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import Dropdown from './dropdown.svelte';
-	import Switch from '$lib/ui/components/form/fields/switch.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 
@@ -49,19 +45,21 @@
 		}
 	}
 
-	async function ontoggle_draft(value: boolean, year: RecordModel) {
-		const confirmed = await confirm(value ? 'Publier?' : 'Brouillon', 'action');
-
+	async function toggle_draft(year: RecordModel) {
+		const is_draft = Boolean(year.draft);
+		const confirmed = await confirm(
+			is_draft
+				? `Publier ${year.id} ? Le contenu deviendra public.`
+				: `Masquer ${year.id} ? Le contenu ne sera plus visible.`
+		);
 		if (!confirmed) return;
+
 		try {
-			await pocketbase.collection('years').update(year.id, { draft: value });
-
-			toaster.push('success');
-
+			pocketbase.collection('years').update(year.id, { draft: !is_draft });
+			toaster.push('success', is_draft ? `${year.id} publié.` : `${year.id} masqué.`);
 			await invalidateAll();
 		} catch (err) {
 			toaster.push('error');
-			console.error('Invitation failed:', err);
 		}
 	}
 </script>
@@ -74,29 +72,22 @@
 			</div>
 		{/if}
 		<div class="mt-8">
-			<Switch label="Brouillon" />
 			{#each years as year}
-				<div class="min-h-24- flex items-center justify-between">
+				<div class="min-h-24- justify-between- flex items-center justify-between">
 					<a href="/{year.id}/years" class={['px-2', year.id == page.params.year && 'bg-accent']}>
 						{year.id}
 					</a>
-
-					<div>
-						<Dropdown {year} />
-						<!-- <Button
-							onclick={() => ontoggle_draft(!year.draft, year)}
+					<div class="flex items-center gap-1">
+						<Button
+							onclick={() => toggle_draft(year)}
 							variant="none"
-							icon="icon-[ri--more-fill]"
+							class="text-xl!"
+							icon={year.draft ? 'icon-[ri--toggle-line]' : 'icon-[ri--toggle-fill]'}
+							tooltip={year.draft ? `Publier ${year.id}` : `Masquer ${year.id}`}
 						></Button>
-
-						<Button onclick={() => ontoggle_draft(!year.draft, year)} variant="none">
-							<span
-								class={[
-									'text-2xl',
-									year.draft ? 'icon-[ri--toggle-fill]' : 'icon-[ri--toggle-line]'
-								]}
-							></span>
-						</Button> -->
+						<div>
+							<Dropdown {year} />
+						</div>
 					</div>
 				</div>
 			{/each}
@@ -109,13 +100,10 @@
 		<DialogHeader>
 			<DialogTitle>Initialiser une nouvelle année</DialogTitle>
 		</DialogHeader>
-		{#snippet header()}
-			<div>Initialiser une nouvelle année</div>
-		{/snippet}
 
 		<form {onsubmit}>
 			<Input name="id" label="année" required min={4} max={4} value={next_year} />
-			<FooterButtons action="Créer" />
+			<ConfirmCancel confirm="Créer" />
 		</form>
 	</Dialog>
 {/if}

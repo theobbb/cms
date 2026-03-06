@@ -9,7 +9,7 @@
 	import { set_collection } from '$lib/logic/ctx.svelte';
 	import Section from '$lib/components/section.svelte';
 	import type { CollectionModel, RecordListOptions } from 'pocketbase';
-	import { CollectionList } from '$lib/logic/collection-list.svelte';
+	import { CollectionList } from '$lib/ui/data-table/collection-list.svelte';
 	import type { Snippet } from 'svelte';
 
 	const {

@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { AnchorProps } from './pop/anchor.svelte';
-	import Anchor from './pop/anchor.svelte';
+	import type { ComponentProps } from 'svelte';
+	import type { AnchorProps } from './anchor.svelte';
+	import Anchor from './anchor.svelte';
 
-	const { class: cx, ...props }: AnchorProps = $props();
+	const { class: cx, ...props }: ComponentProps<typeof Anchor> = $props();
 </script>
 
 <Anchor

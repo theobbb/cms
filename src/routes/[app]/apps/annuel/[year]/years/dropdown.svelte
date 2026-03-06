@@ -10,6 +10,8 @@
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
+	import Switch from '$lib/ui/components/form/fields/switch.svelte';
+	import DropdownMenu from '$lib/ui/components/pop/dropdown-menu/dropdown-menu.svelte';
 
 	const { year } = $props();
 	const props_id = $props.id();
@@ -22,18 +24,35 @@
 	let submitted = $state(false);
 
 	async function delete_year() {
-		const confirmed = await confirm('Voulez-vous vraiment supprimer cette année ?');
+		const confirmed = await confirm(`Supprimer ${year.id} ?`);
 		if (!confirmed) return;
 
 		try {
 			const id = year.id;
 			pocketbase.collection('years').delete(id);
-			toaster.push('success', 'Année suprimée');
+			toaster.push('success', `${id} suprimé.`);
 			await invalidateAll();
 
 			if (id == page.params.year) {
 				goto(`/${page.data.years[0]?.id}/years`);
 			}
+		} catch (err) {
+			toaster.push('error');
+		}
+	}
+
+	async function toggle_draft() {
+		const is_draft = Boolean(year.draft);
+		const confirmed = await confirm(
+			is_draft
+				? `Publier ${year.draft} ? Le contenu deviendra public.`
+				: `Masquer ${year.draft} ? Le contenu ne sera plus visible.`
+		);
+		if (!confirmed) return;
+
+		try {
+			pocketbase.collection('years').update(year.id, { draft: !is_draft });
+			toaster.push('success', is_draft ? `${year} publié.` : `${year} masqué.`);
 		} catch (err) {
 			toaster.push('error');
 		}
@@ -48,24 +67,20 @@
 		style="anchor-name: --dropdown-year-{props_id}"
 	/>
 
-	<Popover {pop}>
-		<Anchor anchor="--dropdown-year-{props_id}" top="bottom" right="right">
-			<Box color="surface">
-				<div class="my-1">
-					<div></div>
-					<DropdownMenuItem item={{ type: 'divider' }} />
-					<DropdownMenuItem
-						item={{
-							type: 'button',
-							label: 'Supprimer',
-							icon: 'icon-[ri--delete-bin-line]',
-							action: delete_year
-						}}
-					/>
-				</div>
-			</Box>
-		</Anchor>
-	</Popover>
+	<DropdownMenu
+		options={[
+			{
+				type: 'button',
+				action: delete_year,
+				label: 'Supprimer',
+				icon: 'icon-[ri--delete-bin-line]'
+			}
+		]}
+		{pop}
+		anchor="--dropdown-year-{props_id}"
+		top="bottom"
+		right="right"
+	/>
 </div>
 <!-- 
 {#if pop.open}
