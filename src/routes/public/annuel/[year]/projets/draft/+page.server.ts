@@ -1,21 +1,12 @@
-import type { RecordModel } from 'pocketbase';
+export async function load({ url, locals: { pocketbase } }) {
+	const project_id = url.searchParams.get('id');
 
-export async function load({ url, locals: { pocketbase }, depends }) {
-	depends('data:projects');
-
-	const draft_id = url.searchParams.get('id');
-
-	let draft: RecordModel | null = null;
-	let project: RecordModel | null = null;
-
-	if (draft_id) {
-		try {
-			project = await pocketbase.collection('projects').getOne(draft_id, { expand: 'students' });
-		} catch (error) {}
-		try {
-			project = await pocketbase.collection('projects').getOne(draft_id, { expand: 'students' });
-		} catch (error) {}
+	if (project_id) {
+		const project = await pocketbase
+			.collection('projects')
+			.getOne(project_id, { expand: 'students' });
+		return { project };
 	}
 
-	return { project, draft };
+	return { project: null };
 }

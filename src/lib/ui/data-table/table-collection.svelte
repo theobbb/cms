@@ -27,7 +27,7 @@
 		query?: RecordListOptions;
 		list?: CollectionList;
 		hidden?: string | string[];
-		overrides?: Record<string, Partial<CollectionField> & { snippet?: Snippet<[RecordModel]> }>;
+		overrides?: Record<string, Partial<CollectionField>>;
 		prefix_header?: Snippet;
 		prefix_cell?: Snippet<[RecordModel]>;
 		row_props?: (row: RecordModel) => Record<string, any>;
@@ -35,29 +35,11 @@
 
 	set_collection(collection);
 
-	// 1. Parse the comma-separated string into an array of trimmed keys
-	let hidden_keys = $derived(
-		Array.isArray(hidden)
-			? hidden
-			: hidden
-					.split(',')
-					.map((s) => s.trim())
-					.filter(Boolean)
-	);
-
-	// 2. Filter out hidden columns, then merge any overrides (labels, snippets, etc.)
-	let display_columns = $derived(
-		list.fields
-			.filter((field) => !hidden_keys.includes(field.name))
-			.map((field) => {
-				const override = overrides[field.name];
-				return override ? { ...field, ...override } : field;
-			})
-	);
+	const columns = $derived(collection.fields.filter((f) => !f.hidden));
 </script>
 
 <Table
-	columns={display_columns}
+	{columns}
 	items={list.items}
 	sort_param={list.sort_param}
 	onsort={(c) => list.set_sort(c)}

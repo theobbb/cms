@@ -6,7 +6,7 @@
 
 	let {
 		url_param = undefined,
-		placeholder = 'Rechercher',
+		placeholder = 'Rechercher...',
 		on_search: outer_on_search, // Triggered on Submit (Enter/Button) -> Immediate
 		on_reset: outer_on_reset // Triggered on Reset -> Immediate
 	}: {

@@ -33,10 +33,9 @@
 	<Dialog {pop}>
 		<DialogHeader>
 			<DialogTitle>Inviter un nouveau membre</DialogTitle>
-			<DialogDescription>Inviter un nouveau membre</DialogDescription>
 		</DialogHeader>
 
-		<Input autofocus label="Nom" name="name" required bind:value={name} />
+		<Input autofocus label="nom du membre" name="name" required bind:value={name} />
 
 		<ConfirmCancel confirm="Inviter"></ConfirmCancel>
 	</Dialog>

@@ -30,9 +30,9 @@
 
 			{#if record.created}
 				{#if record.created != record.updated}
-					<div class="text-muted mr-4">modifié: {format_date(record.updated)}</div>
+					<div class="text-foreground-muted mr-4">modifié: {format_date(record.updated)}</div>
 				{/if}
-				<div class="text-muted">créé: {format_date(record.created)}</div>
+				<div class="text-foreground-muted">créé: {format_date(record.created)}</div>
 			{/if}
 		</div>
 		<div>

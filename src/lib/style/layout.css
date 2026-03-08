@@ -8,7 +8,7 @@
 @custom-variant loading (&[aria-busy="true"]);
 
 @theme {
-	--spacing-gap: 1rem;
+	--spacing-gap: 1.1rem;
 	--spacing-gap-y: 0.7rem;
 
 	--spacing-header: 0rem;

@@ -12,6 +12,10 @@
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import { use_form_action } from '$lib/logic/form-action.svelte';
 	import Error from '$lib/ui/components/form/error.svelte';
+	import FieldButton from '../field-button.svelte';
+	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
+	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
+	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 
 	let {
 		id,
@@ -28,7 +32,7 @@
 	}: FieldProps<'relation'> & {
 		on_change?: (ids: string[]) => void;
 		label?: string;
-		record: any;
+		record: RecordModel;
 		query?: RecordListOptions;
 	} = $props();
 
@@ -41,6 +45,7 @@
 
 	// Dialog state
 	let dialog_picker = new Pop();
+
 	let pop_selection = $state<RecordModel[]>([]);
 	let available_records = $state<RecordModel[]>([]);
 
@@ -190,7 +195,7 @@
 			{/if}
 
 			<div>
-				<Button size="lg" class="w-full" onclick={open_picker}>Sélectionner</Button>
+				<FieldButton onclick={open_picker}>Sélectionner</FieldButton>
 			</div>
 		</div>
 		<Error {name} />
@@ -198,9 +203,12 @@
 
 	{#if dialog_picker.open}
 		<Dialog pop={dialog_picker} onclose={close_picker} size="xl">
+			<DialogHeader>
+				<DialogTitle>
+					Sélection: {label || name}
+				</DialogTitle>
+			</DialogHeader>
 			<div class="flex max-h-[80svh] flex-col gap-4">
-				<div class="text-lg font-medium">Sélection: {label || name}</div>
-
 				<Search {on_search} />
 
 				<div class="bg-surface-50 flex-1 divide-y overflow-y-auto border">
@@ -250,6 +258,7 @@
 									class="hover:bg-surface-200 flex shrink-0 items-center rounded-full p-0.5"
 									type="button"
 									onclick={() => toggle_selection(selected)}
+									aria-label="toggle-{selected.id}"
 								>
 									<span class="icon-[ri--close-fill]"></span>
 								</button>

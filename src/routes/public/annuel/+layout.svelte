@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { apps } from '$config/apps';
 	import { set_app } from '$lib/logic/ctx.svelte';
 	import { init_pocketbase } from '$lib/pocketbase';
+	import Header from './header.svelte';
 
 	const { children } = $props();
 
@@ -10,6 +10,7 @@
 	init_pocketbase(apps.annuel.pocketbase.url, '');
 </script>
 
-<div class="max-w-xl- mx-auto- mx-12 my-24 space-y-12">
+<div class="mx-auto my-24 max-w-3xl space-y-12 px-4">
+	<Header />
 	{@render children()}
 </div>

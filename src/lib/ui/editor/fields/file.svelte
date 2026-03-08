@@ -3,6 +3,7 @@
 	import Label from '$lib/ui/components/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
 	import Attachment from './lib/attachment.svelte';
+	import FieldButton from '../field-button.svelte';
 
 	let {
 		id,
@@ -106,9 +107,7 @@
 		{/each}
 	</div>
 
-	<Button onclick={upload} class="w-full" size="lg" disabled={(files.length && !multiple) || false}>
-		Upload
-	</Button>
+	<FieldButton onclick={upload} disabled={(files.length && !multiple) || false}>Upload</FieldButton>
 
 	<input
 		class="hidden"

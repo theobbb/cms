@@ -4,4 +4,4 @@
 	const { children }: { children: Snippet } = $props();
 </script>
 
-<div class="text-muted">{@render children()}</div>
+<div class="text-foreground-muted">{@render children()}</div>

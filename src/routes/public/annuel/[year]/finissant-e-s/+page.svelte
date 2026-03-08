@@ -4,53 +4,51 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import Guide from './guide.svelte';
-	import DataTable from '$lib/ui/data-table/section-table.svelte';
 	import TableCollection from '$lib/ui/data-table/table-collection.svelte';
 	import { goto } from '$app/navigation';
 	import Search from '$lib/ui/components/search.svelte';
+	import { process_collection } from '$config/utils.js';
 
 	const { data } = $props();
-
-	// const columns = data.collections.students.field_map;
-
-	// columns.draft.hidden = true;
-	// columns.draft_of.label = 'status';
-	// columns.draft_of.snippet = status;
-
-	// columns.scholarship.hidden = true;
-	// columns.draft_version.hidden = true;
-	// columns.year.hidden = true;
-	// columns.socials.hidden = true;
-	// const { draft_map } = $derived(data);
-
-	$inspect(data);
 </script>
 
-<Guide />
+<!-- <Guide /> -->
 
-<div class="grid grid-cols-[auto_1fr_auto] items-center gap-8">
-	<div class="text-xl">Finissant-e-s {page.params.year} - Liste communautaire</div>
-	<div class="w-full"><Search url_param="search" /></div>
-	<div>
-		<span class="text-muted mr-1">Pas encore dans la liste?</span>
+<div class="text-right">
+	<span class="text-foreground-muted mr-1">Pas encore dans la liste?</span>
 
-		<a class="text-indigo-600" href="/public/{page.params.year}/finissant-e-s/draft">
-			Inscription →
-		</a>
-	</div>
+	<Button variant="action">Inscription →</Button>
+	<a class="text-indigo-600" href="/public/{page.params.year}/finissant-e-s/draft">
+		Inscription →
+	</a>
 </div>
-<!-- <TableCollection collection={data.collections.student_drafts} /> -->
-<TableCollection
-	collection={data.collections.students}
-	query={{ filter: `year = "${page.params.year}" && is_latest = true`, sort: '-updated' }}
-	hidden="draft_of, scholarship, draft_version, year, socials, is_latest"
-	overrides={{
-		draft: { label: 'status', snippet: status }
-	}}
-	row_props={(row) => ({
-		onclick: () => goto(`/public/${page.params.year}/finissant-e-s/draft?id=${row.id}`)
-	})}
-/>
+
+<div>
+	<div class="mb-2 w-full"><Search url_param="search" /></div>
+	<TableCollection
+		collection={process_collection(data.collections.students, {
+			title: 'Finissant-e-s',
+			record_title: 'Finissant-e',
+			fields: {
+				hidden:
+					'year,draft_of,draft_version,is_latest,description,scholarship,socials,updated,program',
+				labels: {
+					first_name: 'prénom',
+					last_name: 'nom',
+					program: 'programme',
+					created: 'modifié'
+				},
+				overrides: {
+					draft: { label: 'status', snippet: status }
+				}
+			}
+		})}
+		query={{ filter: `year = "${page.params.year}" && is_latest = true`, sort: '-created' }}
+		row_props={(row) => ({
+			onclick: () => goto(`/public/${page.params.year}/finissant-e-s/draft?id=${row.id}`)
+		})}
+	/>
+</div>
 
 {#snippet status(student: RecordModel)}
 	<div>
@@ -63,7 +61,7 @@
 		{/if}
 	</div>
 {/snippet}
-
+<!-- 
 <Button href="/public/{page.params.year}/projets/draft">Nouveau projet</Button>
 <div class="relative">
 	<div class="bg-background sticky top-0 flex items-center justify-between border-b py-3">
@@ -77,22 +75,4 @@
 			</a>
 		</div>
 	</div>
-
-	<!-- <div class="mt-8">
-		{#each data.combined as student}
-			<div class="flex items-center justify-between">
-				<a href="/public/{page.params.year}/finissant-e-s/draft?id={student.id}">
-					{student.last_name},
-					{student.first_name}
-				</a>
-				{#if student.has_pending_draft}
-					<Box color={student.pending_draft_type == 'new_request' ? 'green' : 'blue'}>
-						<div class="px-1 text-xs">
-							{student.pending_draft_type == 'new_request' ? 'Nouveau' : `En attente d'approbation`}
-						</div>
-					</Box>
-				{/if}
-			</div>
-		{/each}
-	</div> -->
-</div>
+</div> -->

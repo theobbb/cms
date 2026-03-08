@@ -1,5 +1,6 @@
 import { apps } from '$config/apps';
 import type { Reroute } from '@sveltejs/kit';
+import { resolveAppKey } from './utils';
 
 // Routes accessible from any subdomain without app context
 export const global_routes = ['public', 'help', 'ui'];
@@ -8,7 +9,7 @@ export const global_routes = ['public', 'help', 'ui'];
 const shared_routes = ['auth', 'settings', 'members', 'profile', 'stats'];
 
 export const reroute: Reroute = ({ url }) => {
-	const subdomain = url.hostname.split('.')[0];
+	const subdomain = resolveAppKey(url.hostname);
 	const segments = url.pathname.split('/').filter(Boolean);
 	const firstSegment = segments[0];
 

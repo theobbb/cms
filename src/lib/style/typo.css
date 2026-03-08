@@ -7,3 +7,8 @@
 	--text-lg--line-height: calc(1.75 / 1.125);
 	--text-xl--line-height: calc(1.75 / 1.25); */
 }
+
+.font-mono {
+	font-family: 'Temp';
+	font-variation-settings: 'MONO' 100;
+}

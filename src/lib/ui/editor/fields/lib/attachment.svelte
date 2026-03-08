@@ -13,8 +13,8 @@
 	let src = $derived.by(() => {
 		if (file instanceof File) return URL.createObjectURL(file);
 
-		if (editor?.current?.type == 'create') return '';
-		return `${app.pocketbase.url}/api/files/${collection.name}/${editor?.current?.record.id}/${file}`;
+		if (editor?.current?.method == 'create') return '';
+		return `${app.pocketbase.url}/api/files/${collection.id}/${editor?.current?.record.id}/${file}`;
 	});
 
 	$effect(() => {

@@ -5,16 +5,15 @@
 	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { apps } from '$config/apps';
-	import type { SubmitCallback } from '$config/field.types';
-	import { DraftManager } from '../../draft.svelte.js';
 	import DraftHeader from '../../draft-header.svelte';
 	import type { RecordModel } from 'pocketbase';
-	import Box from '$lib/components/box.svelte';
 	import Warning from '$lib/ui/templates/box/warning.svelte';
+	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 
 	const { data } = $props();
-	let { collections, project, draft } = $derived(data);
+	let { collections, project } = $derived(data);
+
+	$inspect(project);
 
 	// --- 1. State Logic ---
 	const virgin = $derived(!page.url.searchParams.has('id')); // Are we creating a brand new project?
@@ -22,70 +21,50 @@
 
 	let virgin_student: RecordModel | null = $state(null);
 	// Fetch student info if creating new project from student profile
-	$effect(() => {
-		if (virgin && virgin_student_id) {
-			fetch(apps.annuel.pocketbase.url + '/api/collections/students/records/' + virgin_student_id)
-				.then((r) => r.json())
-				.then((student) => {
-					project = { expand: { students: [student] } };
-				})
-				.catch(() => {});
-		}
-	});
-
-	// --- 2. Form Data State ---
-	const initial_name = draft?.name || project?.name;
-	const initial_desc = draft?.description || project?.description;
-	const initial_students = draft?.students || project?.students;
-	const initial_tags = JSON.stringify(draft?.tags || []);
-
-	let name = $state(initial_name);
-	let description = $state(initial_desc);
-	let students = $state(initial_students);
-	let tags = $state(draft?.tags || []);
-
-	// --- 3. Change Detection ---
-	const has_changed = $derived(
-		name !== initial_name ||
-			description !== initial_desc ||
-			JSON.stringify(students) !== JSON.stringify(initial_students) ||
-			JSON.stringify(tags) !== initial_tags
-	);
-
-	// --- 4. Submission Handler ---
-	const manager = new DraftManager({
-		collection: 'projects',
-		invalidate_key: 'data:projects'
-	});
-
-	let onsubmit_students: SubmitCallback<any> = $state(() => {});
-
-	async function onsubmit(e: any) {
-		await manager.on_submit(e, {
-			draft_id: draft?.id,
-			live_record_id: project?.id,
-			virgin,
-			process_data: async (fd) => {
-				fd.set('tags', JSON.stringify(tags));
-				// Run the relation component's internal submit logic
-				await onsubmit_students(fd, () => {});
-			},
-			on_success: async (new_draft_id) => {
-				// If we just created a brand new project draft, redirect to it
-				if (virgin && new_draft_id) {
-					goto(`/public/${page.params.year}/projets?id=${new_draft_id}`);
-				}
-			}
-		});
-	}
+	// $effect(() => {
+	// 	if (virgin && virgin_student_id) {
+	// 		fetch(apps.annuel.pocketbase.url + '/api/collections/students/records/' + virgin_student_id)
+	// 			.then((r) => r.json())
+	// 			.then((student) => {
+	// 				project = { expand: { students: [student] } };
+	// 			})
+	// 			.catch(() => {});
+	// 	}
+	// });
 
 	function on_change_students(new_ids: string[]) {
-		students = new_ids;
+		//students = new_ids;
 	}
+
+	const form_action = init_form_action();
+
+	const onsubmit = form_action.submit(async ({ form_data }) => {
+		const root_id = project?.draft_of || project?.id;
+		if (root_id) {
+			form_data.set('draft_of', project.id);
+		}
+		form_data.set('year', page.params.year || '');
+		form_data.set('draft', 'true');
+		form_data.set('is_latest', 'true');
+
+		console.log(form_data);
+		const next_version = project ? Number(project.draft_version) + 1 || 0 : 0;
+		form_data.set('draft_version', String(next_version));
+		const created = await form_action.pocketbase.collection('projects').create(form_data);
+
+		form_action.toaster.push('success', `Brouillon v${next_version} envoyé.`);
+
+		goto(`/public/${page.params.year}/projets/draft?id=${created.id}`);
+
+		if (root_id)
+			fetch(
+				`/public/${page.params.year}/api/update-is-latest?collection=${created.collectionId}&id=${root_id}`
+			);
+	});
 </script>
 
 <form {onsubmit} class="space-y-6">
-	<DraftHeader {draft} {has_changed} is_virgin_record={virgin}>
+	<DraftHeader record={project} has_changed={true}>
 		{project?.name}
 	</DraftHeader>
 
@@ -93,16 +72,9 @@
 		Assures-toi de créer ton profil (et qu'il ait été validé) AVANT de créer tes projets.
 	</Warning>
 
-	<Input name="name" label="titre" required bind:value={name} autocomplete="off" />
+	<Input name="name" label="titre" required value={project?.name} />
 
-	<Textarea
-		name="description"
-		label="description"
-		rows={6}
-		required
-		bind:value={description}
-		autocomplete="off"
-	/>
+	<Textarea name="description" label="description" rows={6} required value={project?.description} />
 
 	<div>
 		<Relation
@@ -110,7 +82,7 @@
 			value={project?.students || (virgin_student_id ? [virgin_student_id] : [])}
 			record={project}
 			on_change={on_change_students}
-			bind:onsubmit={onsubmit_students}
+			query={{ sort: 'created', filter: `year = "${page.params.year}" && draft = false` }}
 		/>
 	</div>
 

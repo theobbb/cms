@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { init_pocketbase } from '$lib/pocketbase';
 	import { set_app } from '$lib/logic/ctx.svelte';
-	import { init_editor } from '$lib/ui/editor/editor-context.svelte';
 	import { init_header } from '$lib/components/header/header-manager.svelte';
 	import Header from './header.svelte';
 
@@ -21,7 +20,7 @@
 		}
 	});
 
-	init_editor();
+	// init_editor();
 
 	init_header();
 </script>

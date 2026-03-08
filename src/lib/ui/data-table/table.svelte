@@ -47,7 +47,14 @@
 	<tbody>
 		{#each items as row}
 			{@const { class: cx, ...props } = row_props(row)}
-			<tr {...props} class={[cx, 'border-b first:border-t', props.onclick && 'hover:bg-accent/30']}>
+			<tr
+				{...props}
+				class={[
+					cx,
+					'border-b first:border-t',
+					props.onclick && 'action hover:bg-accent/30 cursor-pointer'
+				]}
+			>
 				{#if prefix_cell}
 					{@render prefix_cell(row)}
 				{/if}
@@ -63,7 +70,6 @@
 	td,
 	th {
 		user-select: none;
-		cursor: pointer;
 		padding: 0.25rem 0.8rem;
 		max-width: 10rem;
 	}
@@ -74,7 +80,7 @@
 	th:not(:first-child):hover {
 		box-shadow: inset 0 -2px 0 currentColor;
 	}
-	tbody tr:hover {
+	tbody tr.action:hover {
 		box-shadow: inset -2px 0 0 currentColor;
 	}
 	thead tr {

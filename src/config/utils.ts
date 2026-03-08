@@ -1,4 +1,97 @@
-import type { CollectionModel } from 'pocketbase';
+import type { CollectionField, CollectionModel } from 'pocketbase';
+import type { Snippet } from 'svelte';
+
+type ProcessCollectionOptions = {
+	title?: string;
+	record_title?: string;
+	fields: {
+		hidden?: string | string[];
+		labels?: Record<string, string>;
+		overrides?: Record<string, Partial<CollectionField>>;
+		snippets?: Record<
+			string,
+			Partial<CollectionField> & { snippet: Snippet<[CollectionField]>; index?: number }
+		>;
+	};
+};
+
+export function process_collection(
+	collection: CollectionModel,
+	options: ProcessCollectionOptions
+): CollectionModel {
+	const { hidden = [], labels = {}, overrides = {}, snippets = {} } = options.fields;
+
+	collection.title = options.title;
+	collection.record_title = options.record_title;
+
+	const hidden_keys = Array.isArray(hidden)
+		? hidden
+		: hidden
+				.split(',')
+				.map((s) => s.trim())
+				.filter(Boolean);
+
+	const mappedFields: CollectionField[] = collection.fields.map((field) => {
+		const override = overrides[field.name] || {};
+		const snippet_override = snippets[field.name];
+		return {
+			...field,
+			...override,
+			...(labels[field.name] ? { label: labels[field.name] } : {}),
+			...(snippet_override ? { snippet: snippet_override.snippet } : {}),
+			hidden: field.hidden || hidden_keys.includes(field.name) || override.hidden
+		} as CollectionField;
+	});
+
+	// Inject purely new snippet fields (those not matching any existing field name)
+	const existingNames = new Set(collection.fields.map((f) => f.name));
+	const newSnippets = Object.entries(snippets)
+		.filter(([name]) => !existingNames.has(name))
+		.map(([name, { snippet, index = 0, ...rest }]) => ({
+			name,
+			snippet,
+			index,
+			...rest
+		}));
+
+	// Insert new snippets at their target index
+	const all_fields: CollectionField[] = [...mappedFields];
+	for (const snippetField of newSnippets.sort((a, b) => a.index - b.index)) {
+		all_fields.splice(snippetField.index, 0, snippetField);
+	}
+
+	return { ...collection, fields: all_fields };
+}
+
+// export function process_collection(
+// 	collection: CollectionModel,
+// 	options: ProcessCollectionOptions
+// ): CollectionModel {
+// 	const { hidden = [], labels = {}, overrides = {} } = options.fields;
+
+// 	collection.title = options.title;
+// 	collection.record_title = options.record_title;
+
+// 	const hidden_keys = Array.isArray(hidden)
+// 		? hidden
+// 		: hidden
+// 				.split(',')
+// 				.map((s) => s.trim())
+// 				.filter(Boolean);
+
+// 	return {
+// 		...collection,
+// 		fields: collection.fields.map((field) => {
+// 			const override = overrides[field.name] || {};
+// 			return {
+// 				...field,
+// 				...override,
+// 				...(labels[field.name] ? { label: labels[field.name] } : {}),
+// 				hidden: field.hidden || hidden_keys.includes(field.name) || override.hidden
+// 			};
+// 		}) as CollectionField[]
+// 	};
+// }
 
 export function process_collections(collections: CollectionModel[]): {
 	collections: Record<string, CollectionModel>;

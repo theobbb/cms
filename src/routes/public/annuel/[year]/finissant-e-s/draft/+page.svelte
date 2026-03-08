@@ -3,7 +3,6 @@
 	import Socials from './socials.svelte';
 	import { page } from '$app/state';
 	import DraftHeader from '../../draft-header.svelte';
-	import { DraftManager } from '../../draft.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
 	import Info from '$lib/ui/templates/box/info.svelte';
@@ -32,17 +31,6 @@
 		const root_id = student?.draft_of || student?.id;
 		if (root_id) {
 			form_data.set('draft_of', student.id);
-
-			// Get all records in this group and set is_latest to false
-			// const siblings = await form_action.pocketbase.collection('students').getFullList({
-			// 	filter: `draft_of = "${root_id}" || id = "${root_id}"`
-			// });
-
-			// await Promise.all(
-			// 	siblings.map((s) =>
-			// 		form_action.pocketbase.collection('students').update(s.id, { is_latest: false })
-			// 	)
-			// );
 		}
 		form_data.set('year', page.params.year || '');
 		form_data.set('draft', 'true');

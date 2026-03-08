@@ -1,3 +1,10 @@
+<script module>
+	export type EditorFormActionContext = FormActionContext & {
+		method: 'create' | 'update';
+		record?: RecordModel;
+	};
+</script>
+
 <script lang="ts">
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
@@ -5,22 +12,30 @@
 	import { FieldComponents } from './field.components';
 	import Button from '../components/button.svelte';
 	import Section from '$lib/components/section.svelte';
-	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
+
 	import { Pop } from '../components/pop/pop-context.svelte';
 	import DropdownMenu from '../components/pop/dropdown-menu/dropdown-menu.svelte';
-	import { init_form_action } from '$lib/logic/form-action.svelte';
+	import { init_form_action, type FormActionContext } from '$lib/logic/form-action.svelte';
 	import ConfirmCancel from '../templates/confirm-cancel.svelte';
+	import { use_editor, type Editor } from './editor-context.svelte';
+	import type { RecordModel } from 'pocketbase';
+
+	const {
+		onsubmit: outer_onsubmit
+	}: { onsubmit?: (ctx: EditorFormActionContext) => Promise<void | boolean> } = $props();
 
 	const editor = use_editor();
-	const { target } = $derived(editor);
+
+	const { current } = $derived(editor);
 
 	const props_id = $props.id();
 
 	const toaster = use_toaster();
 	const pocketbase = use_pocketbase();
 
-	const method = $derived(target?.type == 'create' ? 'POST' : 'UPDATE');
-	const collection = $derived(target?.collection);
+	const method = $derived(current?.method);
+	const collection = $derived(editor?.collection);
+	const record_title = $derived(collection.record_title || collection.name);
 
 	const fields = $derived(
 		collection?.fields.filter(
@@ -28,24 +43,31 @@
 		)
 	);
 
-	const update_record = $derived(target?.type == 'update' ? target.record : null);
+	const update_record = $derived(current?.method == 'update' ? current.record : null);
 
 	const form_action = init_form_action();
 
-	const onsubmit = form_action.submit(async ({ form_data }) => {
-		if (!collection) return;
+	const onsubmit = form_action.submit(async (ctx) => {
+		if (!collection || !method) return;
 
-		let record: any | null;
+		const { form_data } = ctx;
 
-		if (method == 'POST') {
-			record = await pocketbase.collection(collection.name).create(form_data);
-			form_action.toaster.push('success', collection.name + ' créé');
-		} else if (method == 'UPDATE') {
+		if (outer_onsubmit)
+			await outer_onsubmit({
+				...ctx,
+				method,
+				record: editor.current?.method === 'update' ? editor.current.record : undefined
+			});
+
+		if (method == 'create') {
+			await pocketbase.collection(collection.name).create(form_data);
+			form_action.toaster.push('success', record_title + ' créé');
+		} else if (method == 'update') {
 			if (!update_record?.id) return;
-			record = await pocketbase.collection(collection.name).update(update_record.id, form_data);
-			form_action.toaster.push('success', collection.name + ' enregistré');
+			await pocketbase.collection(collection.name).update(update_record.id, form_data);
+			form_action.toaster.push('success', record_title + ' enregistré');
 		}
-		editor_ctx.close();
+		editor.close();
 	});
 
 	async function delete_record() {
@@ -57,7 +79,7 @@
 		await pocketbase.collection(collection.name).delete(update_record.id);
 		toaster.push('success', collection.name + ' supprimé');
 
-		editor_ctx.close();
+		editor.close();
 	}
 
 	function copy_record_to_clipboard() {
@@ -67,11 +89,7 @@
 		toaster.push('info', 'JSON copié sur le clipboard');
 	}
 
-	const editor_ctx = use_editor();
-
 	const pop_controls = new Pop();
-
-	// const field_on_submit: Array<(fd: FormData, cancel: () => void) => Promise<void>> = $state([]);
 </script>
 
 <form {onsubmit} class="contents">
@@ -79,9 +97,10 @@
 		{#snippet header()}
 			<div class="flex items-center justify-between gap-4">
 				<div class="">
-					{method == 'POST' ? 'Nouveau' : 'Édition'}: <span class="">{collection?.name}</span>
+					{method == 'create' ? 'Nouveau' : 'Édition'}:
+					<span class="">{collection?.record_title || collection?.name}</span>
 				</div>
-				{#if method == 'UPDATE'}
+				{#if method == 'update'}
 					<div>
 						<Button
 							icon="icon-[ri--more-fill]"
@@ -137,24 +156,12 @@
 			<div class="h-gap-y"></div>
 		</div>
 
-		{#each Object.entries(editor.defaults) as [key, val]}
-			<input type="hidden" name={key} value={val} />
-		{/each}
-
 		{#snippet footer()}
 			<div class="flex justify-end gap-1.5">
 				<ConfirmCancel
-					confirm={method == 'POST' ? 'Créer' : 'Enregistrer'}
-					onclose={editor_ctx.close}
+					confirm={method == 'create' ? 'Créer' : 'Enregistrer'}
+					onclose={editor.close}
 				/>
-				<!-- <FooterButtons
-					onclose={editor_ctx.close}
-					action={method == 'POST' ? 'Créer' : 'Enregistrer'}
-				/> -->
-				<!-- <Button size="lg" variant="ghost" onclick={exit}>Annuler</Button>
-				<Button size="lg" type="submit" variant="action" autofocus>
-					{method == 'POST' ? 'Créer' : 'Enregistrer'}
-				</Button> -->
 			</div>
 		{/snippet}
 	</Section>

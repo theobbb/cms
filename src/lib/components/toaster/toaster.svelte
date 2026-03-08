@@ -2,6 +2,7 @@
 	import { icons } from '$lib/ui/icons';
 	import Button from '$lib/ui/components/button.svelte';
 	import { use_toaster, type ToastType } from '$lib/components/toaster/toaster-context.svelte';
+	import Toast from './toast.svelte';
 
 	const toaster = use_toaster();
 
@@ -32,8 +33,9 @@
 <div class={['pointer-events-none fixed bottom-0 left-0 z-1000 flex items-center justify-center']}>
 	<div class="m-gap min-w-xs text-sm font-medium">
 		<div class="pointer-events-auto space-y-1.5 overflow-auto">
-			{#each toaster.toasts as { type, title, body, id }, i (id + type)}
-				<div class=" bg-bg/50 backdrop-blur-md">
+			{#each toaster.toasts as toast, i (toast.id + toast.type)}
+				<Toast {toast} onclose={() => toaster.delete(toast.id)} />
+				<!-- <div class=" bg-bg/50 backdrop-blur-md">
 					<div
 						class={[
 							'flex items-center justify-between gap-1.5 border px-2 py-1.5 pr-2',
@@ -47,7 +49,7 @@
 
 						<Button icon={icons.close} variant="ghost" onclick={() => toaster.delete(id)} />
 					</div>
-				</div>
+				</div> -->
 			{/each}
 		</div>
 	</div>

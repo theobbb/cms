@@ -5,6 +5,7 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Invitation from './invitation.svelte';
 	import Loader from '$lib/ui/components/loader.svelte';
+	import AboutPasskeys from '$lib/ui/templates/about-passkeys.svelte';
 
 	const { data } = $props();
 
@@ -97,13 +98,7 @@
 		{/if}
 	</div>
 
-	<div class="py-12">
-		<div class="text-center leading-snug text-balance">
-			<div>
-				Ce système d’authentification utilise les <span class="font-semibold">passkeys</span>.
-			</div>
-
-			<div><a class="text-indigo-600" href="/help/passkeys">En savoir plus →</a></div>
-		</div>
+	<div class="py-12 text-center">
+		<AboutPasskeys />
 	</div>
 </div>

@@ -46,7 +46,7 @@
 		{#snippet item_renderer(social: Social)}
 			<div class="py-1.5">
 				<div>{social.name}</div>
-				<div class="text-muted">{social.url}</div>
+				<div class="text-foreground-muted">{social.url}</div>
 			</div>
 		{/snippet}
 	</OrderList>

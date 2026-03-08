@@ -19,6 +19,8 @@
 		'red-surface'
 	];
 
+	const utils = ['blue', 'green', 'yellow', 'red'];
+
 	const rows = colors
 		.join('|')
 		.split('||')
@@ -35,7 +37,7 @@
 						style="background-color: var(--color-{color}); color: var(--color-{color}-foreground); border-color: var(--color-{color}-foreground);"
 					>
 						<div>
-							<div>{color}</div>
+							<div class="font-mono text-sm">{color}</div>
 							<div>The quick brown fox jumps over the lazy dog.</div>
 							<div style="color: var(--color-{color}-foreground-muted);">
 								The quick brown fox jumps over the lazy dog.
@@ -46,4 +48,13 @@
 			{/each}
 		</div>
 	{/each}
+
+	<!-- {#each utils as util}
+		<div
+			style="color: var(--color-{util}-foreground); border-color: var(--color-{util}-foreground);"
+		>
+			<div class="font-mono text-sm">{util}</div>
+			<div>The quick brown fox jumps over the lazy dog.</div>
+		</div>
+	{/each} -->
 </div>

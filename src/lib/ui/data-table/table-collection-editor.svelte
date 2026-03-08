@@ -1,39 +1,36 @@
 <script lang="ts">
-	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
-
 	import TableCollection from './table-collection.svelte';
-	import Editor from '../editor/editor.svelte';
-	import Search from '../components/search.svelte';
+	import Editor, { type EditorFormActionContext } from '../editor/editor.svelte';
 	import Button from '../components/button.svelte';
 	import Checkbox from './checkbox.svelte';
-	import { page } from '$app/state';
 	import type { CollectionModel, RecordListOptions } from 'pocketbase';
 	import type { Snippet } from 'svelte';
 	import { EditorCollectionList } from './collection-list.svelte';
+	import TableHeader from './table-header.svelte';
+	import { init_editor } from '../editor/editor-context.svelte';
+	import { page } from '$app/state';
 
 	const {
 		collection,
 		query,
-		action,
+		onsubmit,
 		wrapper
 	}: {
 		collection: CollectionModel;
 		query?: RecordListOptions;
-		action?: Snippet;
+
 		wrapper?: Snippet<[{ header: Snippet; body: Snippet; footer: Snippet }]>;
+		onsubmit?: (ctx: EditorFormActionContext) => Promise<void | boolean>;
 	} = $props();
 
-	const editor = use_editor();
 	const list = new EditorCollectionList(collection, query);
+	const editor = init_editor(collection);
 </script>
 
 {#snippet header()}
-	<div class="grid grid-cols-[auto_1fr_auto] items-center gap-8">
-		<div class="">{collection.name}</div>
-		<div class="w-full"><Search url_param="search" /></div>
-		<Button onclick={() => editor.open({ type: 'create', collection })}>+ Nouveau</Button>
-		{@render action?.()}
-	</div>
+	<TableHeader title={collection.title || collection.name}>
+		<Button onclick={() => editor.open({ method: 'create' })}>+ Nouveau</Button>
+	</TableHeader>
 {/snippet}
 
 {#snippet footer()}
@@ -54,10 +51,12 @@
 			{query}
 			{list}
 			row_props={(row) => ({
-				onclick: () => editor.open({ type: 'update', collection, record: row }),
+				onclick: () => editor.open({ method: 'update', record: row }),
 				class: [
 					'group border-b select-none first:border-t hover:bg-accent/30',
-					editor?.target?.type === 'update' && editor?.target?.record?.id === row.id && 'bg-accent'
+					editor?.current?.method === 'update' &&
+						editor?.current?.record?.id === row.id &&
+						'bg-accent'
 				]
 			})}
 		>
@@ -103,9 +102,7 @@
 			<div class="my-8 flex flex-col items-center justify-center">
 				<div class="text-2">Aucun résultat.</div>
 				<div class="text-2 mt-4">
-					<Button size="lg" onclick={() => editor.open({ type: 'create', collection })}>
-						+ Nouveau
-					</Button>
+					<Button size="lg" onclick={() => editor.open({ method: 'create' })}>+ Nouveau</Button>
 				</div>
 			</div>
 		{/if}
@@ -120,6 +117,9 @@
 	{@render footer()}
 {/if}
 
-{#if editor.target && page.url.searchParams.has('editor')}
-	<Editor />
+{#if editor.current != null && page.url.searchParams.has('editor')}
+	<Editor {onsubmit} />
 {/if}
+<!-- {#if editor.target && page.url.searchParams.has('editor')}
+	<Editor />
+{/if} -->

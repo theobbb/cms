@@ -31,7 +31,7 @@
 				action:
 					'text-background disabled:bg-text/20 border-black bg-black/80 not-hover:border-black/90 hover:bg-black disabled:opacity-50',
 				danger:
-					'border-red-800/50 bg-red-600/50 hover:border-red-800 hover:bg-red-600/60 disabled:opacity-50',
+					'bg-red-surface/80 text-red-surface-foreground border-red-surface hover:border-red-800 hover:bg-red-600/60 disabled:opacity-50',
 				discrete: 'hover:bg-foreground/10 disabled:opacity-50',
 				ghost:
 					'hover:border-foreground/50 hover:bg-foreground/15 border-transparent disabled:opacity-50',
@@ -39,8 +39,8 @@
 			},
 			size: {
 				sm: 'min-w-16 gap-1 px-1.5 text-sm',
-				md: 'min-w-24 gap-1.5 px-2 py-0.5 text-[0.9rem]',
-				lg: 'min-w-32 gap-2 px-4 py-1.5 text-[0.95rem]',
+				md: 'min-w-24 gap-1.5 px-2 py-0.5 text-sm tracking-wide',
+				lg: 'min-w-32 gap-2 px-4 py-1.5',
 				icon_sm: 'p-0.5 text-sm',
 				icon_md: 'p-1 text-base',
 				icon_lg: 'p-1.5 text-lg'

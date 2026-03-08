@@ -14,6 +14,7 @@
 	import Dropdown from './dropdown.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
+	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
 
 	const { data } = $props();
 
@@ -50,7 +51,8 @@
 		const confirmed = await confirm(
 			is_draft
 				? `Publier ${year.id} ? Le contenu deviendra public.`
-				: `Masquer ${year.id} ? Le contenu ne sera plus visible.`
+				: `Masquer ${year.id} ? Le contenu ne sera plus visible.`,
+			'action'
 		);
 		if (!confirmed) return;
 
@@ -84,7 +86,7 @@
 							class="text-xl!"
 							icon={year.draft ? 'icon-[ri--toggle-line]' : 'icon-[ri--toggle-fill]'}
 							tooltip={year.draft ? `Publier ${year.id}` : `Masquer ${year.id}`}
-						></Button>
+						/>
 						<div>
 							<Dropdown {year} />
 						</div>
@@ -97,11 +99,12 @@
 
 {#if pop_create.open}
 	<Dialog pop={pop_create}>
-		<DialogHeader>
-			<DialogTitle>Initialiser une nouvelle année</DialogTitle>
-		</DialogHeader>
+		<form {onsubmit} class="contents">
+			<DialogHeader>
+				<DialogTitle>Initialiser une nouvelle année</DialogTitle>
+				<DialogDescription>Le contenu ne sera pas encore visible par le public.</DialogDescription>
+			</DialogHeader>
 
-		<form {onsubmit}>
 			<Input name="id" label="année" required min={4} max={4} value={next_year} />
 			<ConfirmCancel confirm="Créer" />
 		</form>

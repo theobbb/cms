@@ -4,7 +4,7 @@
 	import PopConfirmCancel from './pop-confirm-cancel.svelte';
 	import DialogHeader from '../components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '../components/pop/dialog/dialog-title.svelte';
-	import Divider from '../components/divider.svelte';
+	import ConfirmCancel from './confirm-cancel.svelte';
 
 	function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
 		event.preventDefault();
@@ -23,7 +23,8 @@
 			<DialogTitle>{dialog_confirm.message}</DialogTitle>
 		</DialogHeader>
 		<div class="border-b"></div>
-		<PopConfirmCancel variant="danger" />
+		<ConfirmCancel onclose={cancel} variant={dialog_confirm.variant} />
+
 		<!-- <div class="flex justify-end gap-2">
 				<Button size="lg" variant="ghost" type="reset" onclick={cancel}>Non</Button>
 				<Button size="lg" autofocus variant={dialog_confirm.variant} type="submit">Oui</Button>

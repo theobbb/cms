@@ -1,9 +1,6 @@
 export async function load({ url, locals: { pocketbase } }) {
-	//depends('data:students');
-
 	const student_id = url.searchParams.get('id');
 
-	console.log(student_id);
 	if (student_id) {
 		const student = await pocketbase
 			.collection('students')

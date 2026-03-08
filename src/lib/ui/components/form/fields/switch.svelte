@@ -36,7 +36,7 @@
 	});
 </script>
 
-<div class="flex items-center gap-2">
+<div class="flex items-center">
 	<input class="hidden" {id} type="checkbox" {name} bind:checked />
 	<Button
 		onclick={toggle}
@@ -45,6 +45,6 @@
 		icon={checked ? 'icon-[ri--toggle-fill]' : 'icon-[ri--toggle-line]'}
 	></Button>
 	{#if label}
-		<label class="select-none" for={id}>{label}</label>
+		<label class="pl-2 select-none" for={id}>{label}</label>
 	{/if}
 </div>

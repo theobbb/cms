@@ -10,6 +10,9 @@
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
 	import Controls from './controls.svelte';
+	import TableCollection from '$lib/ui/data-table/table-collection.svelte';
+	import TableHeader from '$lib/ui/data-table/table-header.svelte';
+	import Section from '$lib/components/section.svelte';
 
 	const { data } = $props();
 
@@ -27,7 +30,7 @@
 		field_verified.snippet = verified;
 	}
 	//data.collections.users.field_map.verified.type = 'snippet';
-	$inspect(data.collections.users.field_map.verified.type);
+
 	const fields = $derived([
 		...data.collections.users.fields.filter((f) => f.name != 'email'),
 		{ type: 'snippet', snippet: controls }
@@ -48,12 +51,12 @@
 {#snippet controls(row: RecordModel)}
 	<div class="flex items-center justify-end">
 		{#if !row.verified}
+			<Button icon="icon-[ri--key-line]" variant="ghost" onclick={() => see_invite(row)} />
 			<Button
 				icon="icon-[ri--delete-bin-line]"
 				variant="ghost"
 				onclick={() => delete_invite(row.id)}
-			></Button>
-			<Button icon="icon-[ri--share-box-line]" variant="ghost" onclick={() => see_invite(row)} />
+			/>
 		{:else}
 			<Controls user={row} />
 		{/if}
@@ -70,18 +73,21 @@
 
 <div class="flex-">
 	<div class="mx-auto max-w-5xl">
-		<DataTable
-			editor_mode={false}
-			collection={{
-				...data.collections.users,
-				fields
-			}}
-			query={{ sort: '-created' }}
-		>
-			{#snippet action()}
-				<Button onclick={dialog_new_invite.show}>+ Inviter</Button>
+		<Section size="full">
+			{#snippet header()}
+				<TableHeader title="Membres">
+					<Button onclick={dialog_new_invite.show}>+ Inviter</Button>
+				</TableHeader>
 			{/snippet}
-		</DataTable>
+			<TableCollection
+				editor_mode={false}
+				collection={{
+					...data.collections.users,
+					fields
+				}}
+				query={{ sort: '-created' }}
+			/>
+		</Section>
 	</div>
 </div>
 

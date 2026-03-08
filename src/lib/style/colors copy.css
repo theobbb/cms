@@ -24,35 +24,36 @@
 	--accent-foreground-muted: oklch(42.663% 0.04714 250.109);
 
 	/* --- utils */
-	--blue: oklch(93.2% 0.032 255.585);
-	--blue-foreground: oklch(48.8% 0.243 264.376);
-	--blue-foreground-muted: oklch(49.107% 0.24121 264.248 / 0.726);
+	--blue: oklch(86.325% 0.02828 258.419);
+	--blue-foreground: oklch(42.458% 0.08172 263.883);
+	--blue-foreground-muted: oklch(55.323% 0.05711 256.732);
 	--blue-surface: oklch(70.984% 0.15 258.148);
 	--blue-surface-foreground: oklch(30.984% 0.15 258.148);
 	--blue-surface-foreground-muted: oklch(42.984% 0.15 258.148);
 
-	--green: oklch(96.2% 0.044 156.743);
-	--green-foreground: oklch(52.7% 0.154 150.069);
+	--green: oklch(88.569% 0.04494 159.657);
+	--green-foreground: oklch(45.191% 0.12129 147.447);
 	--green-foreground-muted: oklch(58.537% 0.08895 158.535);
 	--green-surface: oklch(79.034% 0.15 154.905);
 	--green-surface-foreground: oklch(37.034% 0.15 154.905);
 	--green-surface-foreground-muted: oklch(49.034% 0.15 154.905);
 
-	--yellow: oklch(96.2% 0.059 95.617);
-	--yellow-foreground: oklch(55.5% 0.163 48.998);
-	--yellow-foreground-muted: oklch(55.844% 0.15747 45.8 / 0.75);
-	--yellow-surface: oklch(87.9% 0.169 91.605);
+	--yellow: oklch(90.678% 0.0691 90.026);
+	--yellow-foreground: oklch(62.544% 0.0958 94.891);
+	--yellow-foreground-muted: oklch(64.942% 0.07432 92.293);
+	--yellow-surface: oklch(84.275% 0.12867 89.156);
 	--yellow-surface-foreground: oklch(37.987% 0.07803 77.558);
 	--yellow-surface-foreground-muted: oklch(54.275% 0.12867 89.156);
 
 	--red: oklch(89.555% 0.0416 14.132);
-	--red-foreground: oklch(50.5% 0.213 27.518);
-	--red-foreground-muted: oklch(50.943% 0.20864 28.604 / 0.713);
-	--red-surface: oklch(70.4% 0.191 22.216);
-	--red-surface-foreground: oklch(25.8% 0.092 26.042);
-	--red-surface-foreground-muted: oklch(44.4% 0.177 26.899);
+	--red-foreground: oklch(42.027% 0.13308 24.94);
+	--red-foreground-muted: oklch(57.72% 0.07405 10.422);
+	--red-surface: oklch(70.583% 0.15045 18.639);
+	--red-surface-foreground: oklch(30.583% 0.15045 18.639);
+	--red-surface-foreground-muted: oklch(42.583% 0.15045 18.639);
 
-	--color-muted: white;
+	/* placeholder */
+	--muted: oklch(41.716% 0.00003 271.152);
 }
 
 @theme inline static {
@@ -106,5 +107,5 @@
 	--color-red-surface-foreground: var(--red-surface-foreground);
 	--color-red-surface-foreground-muted: var(--red-surface-foreground-muted);
 
-	--color-muted: white;
+	--color-muted: var(--muted);
 }

@@ -1,55 +1,63 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
-	import Button from '$lib/ui/components/button.svelte';
-	import DataTable from '$lib/ui/data-table/section-table.svelte';
-	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
+	import { process_collection } from '$config/utils';
+	import DraftStatus from '$lib/apps/annuel/draft-status.svelte';
+	import SectionTable from '$lib/ui/data-table/section-table.svelte';
+	import type { EditorFormActionContext } from '$lib/ui/editor/editor.svelte';
+	import type { CollectionField } from 'pocketbase';
 
 	const { data } = $props();
-	const toaster = use_toaster();
-	const editor = use_editor();
 
-	editor.defaults.year = page.params.year || '';
-
-	const fields = $derived([
-		{
-			name: 'brouillon',
-			type: 'snippet',
-			snippet: draft_link,
-			table_only: true
-		},
-		...data.collections.students.fields
-	]);
-	async function copy_link(id: string) {
-		const url = page.url.host + '/public/' + page.params.year + '/finissant-e-s/' + id;
-		await navigator.clipboard.writeText(url);
-
-		toaster.push('info', url + ' copied to clipboard');
+	async function onsubmit(ctx: EditorFormActionContext) {
+		const { form_data, method } = ctx;
+		if (method == 'create') {
+			form_data.set('year', page.params.year || '');
+			form_data.set('is_latest', 'true');
+		}
 	}
 </script>
 
-<!-- {#snippet draft_link(item: any)}
-	<Button
-		icon="icon-[ri--draft-line]"
-		variant="ghost"
-		onclick={(event) => {
-			event.stopPropagation();
-			copy_link(item.id);
-		}}
-	></Button>
-{/snippet} -->
-{#snippet draft_link(item: any)}
-	<Button
+<SectionTable
+	collection={process_collection(data.collections.students, {
+		title: 'Finissant-e-s',
+		record_title: 'Finissant-e',
+		fields: {
+			hidden: 'year,draft_of,draft_version,is_latest,draft',
+			labels: {
+				first_name: 'prénom',
+				last_name: 'nom',
+				program: 'programme',
+				scholarship: 'bourse',
+				socials: 'liens',
+				created: 'créé',
+				updated: 'modifié'
+			},
+			overrides: {
+				description: {
+					rows: 6
+				}
+			},
+			snippets: {
+				status: { snippet: draft_status, label: 'status' }
+			}
+		}
+	})}
+	query={{ filter: `year = "${page.params.year}" && is_latest = true`, sort: '-created' }}
+	{onsubmit}
+/>
+
+{#snippet draft_status(student: CollectionField)}
+	<DraftStatus record={student} />
+	<!-- <Button variant="none">
+		<div>
+
+		</div>
+	</Button> -->
+	<!-- <Button
 		href="/public/{page.params.year}/finissant-e-s/draft?id={item.id}"
 		icon="icon-[ri--draft-line]"
 		variant="ghost"
 		target="_blank"
 		tooltip="Ouvrir le brouillon"
-	/>
+	/> -->
 {/snippet}
-
-<DataTable
-	collection={{ ...data.collections.students, fields }}
-	query={{ sort: 'created', filter: `year = "${page.params.year}"` }}
-	editor_defaults={{ year: page.params.year }}
-/>

@@ -21,7 +21,7 @@
 	};
 </script>
 
-<section class={['@container h-section w-full flex-1 px-gap py-gap-y', sizes[size]]}>
+<section class={['h-section w-full flex-1 px-gap py-gap-y', sizes[size]]}>
 	<div
 		class={[
 			'grid h-full ',
@@ -36,7 +36,7 @@
 		]}
 	>
 		{#if header}
-			<header class="border-b- mb-gap-y pb-gap-y">
+			<header class="mb-gap-y pb-gap-y">
 				{@render header()}
 			</header>
 		{/if}
@@ -44,7 +44,7 @@
 			{@render children()}
 		</main>
 		{#if footer}
-			<footer class=" border-t pt-gap-y">
+			<footer class="border-t pt-gap-y">
 				{@render footer()}
 			</footer>
 		{/if}

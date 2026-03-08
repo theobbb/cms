@@ -5,6 +5,7 @@ import { dev } from '$app/environment';
 import { apps } from './config/apps';
 import { global_routes } from './hooks';
 import { super_auth_pocketbase } from '$lib/server/super-pocketbase';
+import { resolveAppKey } from './utils';
 
 // Helper to check if a route is global
 function isGlobalRoute(pathname: string): boolean {
@@ -19,14 +20,12 @@ function getSubdomain(hostname: string): string {
 
 // Redirect duplicate app prefixes (e.g., /agraf/dashboard → /dashboard)
 const subdomain_redirect: Handle = async ({ event, resolve }) => {
-	if (isGlobalRoute(event.url.pathname)) {
-		return resolve(event);
-	}
+	if (isGlobalRoute(event.url.pathname)) return resolve(event);
 
-	const subdomain = getSubdomain(event.url.hostname);
+	const appKey = resolveAppKey(event.url.hostname);
 
-	if (apps[subdomain] && event.url.pathname.startsWith(`/${subdomain}/`)) {
-		const newPath = event.url.pathname.substring(subdomain.length + 1);
+	if (apps[appKey] && event.url.pathname.startsWith(`/${appKey}/`)) {
+		const newPath = event.url.pathname.substring(appKey.length + 1);
 		throw redirect(307, newPath + event.url.search);
 	}
 
@@ -34,21 +33,15 @@ const subdomain_redirect: Handle = async ({ event, resolve }) => {
 };
 
 const authentication: Handle = async ({ event, resolve }) => {
-	const subdomain = getSubdomain(event.url.hostname);
+	const appKey = resolveAppKey(event.url.hostname);
 
-	// 1. Check if the subdomain maps to a valid app
-	if (!apps[subdomain]) {
-		// If it's a global route (e.g. domain.com/public), allow it without App/PB context
-		if (isGlobalRoute(event.url.pathname)) {
-			return resolve(event);
-		}
-		// Otherwise, invalid subdomain -> redirect to help
+	if (!apps[appKey]) {
+		if (isGlobalRoute(event.url.pathname)) return resolve(event);
 		throw error(404, 'Page not found');
-		//throw redirect(303, '/help');
 	}
 
 	// 2. Initialize App Context & PocketBase (Runs for ALL routes on valid subdomains)
-	event.locals.app = apps[subdomain];
+	event.locals.app = apps[appKey];
 	event.locals.pocketbase = new PocketBase(event.locals.app.pocketbase.url);
 
 	// Super instance (singleton, reuses token until expiry)

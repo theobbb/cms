@@ -1,9 +1,7 @@
 <script lang="ts">
-	import type { App, Collection } from '$config/types';
 	import Media from '$lib/components/media.svelte';
 	import { get_app, get_collection } from '$lib/logic/ctx.svelte';
 	import { pocketbase_file_url } from '$lib/utils/pocketbase';
-	import { getContext } from 'svelte';
 
 	const { row, name } = $props();
 

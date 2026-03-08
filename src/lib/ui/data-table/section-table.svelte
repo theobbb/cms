@@ -1,14 +1,9 @@
 <script lang="ts">
 	import Section from '$lib/components/section.svelte';
 	import TableCollectionEditor from './table-collection-editor.svelte';
-	import type { CollectionModel, RecordListOptions } from 'pocketbase';
-	import type { Snippet } from 'svelte';
+	import type { ComponentProps } from 'svelte';
 
-	const props: {
-		collection: CollectionModel;
-		query?: RecordListOptions;
-		action?: Snippet;
-	} = $props();
+	const props: Omit<ComponentProps<typeof TableCollectionEditor>, 'wrapper'> = $props();
 </script>
 
 <TableCollectionEditor {...props}>
