@@ -56,16 +56,6 @@
 			submitting = false;
 		};
 	};
-
-	const button_label = $derived(
-		submitting
-			? 'Connexion...'
-			: pair_invite
-				? 'Ajouter un nouvel appareil'
-				: register_user
-					? 'Register with Passkey'
-					: 'Sign in with Passkey'
-	);
 </script>
 
 <div class="mx-auto grid h-screen max-w-xs grid-rows-[1fr_auto] items-center">
@@ -81,7 +71,7 @@
 		{/if}
 
 		{#if data.error}
-			<div class="text-red-500">{data.error}</div>
+			<div class="text-red-600">{data.error}</div>
 		{:else}
 			<form class="mt-4 flex justify-center" method="POST" use:enhance={onsubmit}>
 				<Button size="lg" class="flex items-center gap-1.5" type="submit" disabled={submitting}>

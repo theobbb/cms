@@ -31,7 +31,7 @@
 			{/if}
 			{#each columns as column}
 				<th onclick={() => onsort?.(column)} class="cursor-pointer text-left">
-					<div class="flex items-center justify-between gap-2 font-normal">
+					<div class="flex min-h-8 items-center justify-between gap-md font-normal">
 						<div>{column.label || column.name}</div>
 						{#if sort_param === column.name}
 							<div class="icon-[ri--arrow-up-line]"></div>
@@ -45,14 +45,15 @@
 	</thead>
 
 	<tbody>
-		{#each items as row}
+		{#each items as row (row.id)}
 			{@const { class: cx, ...props } = row_props(row)}
 			<tr
 				{...props}
 				class={[
 					cx,
 					'border-b first:border-t',
-					props.onclick && 'action hover:bg-accent/30 cursor-pointer'
+					props.onclick && 'action hover:bg-accent/30 cursor-pointer',
+					props.selected && 'bg-accent!'
 				]}
 			>
 				{#if prefix_cell}
@@ -71,7 +72,7 @@
 	th {
 		user-select: none;
 		padding: 0.25rem 0.8rem;
-		max-width: 10rem;
+		max-width: 14rem;
 	}
 	td:first-child,
 	th:first-child {
@@ -84,6 +85,6 @@
 		box-shadow: inset -2px 0 0 currentColor;
 	}
 	thead tr {
-		box-shadow: inset 0 -1px 0 currentColor;
+		box-shadow: inset 0 -1px 0 var(--border);
 	}
 </style>

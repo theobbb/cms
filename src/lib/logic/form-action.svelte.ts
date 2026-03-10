@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 import { use_pocketbase } from '$lib/pocketbase';
 import { ClientResponseError } from 'pocketbase';
@@ -50,7 +51,7 @@ export class FormAction {
 				await Promise.all(this._hooks.map((fn) => fn(ctx)));
 				await fn(ctx);
 			} catch (err) {
-				console.log(err);
+				if (dev) console.log(err);
 				if (err instanceof ClientResponseError) {
 					this.errors = err.response?.data ?? {};
 					const first = Object.values(this.errors)[0];

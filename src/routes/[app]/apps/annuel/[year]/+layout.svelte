@@ -9,7 +9,7 @@
 		{ name: 'Finissant-e-s', slug: 'students' },
 		{ name: 'Projets', slug: 'projects' },
 
-		{ name: 'Accueil + Remerciements', slug: 'home' },
+		{ name: 'Accueil', slug: 'home' },
 		{ name: 'Programmes', slug: 'programs' },
 		{ name: 'Liens', slug: 'socials' }
 	];

@@ -21,11 +21,13 @@
 	};
 </script>
 
-<section class={['h-section w-full flex-1 px-gap py-gap-y', sizes[size]]}>
+<section
+	class={['h-section- w-full flex-1 px-md py-md', sizes[size]]}
+	style="--color-muted: red; height: calc(100svh - var(--spacing)*9);"
+>
 	<div
 		class={[
-			'grid h-full ',
-
+			'grid h-full',
 			header && footer
 				? 'grid-rows-[auto_1fr_auto]'
 				: header
@@ -36,15 +38,15 @@
 		]}
 	>
 		{#if header}
-			<header class="mb-gap-y pb-gap-y">
+			<header class="mb-lg">
 				{@render header()}
 			</header>
 		{/if}
-		<main class="-mx-gap min-h-0 overflow-y-auto px-gap">
+		<main class="-mx-md min-h-0 overflow-y-auto px-md">
 			{@render children()}
 		</main>
 		{#if footer}
-			<footer class="border-t pt-gap-y">
+			<footer class="border-t pt-md">
 				{@render footer()}
 			</footer>
 		{/if}

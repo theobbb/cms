@@ -6,7 +6,7 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import SectionTable from '$lib/ui/data-table/section-table.svelte';
 	import type { EditorFormActionContext } from '$lib/ui/editor/editor.svelte';
-	import type { CollectionField } from 'pocketbase';
+	import type { CollectionField, RecordModel } from 'pocketbase';
 
 	const { data } = $props();
 	const toaster = use_toaster();
@@ -53,7 +53,7 @@
 	query={{ sort: 'created', filter: `year = "${page.params.year}"` }}
 	{onsubmit}
 />
-{#snippet draft_status(record: CollectionField)}
+{#snippet draft_status(record: RecordModel)}
 	<DraftStatus {record} />
 	<!-- <Button variant="none">
 		<div>

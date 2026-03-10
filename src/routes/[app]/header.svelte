@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import PopUser from './pop-user.svelte';
 
 	const { user } = $derived(page.data);
 
@@ -20,8 +21,8 @@
 	const links: Link[] = $derived(page.data.header_links || []);
 </script>
 
-<header class="flex h-header items-center justify-between border-b px-gap">
-	<div class="flex items-center gap-gap">
+<header class="flex h-9 items-center justify-between border-b px-md">
+	<div class="flex items-center gap-lg">
 		{#each links as link}
 			<a href={link.href} class="flex items-center gap-1.5">
 				<div class={link.icon}></div>
@@ -51,7 +52,7 @@
 		<div>Données</div>
 		<div>Facturation</div> -->
 	</div>
-	<div class="flex gap-6">
+	<div class="flex gap-lg">
 		<a href="/settings/profile" class="flex items-center gap-1">
 			<span class="icon-[ri--settings-line]"></span>
 			Paramètres
@@ -60,9 +61,10 @@
 			<span class="icon-[ri--group-line]"></span>
 			Membres
 		</a>
-		<a href="/profile" class="flex items-center gap-1">
+		<PopUser />
+		<!-- <a href="/profile" class="flex items-center gap-1">
 			<span class="icon-[ri--user-line]"></span>
 			{user?.name}
-		</a>
+		</a> -->
 	</div>
 </header>

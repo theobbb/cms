@@ -7,6 +7,10 @@
 	}
 </script>
 
-<button {onclick} class={['flex text-2xl ', checked ? '' : 'text-2']} title="toggle check">
+<button
+	{onclick}
+	class={['text-foreground-muted flex pl-md text-2xl', checked ? '' : 'text-2']}
+	aria-label="toggle check"
+>
 	<span class={[checked ? 'icon-[ri--checkbox-line]' : 'icon-[ri--checkbox-blank-line]']}></span>
 </button>

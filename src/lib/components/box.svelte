@@ -27,7 +27,7 @@
 
 <div
 	class={['border', cx]}
-	style="background-color: var(--color-{color}); color: var(--color-{color}-foreground); border-color: var(--color-{color}-foreground-muted); --muted: var(--color-{color}-foreground-muted);"
+	style="background-color: var(--color-{color}); color: var(--color-{color}-foreground); border-color-: var(--color-{color}-foreground-muted); --muted: var(--color-{color}-foreground-muted);"
 >
 	{@render children()}
 </div>

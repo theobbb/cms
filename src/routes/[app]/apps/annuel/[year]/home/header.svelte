@@ -5,7 +5,7 @@
 	const editor = use_editor();
 </script>
 
-<header class="flex h-12 shrink-0 items-center justify-between border-b">
+<header class="flex h-12 shrink-0 items-center justify-between border-t">
 	<div><Button icon="icon-[ri--information-line]" variant="ghost" tooltip="Guide" /></div>
 	<div class="flex items-center gap-2">
 		<!-- {#if editor.save_status === 'saving'}

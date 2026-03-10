@@ -1,4 +1,4 @@
-import type { CollectionField, CollectionModel } from 'pocketbase';
+import type { CollectionField, CollectionModel, RecordModel } from 'pocketbase';
 import type { Snippet } from 'svelte';
 
 type ProcessCollectionOptions = {
@@ -10,7 +10,7 @@ type ProcessCollectionOptions = {
 		overrides?: Record<string, Partial<CollectionField>>;
 		snippets?: Record<
 			string,
-			Partial<CollectionField> & { snippet: Snippet<[CollectionField]>; index?: number }
+			Partial<CollectionField> & { snippet: Snippet<[RecordModel]>; index?: number }
 		>;
 	};
 };

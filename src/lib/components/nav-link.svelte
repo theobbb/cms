@@ -15,7 +15,7 @@
 
 <a
 	class={[
-		'-mx-1.5 flex items-center gap-1.5 truncate px-1.5 py-0.5 whitespace-nowrap',
+		'flex items-center gap-2 truncate px-2.5 py-1 whitespace-nowrap',
 		active ? 'bg-accent' : 'hover:bg-accent/30'
 	]}
 	{href}

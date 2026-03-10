@@ -4,7 +4,15 @@ import { goto } from '$app/navigation';
 import { url_query_param } from '$lib/utils/url';
 import { use_pocketbase } from '$lib/pocketbase';
 import { get_search_keys } from '$config/utils';
-import type { CollectionField, CollectionModel, RecordListOptions, RecordModel } from 'pocketbase';
+import {
+	ClientResponseError,
+	type CollectionField,
+	type CollectionModel,
+	type RecordListOptions,
+	type RecordModel
+} from 'pocketbase';
+import { confirm } from '$lib/logic/confirm.svelte';
+import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
 const PER_PAGE = 64;
 
@@ -136,6 +144,8 @@ export class EditorCollectionList extends CollectionList {
 	// — Checked rows —
 	checked_set = new SvelteSet<string>();
 
+	private toaster = use_toaster();
+
 	get all_checked() {
 		return this.checked_set.size === this.items.length && this.items.length > 0;
 	}
@@ -162,5 +172,34 @@ export class EditorCollectionList extends CollectionList {
 
 	toggle_check(id: string) {
 		this.checked_set.has(id) ? this.checked_set.delete(id) : this.checked_set.add(id);
+	}
+
+	async delete_selection() {
+		const confirmed = await confirm('Supprimer cette séléction ?');
+		if (!confirmed) return;
+
+		const ids = [...this.checked_set];
+		const chunks: string[][] = [];
+
+		for (let i = 0; i < ids.length; i += PER_PAGE) {
+			chunks.push(ids.slice(i, i + PER_PAGE));
+		}
+		try {
+			for (const chunk of chunks) {
+				await Promise.all(
+					chunk.map((id) => this.pocketbase.collection(this.collection.name).delete(id))
+				);
+			}
+			this.toaster.push('success', 'Séléction supprimée.');
+		} catch (err) {
+			if (err instanceof ClientResponseError) {
+				console.log(err.message);
+				this.toaster.push('error', JSON.stringify(err.message));
+			} else {
+				this.toaster.push('error');
+			}
+		} finally {
+			this.checked_set.clear();
+		}
 	}
 }

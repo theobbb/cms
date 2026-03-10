@@ -19,7 +19,7 @@
 </script>
 
 <Section size="sm">
-	<nav class="space-y-px">
+	<nav class="space-y-1- -mx-sm">
 		{#each links as link}
 			<NavLink {...link} {base_path} />
 		{/each}

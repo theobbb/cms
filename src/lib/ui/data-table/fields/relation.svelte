@@ -1,5 +1,6 @@
 <script lang="ts">
 	import RecordPresentable from '$lib/components/record-presentable.svelte';
+	import Reference from '$lib/ui/components/reference.svelte';
 
 	const { row, name } = $props();
 
@@ -10,9 +11,9 @@
 
 <div class="flex flex-wrap gap-x-3 gap-y-1.5 overflow-hidden text-ellipsis whitespace-nowrap">
 	{#each items as item, i}
-		<span class="underline- font-mono- bg-black/10 px-1 text-xs tracking-wide">
+		<Reference>
 			<RecordPresentable record={item} />
-			{i < items.length - 1 ? ', ' : ''}
-		</span>
+			<!-- {i < items.length - 1 ? ', ' : ''} -->
+		</Reference>
 	{/each}
 </div>

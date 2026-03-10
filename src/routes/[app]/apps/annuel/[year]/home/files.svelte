@@ -15,7 +15,7 @@
 	let input_file: HTMLInputElement | null = $state(null);
 </script>
 
-<div class="h-full flex-1 overflow-y-auto py-gap-y pl-gap">
+<div class="h-full flex-1 overflow-y-auto py-md pl-md">
 	<!-- Header -->
 	<!-- <div class="mb-2 flex items-center justify-between">
 		<span>Media</span>

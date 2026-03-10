@@ -23,19 +23,17 @@
 	export type Props = ButtonProps | LinkProps;
 
 	const cvx = use_cvx(
-		'peer inline-flex cursor-pointer items-center justify-center border transition-colors duration-100 disabled:cursor-not-allowed loading:cursor-wait loading:opacity-50',
+		'peer inline-flex cursor-pointer items-center justify-center border transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 loading:cursor-wait loading:opacity-50',
 		{
 			variant: {
-				default:
-					'border-foreground/50 bg-black/10 hover:not-disabled:border-black hover:not-disabled:bg-black/15 disabled:opacity-40',
+				default: 'bg-secondary hover:not-disabled:bg-foreground/15',
 				action:
-					'text-background disabled:bg-text/20 border-black bg-black/80 not-hover:border-black/90 hover:bg-black disabled:opacity-50',
+					'text-primary-foreground disabled:bg-text/20 bg-primary border-black not-hover:border-black/90 hover:not-disabled:bg-black dark:hover:not-disabled:bg-white',
 				danger:
-					'bg-red-surface/80 text-red-surface-foreground border-red-surface hover:border-red-800 hover:bg-red-600/60 disabled:opacity-50',
-				discrete: 'hover:bg-foreground/10 disabled:opacity-50',
-				ghost:
-					'hover:border-foreground/50 hover:bg-foreground/15 border-transparent disabled:opacity-50',
-				none: 'border-0 disabled:opacity-50'
+					'bg-red-surface/80 text-red-surface-foreground border-red-surface hover:not-disabled:border-red-800 hover:not-disabled:bg-red-600/60',
+				discrete: 'hover:not-disabled:bg-foreground/10',
+				ghost: 'hover:not-disabled:bg-foreground/15 not-hover:border-transparent',
+				none: 'border-0'
 			},
 			size: {
 				sm: 'min-w-16 gap-1 px-1.5 text-sm',

@@ -15,6 +15,7 @@
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
+	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 
 	const { data } = $props();
 
@@ -28,23 +29,35 @@
 
 	const pop_create = new Pop();
 
-	async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
-		event.preventDefault();
+	const form_action = init_form_action();
 
-		const form_data = new FormData(event.currentTarget, event.submitter);
-		try {
-			form_data.set('draft', 'true');
-			await pocketbase.collection('years').create(form_data);
+	const onsubmit = form_action.submit(async ({ form_data }) => {
+		form_data.set('draft', 'true');
+		await pocketbase.collection('years').create(form_data);
 
-			toaster.push('success', 'Année créée');
+		toaster.push('success', 'Année créée');
 
-			pop_create.close();
-			await invalidateAll();
-		} catch (err) {
-			toaster.push('error');
-			console.error('Invitation failed:', err);
-		}
-	}
+		pop_create.close();
+		await invalidateAll();
+	});
+
+	// async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
+	// 	event.preventDefault();
+
+	// 	const form_data = new FormData(event.currentTarget, event.submitter);
+	// 	try {
+	// 		form_data.set('draft', 'true');
+	// 		await pocketbase.collection('years').create(form_data);
+
+	// 		toaster.push('success', 'Année créée');
+
+	// 		pop_create.close();
+	// 		await invalidateAll();
+	// 	} catch (err) {
+	// 		toaster.push('error');
+	// 		console.error('Invitation failed:', err);
+	// 	}
+	// }
 
 	async function toggle_draft(year: RecordModel) {
 		const is_draft = Boolean(year.draft);

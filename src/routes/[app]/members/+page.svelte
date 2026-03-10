@@ -1,7 +1,5 @@
 <script lang="ts">
-	import DialogInvitation from '$lib/components/auth/dialog-share-invite.svelte';
 	import Button from '$lib/ui/components/button.svelte';
-	import DataTable from '$lib/ui/data-table/section-table.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import type { RecordModel } from 'pocketbase';
 	import DialogInviteUser from './dialog-invite-user.svelte';
@@ -13,6 +11,7 @@
 	import TableCollection from '$lib/ui/data-table/table-collection.svelte';
 	import TableHeader from '$lib/ui/data-table/table-header.svelte';
 	import Section from '$lib/components/section.svelte';
+	import { process_collection } from '$config/utils';
 
 	const { data } = $props();
 
@@ -24,17 +23,17 @@
 
 	let invite: RecordModel | null = $state(null);
 
-	const field_verified = data.collections.users.field_map.verified;
-	if (field_verified) {
-		field_verified.type = 'snippet';
-		field_verified.snippet = verified;
-	}
+	// const field_verified = data.collections.users.field_map.verified;
+	// if (field_verified) {
+	// 	field_verified.type = 'snippet';
+	// 	field_verified.snippet = verified;
+	// }
 	//data.collections.users.field_map.verified.type = 'snippet';
 
-	const fields = $derived([
-		...data.collections.users.fields.filter((f) => f.name != 'email'),
-		{ type: 'snippet', snippet: controls }
-	]);
+	// const fields = $derived([
+	// 	...data.collections.users.fields.filter((f) => f.name != 'email'),
+	// 	{ type: 'snippet', snippet: controls }
+	// ]);
 
 	async function delete_invite(id: string) {
 		await confirm('Annuler l’invitation?');
@@ -80,11 +79,18 @@
 				</TableHeader>
 			{/snippet}
 			<TableCollection
-				editor_mode={false}
-				collection={{
-					...data.collections.users,
-					fields
-				}}
+				collection={process_collection(data.collections.users, {
+					fields: {
+						hidden: 'updated,email,verified',
+						labels: {
+							created: 'créé'
+						},
+						snippets: {
+							status: { snippet: verified, index: 1 },
+							controls: { snippet: controls, index: 6 }
+						}
+					}
+				})}
 				query={{ sort: '-created' }}
 			/>
 		</Section>

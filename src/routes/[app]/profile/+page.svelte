@@ -4,12 +4,14 @@
 	import DialogInvite from '$lib/components/auth/dialog-share-invite.svelte';
 
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
+	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 
 	import { use_pocketbase } from '$lib/pocketbase';
 	import Button from '$lib/ui/components/button.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import PairDevice from './pair-device.svelte';
+	import Username from './username.svelte';
 
 	const { data } = $props();
 	const { user } = $derived(data);
@@ -23,26 +25,28 @@
 	let name = $state(user.name);
 	const has_changed = $derived(name != user.name);
 
-	async function rename(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
-		event.preventDefault();
+	const form_action = init_form_action();
 
-		const form = event.currentTarget;
-		const form_data = new FormData(form, event.submitter);
-		const name = form_data.get('name');
-
+	const rename = form_action.submit(async ({ form_data }) => {
 		if (!user?.id) return;
-		try {
-			await pocketbase.collection('users').update(user.id, { name });
-			toaster.push('success');
 
-			invalidateAll();
-		} catch (err) {
-			toaster.push('error');
-		}
-	}
+		await pocketbase.collection('users').update(user.id, form_data);
+		toaster.push('success', `Renomé`);
+
+		invalidateAll();
+	});
+
+	// async function rename(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
+	// 	event.preventDefault();
+
+	// 	const form = event.currentTarget;
+	// 	const form_data = new FormData(form, event.submitter);
+
+	// }
 </script>
 
 <div class="mx-auto my-24 max-w-sm space-y-4">
+	<Username />
 	<form onsubmit={rename}>
 		<Input class="w-full" label="username" name="name" bind:value={name} />
 		<div class="mt-2- text-right">

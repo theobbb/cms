@@ -21,9 +21,10 @@ export async function load({ url, cookies, locals: { app, super_pocketbase } }) 
 
 	// Registration Flow
 	if (register_id) {
+		console.log('register', register_id);
 		try {
 			const register_user = await super_pocketbase.collection('users').getOne(register_id);
-
+			console.log(register_user);
 			cookies.set('registration_challenge', challenge, COOKIE_OPTIONS);
 
 			const options = get_registration_options(challenge, rpId, app.title, register_user);
@@ -107,6 +108,11 @@ export const actions: Actions = {
 					password: PASSKEY_AUTH_SECRET,
 					passwordConfirm: PASSKEY_AUTH_SECRET,
 					verified: true
+				});
+				console.log('Attempting auth with:', {
+					name: user.name,
+					id: user.id,
+					username: user.username
 				});
 				await save_passkey(super_pocketbase, user.id, verified);
 

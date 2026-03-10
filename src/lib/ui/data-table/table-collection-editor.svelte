@@ -9,6 +9,7 @@
 	import TableHeader from './table-header.svelte';
 	import { init_editor } from '../editor/editor-context.svelte';
 	import { page } from '$app/state';
+	import { confirm } from '$lib/logic/confirm.svelte';
 
 	const {
 		collection,
@@ -41,6 +42,23 @@
 				(affichage {list.items.length})
 			{/if}
 		</div>
+		{#if list.checked_set.size > 0}
+			<div class="bg-surface text-surface-foreground -my-md w-sm px-3 py-2">
+				<div class="flex items-center justify-between gap-2">
+					<div class="flex items-center gap-2">
+						<Button
+							icon="icon-[ri--close-line]"
+							variant="ghost"
+							onclick={() => list.checked_set.clear()}
+						/>
+						<div>{list.checked_set.size} séléctionné(s)</div>
+					</div>
+					<Button size="lg" variant="danger" onclick={() => list.delete_selection()}
+						>Supprimer</Button
+					>
+				</div>
+			</div>
+		{/if}
 	</div>
 {/snippet}
 
@@ -53,11 +71,11 @@
 			row_props={(row) => ({
 				onclick: () => editor.open({ method: 'update', record: row }),
 				class: [
-					'group border-b select-none first:border-t hover:bg-accent/30',
 					editor?.current?.method === 'update' &&
 						editor?.current?.record?.id === row.id &&
 						'bg-accent'
-				]
+				],
+				selected: editor?.current?.method === 'update' && editor?.current?.record?.id === row.id
 			})}
 		>
 			{#snippet prefix_header()}
@@ -74,29 +92,6 @@
 				</td>
 			{/snippet}
 		</TableCollection>
-
-		{#if list.checked_set.size > 0}
-			<div class="pointer-events-none absolute inset-0 flex items-end justify-center">
-				<div class="sticky bottom-12">
-					<div
-						class="bg-surface text-surface-foreground pointer-events-auto w-sm px-3 py-2 shadow-lg"
-					>
-						<div class="flex items-center justify-between gap-2">
-							<div class="flex items-center gap-2">
-								<Button
-									icon="icon-[ri--close-line]"
-									size="sm"
-									variant="ghost"
-									onclick={() => list.checked_set.clear()}
-								/>
-								<div>{list.checked_set.size} séléctionné(s)</div>
-							</div>
-							<Button>Supprimer</Button>
-						</div>
-					</div>
-				</div>
-			</div>
-		{/if}
 
 		{#if list.items.length === 0 && !list.loading}
 			<div class="my-8 flex flex-col items-center justify-center">

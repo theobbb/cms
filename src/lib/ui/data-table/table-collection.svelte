@@ -62,9 +62,9 @@
 </Table>
 
 {#if list.has_more}
-	<div class="my-gap-y">
-		<Button onclick={() => list.load_more()} disabled={list.loading}>
-			{list.loading ? 'Chargement...' : 'Charger plus'}
+	<div class="mx-md my-lg">
+		<Button size="lg" onclick={() => list.load_more()} disabled={list.loading}>
+			{list.loading ? 'Chargement...' : 'Charger +'}
 		</Button>
 	</div>
 {/if}

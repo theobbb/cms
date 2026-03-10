@@ -12,8 +12,6 @@
 <Section size="full">
 	<div class="flex h-full overflow-hidden font-sans">
 		<div class="col-span-2 flex h-full flex-1 flex-col">
-			<Header />
-
 			<!-- Body -->
 			<div class="flex h-full flex-1 overflow-hidden">
 				<!-- Editor panel -->
@@ -21,6 +19,7 @@
 
 				<Preview />
 			</div>
+			<Header />
 		</div>
 		<div class="flex w-sm flex-col">
 			<Files />

@@ -1,16 +1,11 @@
 <script lang="ts">
 	import Button from '$lib/ui/components/button.svelte';
-	import Anchor from '$lib/ui/components/pop/anchor.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
-	import Popover from '$lib/ui/components/pop/popover.svelte';
-	import Box from '$lib/components/box.svelte';
-	import DropdownMenuItem from '$lib/ui/components/pop/dropdown-menu/dropdown-menu-item.svelte';
 	import { confirm } from '$lib/logic/confirm.svelte';
 	import { use_pocketbase } from '$lib/pocketbase';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
-	import Switch from '$lib/ui/components/form/fields/switch.svelte';
 	import DropdownMenu from '$lib/ui/components/pop/dropdown-menu/dropdown-menu.svelte';
 
 	const { year } = $props();
@@ -20,8 +15,6 @@
 	const toaster = use_toaster();
 
 	const pop = new Pop();
-
-	let submitted = $state(false);
 
 	async function delete_year() {
 		const confirmed = await confirm(`Supprimer ${year.id} ?`);
@@ -36,23 +29,6 @@
 			if (id == page.params.year) {
 				goto(`/${page.data.years[0]?.id}/years`);
 			}
-		} catch (err) {
-			toaster.push('error');
-		}
-	}
-
-	async function toggle_draft() {
-		const is_draft = Boolean(year.draft);
-		const confirmed = await confirm(
-			is_draft
-				? `Publier ${year.draft} ? Le contenu deviendra public.`
-				: `Masquer ${year.draft} ? Le contenu ne sera plus visible.`
-		);
-		if (!confirmed) return;
-
-		try {
-			pocketbase.collection('years').update(year.id, { draft: !is_draft });
-			toaster.push('success', is_draft ? `${year} publié.` : `${year} masqué.`);
 		} catch (err) {
 			toaster.push('error');
 		}

@@ -6,15 +6,15 @@ export const apps: Record<string, App> = {
 		param: 'annuel',
 		pocketbase: {
 			url: 'https://api.annuel.3xw.ca'
-		},
-		aliases: ['console.agraf.xyz']
+		}
 	},
 	agraf: {
 		title: 'AGRAF',
 		param: 'agraf',
 		pocketbase: {
 			url: 'https://api.agraf.xyz'
-		}
+		},
+		aliases: ['admin.agraf.xyz']
 	}
 };
 

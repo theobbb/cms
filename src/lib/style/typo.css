@@ -8,6 +8,10 @@
 	--text-xl--line-height: calc(1.75 / 1.25); */
 }
 
+html {
+	font-family: 'Temp';
+}
+
 .font-mono {
 	font-family: 'Temp';
 	font-variation-settings: 'MONO' 100;

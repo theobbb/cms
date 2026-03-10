@@ -4,7 +4,7 @@
 	import DraftStatus from '$lib/apps/annuel/draft-status.svelte';
 	import SectionTable from '$lib/ui/data-table/section-table.svelte';
 	import type { EditorFormActionContext } from '$lib/ui/editor/editor.svelte';
-	import type { CollectionField } from 'pocketbase';
+	import type { RecordModel } from 'pocketbase';
 
 	const { data } = $props();
 
@@ -42,11 +42,14 @@
 			}
 		}
 	})}
-	query={{ filter: `year = "${page.params.year}" && is_latest = true`, sort: '-created' }}
+	query={{
+		filter: `year = "${page.params.year}" && is_latest = true`,
+		sort: '-created'
+	}}
 	{onsubmit}
 />
 
-{#snippet draft_status(student: CollectionField)}
+{#snippet draft_status(student: RecordModel)}
 	<DraftStatus record={student} />
 	<!-- <Button variant="none">
 		<div>

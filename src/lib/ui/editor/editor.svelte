@@ -139,7 +139,7 @@
 			</div>
 		{/snippet}
 
-		<div class="flex flex-col gap-gap pt-gap-y pb-12">
+		<div class="flex flex-col gap-md pt-sm pb-12">
 			{#each fields as field, i}
 				{@const Component = FieldComponents[field.type as keyof typeof FieldComponents] ?? null}
 				{#if Component}
@@ -153,16 +153,14 @@
 					type not implemented yet: {field.type}
 				{/if}
 			{/each}
-			<div class="h-gap-y"></div>
+			<div class="h-md"></div>
 		</div>
 
 		{#snippet footer()}
-			<div class="flex justify-end gap-1.5">
-				<ConfirmCancel
-					confirm={method == 'create' ? 'Créer' : 'Enregistrer'}
-					onclose={editor.close}
-				/>
-			</div>
+			<ConfirmCancel
+				confirm={method == 'create' ? 'Créer' : 'Enregistrer'}
+				onclose={editor.close}
+			/>
 		{/snippet}
 	</Section>
 </form>

@@ -38,14 +38,21 @@
 </script>
 
 {#if pop.open}
-	<dialog use:open closedby="any" class={['m-auto shadow-none!', sizes[size]]} {onclose}>
-		<div class="bg-background flex flex-col gap-gap p-gap">
+	<dialog use:open closedby="any" class={['m-auto', sizes[size]]} {onclose}>
+		<div class="bg-background flex flex-col gap-lg p-md">
 			{@render children()}
 		</div>
 	</dialog>
 {/if}
 
 <style>
+	dialog {
+		color: inherit;
+		font-family: inherit;
+		border: none;
+		box-shadow: none;
+		outline: none;
+	}
 	dialog::backdrop {
 		background-color: rgba(0, 0, 0, 0.3);
 		/* backdrop-filter: brightness(0.5); */
