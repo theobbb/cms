@@ -4,4 +4,4 @@
 	const { children }: { children: Snippet } = $props();
 </script>
 
-<div class="flex flex-col gap-1.5">{@render children()}</div>
+<div class="flex flex-col gap-1x">{@render children()}</div>

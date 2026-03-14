@@ -13,6 +13,7 @@ import {
 } from 'pocketbase';
 import { confirm } from '$lib/logic/confirm.svelte';
 import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
+import { set_collection } from '$lib/logic/ctx.svelte';
 
 const PER_PAGE = 64;
 
@@ -57,6 +58,8 @@ export class CollectionList {
 	constructor(collection: CollectionModel, default_query: RecordListOptions = {}) {
 		this.collection = collection;
 		this.default_query = default_query;
+
+		set_collection(collection);
 
 		// Reset and reload on search/sort change
 		$effect(() => {

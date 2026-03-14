@@ -9,7 +9,6 @@
 	import TableHeader from './table-header.svelte';
 	import { init_editor } from '../editor/editor-context.svelte';
 	import { page } from '$app/state';
-	import { confirm } from '$lib/logic/confirm.svelte';
 
 	const {
 		collection,
@@ -43,7 +42,7 @@
 			{/if}
 		</div>
 		{#if list.checked_set.size > 0}
-			<div class="bg-surface text-surface-foreground -my-md w-sm px-3 py-2">
+			<div class="-my-2x w-sm bg-surface px-3 py-2 text-surface-foreground">
 				<div class="flex items-center justify-between gap-2">
 					<div class="flex items-center gap-2">
 						<Button
@@ -53,9 +52,9 @@
 						/>
 						<div>{list.checked_set.size} séléctionné(s)</div>
 					</div>
-					<Button size="lg" variant="danger" onclick={() => list.delete_selection()}
-						>Supprimer</Button
-					>
+					<Button size="lg" variant="danger" onclick={() => list.delete_selection()}>
+						Supprimer
+					</Button>
 				</div>
 			</div>
 		{/if}
@@ -79,12 +78,12 @@
 			})}
 		>
 			{#snippet prefix_header()}
-				<th>
+				<th class="checkbox">
 					<Checkbox checked={list.all_checked} ontoggle={() => list.toggle_check_head()} />
 				</th>
 			{/snippet}
 			{#snippet prefix_cell(row)}
-				<td>
+				<td class="checkbox">
 					<Checkbox
 						checked={list.checked_set.has(row.id)}
 						ontoggle={() => list.toggle_check(row.id)}
@@ -115,6 +114,7 @@
 {#if editor.current != null && page.url.searchParams.has('editor')}
 	<Editor {onsubmit} />
 {/if}
+
 <!-- {#if editor.target && page.url.searchParams.has('editor')}
 	<Editor />
 {/if} -->

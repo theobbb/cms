@@ -14,10 +14,10 @@
 	}
 </script>
 
-<div class="max-w-2xl space-y-sm">
+<div class="max-w-2xl space-y-2x">
 	<div>Thème</div>
 
-	<div class="grid grid-cols-3 gap-sm">
+	<div class="grid grid-cols-3 gap-2x">
 		{#each themes as { name, icon }}
 			<button
 				class={[
@@ -26,7 +26,7 @@
 				]}
 				onclick={() => change_theme(name as ThemeValue)}
 			>
-				<div class="justify-center- flex items-center gap-2 px-4">
+				<div class="flex items-center gap-2 px-4">
 					<span class={[icon]}></span>
 					<div>{name}</div>
 				</div>

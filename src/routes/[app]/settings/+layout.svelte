@@ -9,7 +9,7 @@
 	const links = [
 		{ name: 'Profil', slug: 'profile', icon: icons.user },
 		{ name: 'Apparence', slug: 'appearance', icon: 'icon-[ri--drop-line]' },
-		{ name: 'Appareils', slug: 'devices', icon: icons.key },
+		{ name: 'Passkeys', slug: 'passkeys', icon: icons.key },
 		{ name: 'Backups', slug: 'backups', icon: 'icon-[ri--archive-line]' }
 	];
 
@@ -21,6 +21,6 @@
 	<Nav {links} base_path="/settings" />
 	<Section size="full">
 		<div class="text-lg">{current_name}</div>
-		<div class="mx-xl my-xl">{@render children()}</div>
+		<div class="m-5x">{@render children()}</div>
 	</Section>
 </div>

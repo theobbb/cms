@@ -10,7 +10,7 @@
 	init_pocketbase(apps.annuel.pocketbase.url, '');
 </script>
 
-<div class="mx-auto my-24 max-w-3xl space-y-12 px-4">
+<div class="mx-auto my-24 max-w-2xl space-y-12 px-4">
 	<Header />
 	{@render children()}
 </div>

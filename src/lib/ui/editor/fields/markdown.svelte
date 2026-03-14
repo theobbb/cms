@@ -6,5 +6,4 @@
 	const { id, name, required, value }: FieldProps<'markdown'> = $props();
 </script>
 
-<!-- <Input {id} {name} {label} {type} {value} {required} /> -->
 <Markdown {id} {name} label={name} {value} {required} />

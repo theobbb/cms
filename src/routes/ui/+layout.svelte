@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Nav from '$lib/components/nav.svelte';
-	import type { LayoutProps } from './$types';
 
-	const { children }: LayoutProps = $props();
+	const { children } = $props();
 </script>
 
 <div class="fixed top-0 left-0 w-xs">

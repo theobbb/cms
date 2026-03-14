@@ -21,10 +21,10 @@
 	const links: Link[] = $derived(page.data.header_links || []);
 </script>
 
-<header class="flex h-9 items-center justify-between border-b px-md">
-	<div class="flex items-center gap-lg">
+<header class="flex h-9 items-center justify-between border-b px-3x">
+	<div class="flex items-center gap-4x">
 		{#each links as link}
-			<a href={link.href} class="flex items-center gap-1.5">
+			<a href={link.href} class="flex items-center gap-2">
 				<div class={link.icon}></div>
 				{link.name}
 			</a>
@@ -52,15 +52,21 @@
 		<div>Données</div>
 		<div>Facturation</div> -->
 	</div>
-	<div class="flex gap-lg">
-		<a href="/settings/profile" class="flex items-center gap-1">
-			<span class="icon-[ri--settings-line]"></span>
-			Paramètres
-		</a>
-		<a href="/members" class="flex items-center gap-1">
-			<span class="icon-[ri--group-line]"></span>
-			Membres
-		</a>
+	<div class="flex gap-5x">
+		<div class="flex gap-4x">
+			<a href="/members" class="flex items-center gap-1.5">
+				<span class="icon-[ri--group-line]"></span>
+				Membres
+			</a>
+			<a href="/settings/profile" class="flex items-center gap-1.5">
+				<span class="icon-[ri--settings-line]"></span>
+				Paramètres
+			</a>
+			<button class="flex items-center gap-1.5">
+				<span class="icon-[ri--bug-line]"></span>
+			</button>
+		</div>
+
 		<PopUser />
 		<!-- <a href="/profile" class="flex items-center gap-1">
 			<span class="icon-[ri--user-line]"></span>

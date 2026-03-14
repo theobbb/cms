@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+
+@import './fonts.css';
+@import './typo.css';
+@import './colors.css';
+@import './markdown.css';
+
 @plugin '@iconify/tailwind4';
 
 @custom-variant hover (&:where(:hover, .hover));
@@ -7,26 +13,12 @@
 @custom-variant focus-visible (&:where(:focus-visible, .focus-visible));
 @custom-variant loading (&[aria-busy="true"]);
 
-@theme {
-	--spacing-xs: calc(var(--spacing) * 1);
-	--spacing-sm: calc(var(--spacing) * 2);
-	--spacing-md: calc(var(--spacing) * 4);
-	--spacing-lg: calc(var(--spacing) * 8);
-	--spacing-xl: calc(var(--spacing) * 16);
-
-	/* --spacing-header: calc(var(--spacing) * 10); */
-
-	/* --spacing-gap: 1.1rem;
-	--spacing-gap-y: 0.7rem; */
-	/* --spacing-header: 0rem;
-	--spacing-section: 0rem;
-	--spacing-inner-section: 0rem; */
-}
-
-html {
-	/* --spacing-header: calc(var(--spacing-gap-y) * 3);
-	--spacing-section: calc(100svh - var(--spacing-header));
-	--spacing-inner-section: calc(var(--spacing-section) - 2 * var(--spacing-gap-y)); */
+@theme static inline {
+	--spacing-1x: calc(var(--spacing) * 1);
+	--spacing-2x: calc(var(--spacing) * 2);
+	--spacing-3x: calc(var(--spacing) * 4);
+	--spacing-4x: calc(var(--spacing) * 8);
+	--spacing-5x: calc(var(--spacing) * 16);
 }
 
 section {
@@ -92,3 +84,24 @@ input:-webkit-autofill:active {
 .bg-field {
 	background-color: var(--color-bg-2);
 }
+
+td,
+th {
+	user-select: none;
+	padding: 0.25rem 0.8rem;
+	max-width: 14rem;
+}
+td.checkbox,
+th.checkbox {
+	width: 1rem;
+	padding-left: 0;
+}
+/* th:not(.checkbox):hover {
+	box-shadow: inset 0 -2px 0 currentColor;
+}
+tbody tr.action:hover {
+	box-shadow: inset -2px 0 0 currentColor;
+}
+thead tr {
+	box-shadow: inset 0 -1px 0 var(--border);
+} */

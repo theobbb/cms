@@ -5,6 +5,7 @@ import Relation from './fields/relation.svelte';
 import String from './fields/string.svelte';
 import Url from './fields/url.svelte';
 import type { FieldType } from '$config/field.types';
+import Json from './fields/json.svelte';
 
 // export type Column<Record> = {
 // 	key: keyof Record;
@@ -31,5 +32,5 @@ export const ColumnComponents: Record<FieldType, any> = {
 	//slug: String,
 	date: Date,
 	autodate: Date,
-	json: String
+	json: Json
 };

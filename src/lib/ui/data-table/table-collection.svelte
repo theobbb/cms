@@ -33,8 +33,6 @@
 		row_props?: (row: RecordModel) => Record<string, any>;
 	} = $props();
 
-	set_collection(collection);
-
 	const columns = $derived(collection.fields.filter((f) => !f.hidden));
 </script>
 
@@ -62,7 +60,7 @@
 </Table>
 
 {#if list.has_more}
-	<div class="mx-md my-lg">
+	<div class="mx-2x my-3x">
 		<Button size="lg" onclick={() => list.load_more()} disabled={list.loading}>
 			{list.loading ? 'Chargement...' : 'Charger +'}
 		</Button>

@@ -24,14 +24,16 @@
 </script>
 
 <table class="w-full">
-	<thead class="bg-background sticky top-0 z-10">
-		<tr>
+	<thead class="sticky top-0 z-10 bg-background">
+		<tr class="border-b">
 			{#if prefix_header}
 				{@render prefix_header()}
 			{/if}
 			{#each columns as column}
-				<th onclick={() => onsort?.(column)} class="cursor-pointer text-left">
-					<div class="flex min-h-8 items-center justify-between gap-md font-normal">
+				<th onclick={() => onsort?.(column)} class="group cursor-pointer text-left">
+					<div
+						class="-mx-2x flex min-h-8 items-center justify-between gap-2x px-2x font-normal group-hover:bg-accent-hover"
+					>
 						<div>{column.label || column.name}</div>
 						{#if sort_param === column.name}
 							<div class="icon-[ri--arrow-up-line]"></div>
@@ -52,7 +54,7 @@
 				class={[
 					cx,
 					'border-b first:border-t',
-					props.onclick && 'action hover:bg-accent/30 cursor-pointer',
+					props.onclick && 'action cursor-pointer hover:bg-accent-hover',
 					props.selected && 'bg-accent!'
 				]}
 			>
@@ -68,22 +70,6 @@
 </table>
 
 <style>
-	td,
-	th {
-		user-select: none;
-		padding: 0.25rem 0.8rem;
-		max-width: 14rem;
-	}
-	td:first-child,
-	th:first-child {
-		width: 1rem;
-	}
-	th:not(:first-child):hover {
-		box-shadow: inset 0 -2px 0 currentColor;
-	}
-	tbody tr.action:hover {
-		box-shadow: inset -2px 0 0 currentColor;
-	}
 	thead tr {
 		box-shadow: inset 0 -1px 0 var(--border);
 	}

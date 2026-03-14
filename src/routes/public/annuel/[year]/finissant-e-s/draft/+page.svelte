@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
-	import Socials from './socials.svelte';
+	import Socials, { type Social } from './socials.svelte';
 	import { page } from '$app/state';
 	import DraftHeader from '../../draft-header.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
@@ -8,8 +8,8 @@
 	import Info from '$lib/ui/templates/box/info.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 	import { goto } from '$app/navigation';
-
-	type Social = { name: string; url: string };
+	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
+	import OrderList from '$lib/ui/components/form/fields/order-list.svelte';
 
 	const { data } = $props();
 	const { student, collections } = $derived(data);
@@ -21,7 +21,8 @@
 
 	let socials: Social[] = $state(student?.socials || []);
 
-	$inspect(student);
+	$inspect(socials);
+	const pop_socials = new Pop();
 
 	const has_changed = true;
 
@@ -38,7 +39,11 @@
 
 		const next_version = student ? Number(student.draft_version) + 1 || 0 : 0;
 		form_data.set('draft_version', String(next_version));
-		const created = await form_action.pocketbase.collection('students').create(form_data);
+
+		const body: any = Object.fromEntries(form_data);
+		body.socials = socials;
+
+		const created = await form_action.pocketbase.collection('students').create(body);
 
 		form_action.toaster.push('success', `Brouillon v${next_version} envoyé.`);
 
@@ -66,6 +71,22 @@
 		<Info>Tu peux ajouter des liens vers tes réseaux sociaux ou autres ressources (optionel)</Info>
 
 		<div>
+			<div class="">
+				<!-- <OrderList
+		items={socials}
+		add_item_text="Ajouter un lien"
+		label="liens"
+		on_add_item={pop_socials.show}
+		on_remove_item={() => socials = socials.filter((i) => i != item)}
+	>
+		{#snippet item_renderer(social: Social)}
+			<div class="py-1.5">
+				<div>{social.name}</div>
+				<div class="text-foreground-muted">{social.url}</div>
+			</div>
+		{/snippet}
+	</OrderList> -->
+			</div>
 			<Socials bind:socials />
 		</div>
 	</div>
@@ -78,7 +99,7 @@
 		/>
 	</div>
 	{#if !virgin}
-		<div class="mt-12 mb-gap flex items-center justify-between border-b py-3">
+		<div class="mb-gap mt-12 flex items-center justify-between border-b py-3">
 			<div class="text-xl">Projets</div>
 
 			<a class="text-indigo-600" href="/public/{page.params.year}/projets/draft?student={id}">

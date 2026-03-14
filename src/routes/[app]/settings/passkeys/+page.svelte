@@ -6,6 +6,8 @@
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import { onMount } from 'svelte';
 	import type { RecordModel } from 'pocketbase';
+	import Info from '$lib/ui/templates/box/info.svelte';
+	import PasskeyInfo from '$lib/ui/templates/passkey-info.svelte';
 
 	type Token = {
 		device_invite_token: string;
@@ -52,8 +54,23 @@
 	});
 </script>
 
-<Button onclick={pop.show}>Connecter un autre appareil</Button>
+<div class="max-w-md space-y-4x">
+	<div>
+		<div class="">
+			Ta <PasskeyInfo /> est liée à cet appareil.
+		</div>
+		<div>Pour accéder à ton compte depuis un autre appareil :</div>
+		<div>Génère un lien de couplage → ouvre-le sur le nouvel appareil.</div>
+	</div>
 
+	<Button icon="icon-[ri--key-line]" onclick={pop.show} size="lg"
+		>Générer un lien de couplage</Button
+	>
+	<Info>
+		Si tu utilises iCloud Keychain ou Google Password Manager, ta passkey est peut-être déjà
+		disponible sur l'autre appareil.
+	</Info>
+</div>
 {#if pop.open && invite}
 	<DialogShareInvite {pop} invite={{ type: 'device', record: invite }} />
 {/if}

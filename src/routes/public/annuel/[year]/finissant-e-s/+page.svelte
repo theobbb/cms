@@ -15,10 +15,12 @@
 <!-- <Guide /> -->
 
 <div class="text-right">
-	<span class="text-foreground-muted mr-1">Pas encore dans la liste?</span>
+	<span class="mr-1 text-foreground-muted">Pas encore dans la liste ?</span>
 
-	<Button variant="action">Inscription →</Button>
-	<a class="text-indigo-600" href="/public/{page.params.year}/finissant-e-s/draft">
+	<a
+		class="text-indigo-600 dark:text-indigo-400"
+		href="/public/{page.params.year}/finissant-e-s/draft"
+	>
 		Inscription →
 	</a>
 </div>

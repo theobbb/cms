@@ -22,8 +22,8 @@
 </script>
 
 <section
-	class={['h-section- w-full flex-1 px-md py-md', sizes[size]]}
-	style="--color-muted: red; height: calc(100svh - var(--spacing)*9);"
+	class={['w-full flex-1 p-3x pt-2x', sizes[size]]}
+	style="height: calc(100svh - var(--spacing)*9);"
 >
 	<div
 		class={[
@@ -38,15 +38,15 @@
 		]}
 	>
 		{#if header}
-			<header class="mb-lg">
+			<header class="mb-4x">
 				{@render header()}
 			</header>
 		{/if}
-		<main class="-mx-md min-h-0 overflow-y-auto px-md">
+		<main class="-mx-3x min-h-0 overflow-y-auto px-3x">
 			{@render children()}
 		</main>
 		{#if footer}
-			<footer class="border-t pt-md">
+			<footer class="border-t pt-3x">
 				{@render footer()}
 			</footer>
 		{/if}

@@ -1,10 +1,19 @@
+<script module>
+	export type Social = {
+		name: string;
+		url: string;
+	};
+</script>
+
 <script lang="ts">
+	import { dev } from '$app/environment';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 
-	import type { Social } from '$lib/types';
 	import Button from '$lib/ui/components/button.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import OrderList from '$lib/ui/components/form/fields/order-list.svelte';
+	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
+	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 
@@ -15,6 +24,7 @@
 	const pop = new Pop();
 
 	let name: string = $state('');
+	const url_value = dev ? 'https://icon-sets.iconify.design/?query=poop' : '';
 
 	const suggestions = ['Site web', 'Portfolio', 'Instagram', 'Behance', 'Dribble', 'Youtube'];
 
@@ -53,23 +63,25 @@
 </div>
 
 <Dialog {pop} size="sm">
-	<form class="space-y-gap-y" {onsubmit}>
-		<div class="border-b pb-gap-y text-lg">Nouveau lien</div>
+	<form class="space-y-3x" {onsubmit}>
+		<DialogHeader>
+			<DialogTitle>Nouveau lien</DialogTitle>
+		</DialogHeader>
 
-		<div class="flex flex-wrap gap-1.5 text-xs whitespace-nowrap">
+		<div class="flex flex-wrap gap-1.5 pt-2x text-xs whitespace-nowrap">
 			{#each suggestions as suggestion}
 				<button
 					type="button"
-					class="cursor-pointer rounded-full bg-black/10 px-1.5 py-px"
+					class="cursor-pointer rounded-full bg-secondary px-2 py-px"
 					onclick={() => (name = suggestion)}>{suggestion}</button
 				>
 			{/each}
 		</div>
-		<Input label="nom du lien" name="name" required bind:value={name} />
-		<Input label="url" name="url" required type="url" />
+		<Input label="nom du lien" name="name" required bind:value={name} autofocus />
+		<Input label="url" name="url" required type="url" value={url_value} />
 		<div class="flex justify-end gap-1.5">
 			<Button variant="ghost" type="reset" size="lg">Annuler</Button>
-			<Button variant="action" type="submit" size="lg">Ajouter</Button>
+			<Button variant="action" type="submit" size="lg" formaction="">Ajouter</Button>
 		</div>
 	</form>
 </Dialog>

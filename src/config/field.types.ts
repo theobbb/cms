@@ -80,13 +80,7 @@ export type Field<Record> = {
 
 export type FieldType = keyof FieldConfig;
 
-export type SubmitCallback<T> = (
-	form_data: FormData,
-	cancel: () => void
-) => void | Promise<void | ((record: T) => void | Promise<void>)>;
-
 export type FieldProps<T extends FieldType> = FieldBase<any, T> &
 	FieldConfig[T] & {
 		id: string;
-		onsubmit?: SubmitCallback<T>;
 	};

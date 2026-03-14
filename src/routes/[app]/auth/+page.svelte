@@ -59,7 +59,7 @@
 </script>
 
 <div class="mx-auto grid h-screen max-w-xs grid-rows-[1fr_auto] items-center">
-	<div class="flex flex-col justify-center gap-4 py-12">
+	<div class="flex flex-col justify-center gap-4x py-4x">
 		<div class="text-center text-xl">
 			<div>{data.app.title}</div>
 		</div>
@@ -73,8 +73,8 @@
 		{#if data.error}
 			<div class="text-red-600">{data.error}</div>
 		{:else}
-			<form class="mt-4 flex justify-center" method="POST" use:enhance={onsubmit}>
-				<Button size="lg" class="flex items-center gap-1.5" type="submit" disabled={submitting}>
+			<form class="mt-2x flex justify-center" method="POST" use:enhance={onsubmit}>
+				<Button size="lg" class="flex items-center" type="submit" disabled={submitting}>
 					<div class="-ml-1 flex size-5 items-center justify-center">
 						{#if submitting}
 							<Loader />
@@ -88,7 +88,9 @@
 		{/if}
 	</div>
 
-	<div class="py-12 text-center">
-		<AboutPasskeys />
+	<div class="flex justify-center">
+		<div class="max-w-50 py-12 text-center">
+			<AboutPasskeys />
+		</div>
 	</div>
 </div>

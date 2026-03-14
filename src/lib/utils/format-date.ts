@@ -1,23 +1,3 @@
-// Your helper function (unchanged)
-// export function format_date(str: string): string {
-// 	const date = new Date(str);
-
-// 	const day: string = String(date.getUTCDate()).padStart(2, '0');
-// 	const month: string = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-based
-// 	const year: number = date.getUTCFullYear();
-
-// 	// Note: This returns with dashes, matching your request "DD:MM:YYYY"
-// 	// You can change the separator here if you prefer.
-// 	return `${day}-${month}-${year}`;
-// }
-
-/**
- * Formats a date string into a relative time.
- * - < 1 min: "now"
- * - < 1 hr:  "...MM:SS"
- * - < 24 hr: "...HHh"
- * - > 24 hr: "DD-MM-YYYY"
- */
 export function format_time(str: string): string {
 	const date = new Date(str);
 	const now = new Date();
@@ -72,5 +52,5 @@ export function format_date(str: string) {
 
 	const month = months[date.getMonth()];
 
-	return `${day} ${month} ${year} - ${hours}:${minutes} `;
+	return `${day} ${month} ${year}, ${hours}:${minutes} `;
 }

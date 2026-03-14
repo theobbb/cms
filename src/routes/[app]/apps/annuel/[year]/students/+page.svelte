@@ -38,7 +38,7 @@
 				}
 			},
 			snippets: {
-				status: { snippet: draft_status, label: 'status' }
+				status: { snippet: draft_status, label: 'status', display: 'table' }
 			}
 		}
 	})}

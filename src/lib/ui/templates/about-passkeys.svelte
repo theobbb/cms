@@ -1,4 +1,7 @@
-<div class="text-foreground-muted text-sm">
-	<div>Authentification par passkey — sans mot de passe.</div>
-	<a class="text-indigo-600" href="/help/passkeys">En savoir plus →</a>
+<script>
+	import PasskeyInfo from './passkey-info.svelte';
+</script>
+
+<div class="text-sm text-foreground-muted">
+	<div>Authentification par <PasskeyInfo /> — sans mot de passe.</div>
 </div>

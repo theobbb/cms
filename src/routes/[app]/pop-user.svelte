@@ -16,7 +16,7 @@
 <div>
 	<button
 		onclick={pop.show}
-		class="flex cursor-pointer items-center gap-1 hover:underline"
+		class="flex cursor-pointer items-center gap-1.5 hover:underline"
 		style="anchor-name: --pop-user;"
 	>
 		<span class="icon-[ri--user-line]"></span>
@@ -36,8 +36,11 @@
 						<Button
 							icon="icon-[ri--logout-box-line]"
 							type="submit"
-							class={['hover:bg-secondary mx-1 justify-start text-red-600']}>Déconnexion</Button
+							variant="ghost"
+							class={['mx-1 justify-start text-red-600 hover:bg-secondary']}
 						>
+							Déconnexion
+						</Button>
 					</form>
 				</div>
 			</Box>

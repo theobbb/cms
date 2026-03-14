@@ -30,7 +30,7 @@
 
 			{#if record.created}
 				{#if record.created != record.updated}
-					<div class="text-foreground-muted mr-4">modifié: {format_date(record.updated)}</div>
+					<div class="mr-4 text-foreground-muted">modifié: {format_date(record.updated)}</div>
 				{/if}
 				<div class="text-foreground-muted">créé: {format_date(record.created)}</div>
 			{/if}
@@ -51,7 +51,7 @@
 {/if}
 
 <div
-	class="bg-background sticky top-0 z-10 mb-12 flex items-center justify-between gap-x-gap border-b py-gap-y"
+	class="gap-x-gap py-gap-y sticky top-0 z-10 mb-12 flex items-center justify-between border-b bg-background"
 >
 	<div class="text-xl">
 		{#if !record}
@@ -61,6 +61,6 @@
 		{/if}
 	</div>
 	<div class="flex items-center gap-2">
-		<Button disabled={!has_changed} variant="action" type="submit">Publier</Button>
+		<Button size="lg" disabled={!has_changed} variant="action" type="submit">Enregistrer</Button>
 	</div>
 </div>

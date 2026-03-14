@@ -1,7 +1,6 @@
 <script>
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
-	import Info from '$lib/ui/templates/box/info.svelte';
 	import Warning from '$lib/ui/templates/box/warning.svelte';
 
 	const { name } = $props();
@@ -10,11 +9,8 @@
 	const pair_invite = $derived(page.data.pair);
 </script>
 
-<Box color="surface" class="my-12 w-full p-3">
-	<div class="mb-4 flex items-start">
-		<div class="flex-1 text-center">
-			<div class="mt-2 text-xl">Bienvenue, {name}.</div>
-		</div>
-	</div>
+<Box color="surface" class="my-4x w-full space-y-3x p-3x">
+	<div class="text-center text-xl">Bienvenue, {name}.</div>
+
 	<Warning>Connecte-toi depuis ton appareil principal (pas ton téléphone).</Warning>
 </Box>

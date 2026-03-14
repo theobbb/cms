@@ -4,7 +4,7 @@
 
 <div class="mr-8 grid grid-cols-5 gap-y-4">
 	{#each sizes as size}
-		<div>
+		<div class="font-mono text-sm">
 			{size}
 		</div>
 		<div class="col-span-4">
@@ -16,7 +16,7 @@
 	<div class="col-span-full mt-16"></div>
 	{#each sizes as size, i}
 		{#if i < 5}
-			<div>
+			<div class="font-mono text-sm">
 				{size}
 			</div>
 			<div class="col-span-4 text-balance">

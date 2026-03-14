@@ -13,7 +13,7 @@
 				{@render cms_header()}
 			{/snippet}
 
-			<div class="-mx-md">{@render cms_body()}</div>
+			<div class="-mx-3x">{@render cms_body()}</div>
 
 			{#snippet footer()}
 				{@render cms_footer()}

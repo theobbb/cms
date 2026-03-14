@@ -23,20 +23,9 @@
 
 	let invite: RecordModel | null = $state(null);
 
-	// const field_verified = data.collections.users.field_map.verified;
-	// if (field_verified) {
-	// 	field_verified.type = 'snippet';
-	// 	field_verified.snippet = verified;
-	// }
-	//data.collections.users.field_map.verified.type = 'snippet';
-
-	// const fields = $derived([
-	// 	...data.collections.users.fields.filter((f) => f.name != 'email'),
-	// 	{ type: 'snippet', snippet: controls }
-	// ]);
-
 	async function delete_invite(id: string) {
-		await confirm('Annuler l’invitation?');
+		const confirmed = await confirm('Annuler l’invitation?');
+		if (!confirmed) return;
 		await pocketbase.collection('users').delete(id);
 		toaster.push('success', 'Invitation annulée');
 	}
@@ -65,7 +54,7 @@
 {#snippet verified(row: RecordModel)}
 	<div>
 		{#if !row.verified}
-			<div class="bg-blue w-fit px-2 text-sm">En attente</div>
+			<div class="w-fit bg-blue px-2 text-sm">En attente</div>
 		{/if}
 	</div>
 {/snippet}

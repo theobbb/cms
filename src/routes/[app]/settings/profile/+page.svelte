@@ -45,18 +45,18 @@
 	// }
 </script>
 
-<div class="max-w-sm space-y-lg">
+<div class="max-w-sm space-y-4x">
 	<Username />
 
 	<form class="" method="POST" action="/{page.params.app}/auth/signout">
 		<Button type="submit">Déconnexion 😓</Button>
 	</form>
 
-	<PairDevice />
+	<!-- <PairDevice /> -->
 
 	<!-- <div>Supprimer le profil</div> -->
 </div>
-
+<!-- 
 {#if dialog_passkey.open}
 	<DialogInvite pop={dialog_passkey} invite />
-{/if}
+{/if} -->

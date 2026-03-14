@@ -10,7 +10,11 @@ type ProcessCollectionOptions = {
 		overrides?: Record<string, Partial<CollectionField>>;
 		snippets?: Record<
 			string,
-			Partial<CollectionField> & { snippet: Snippet<[RecordModel]>; index?: number }
+			Partial<CollectionField> & {
+				snippet: Snippet<[RecordModel]>;
+				display?: 'table' | 'editor';
+				index?: number;
+			}
 		>;
 	};
 };

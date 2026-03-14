@@ -7,6 +7,7 @@ import Url from './fields/url.svelte';
 import Markdown from './fields/markdown.svelte';
 import type { FieldType } from '$config/field.types';
 import Date from './fields/date.svelte';
+import Json from './fields/json.svelte';
 
 export const FieldComponents: Record<FieldType, any> = {
 	text: String,
@@ -22,5 +23,5 @@ export const FieldComponents: Record<FieldType, any> = {
 	date: Date,
 	autodate: Date,
 	select: String,
-	json: String
+	json: Json
 };

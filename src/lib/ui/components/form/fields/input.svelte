@@ -9,10 +9,9 @@
 		name,
 		label = '',
 		label_icon,
-		required = false,
-		placeholder,
 		min,
 		max,
+		required,
 		value = $bindable(),
 		...props
 	}: HTMLInputAttributes & { label?: string; label_icon?: string } = $props();
@@ -28,19 +27,19 @@
 </script>
 
 <div>
-	<div class="bg-surface text-surface-foreground ring-accent flex flex-col focus-within:ring-2">
+	<div class="flex flex-col bg-surface text-surface-foreground ring-accent focus-within:ring-2">
 		<Label {id} {name} required={Boolean(required)} {label} icon={label_icon} linked />
 
 		<input
+			{...props}
 			{oninput}
 			{required}
 			minlength={Boolean(Number(min)) ? Number(min) : undefined}
 			maxlength={Boolean(Number(max)) ? Number(max) : undefined}
 			{name}
 			{type}
-			{placeholder}
 			class={[
-				'placeholder-surface-foreground/50 border px-2.5 py-1.5 outline-none',
+				'border px-2.5 py-1.5 placeholder-surface-foreground/50 outline-none',
 				label && '-mt-1.5 border-t-0',
 				props.class
 			]}

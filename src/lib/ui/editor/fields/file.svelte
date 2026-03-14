@@ -1,22 +1,19 @@
 <script lang="ts">
-	import Button from '$lib/ui/components/button.svelte';
 	import Label from '$lib/ui/components/form/label.svelte';
 	import type { FieldProps } from '$config/field.types';
-	import Attachment from './lib/attachment.svelte';
+	import FileAttachment from './file-attachment.svelte';
 	import FieldButton from '../field-button.svelte';
+	import { use_form_action, type FormActionContext } from '$lib/logic/form-action.svelte';
+	import Error from '$lib/ui/components/form/error.svelte';
 
-	let {
-		id,
-		name,
-		value,
-		minSelect,
-		maxSelect,
-		onsubmit = $bindable()
-	}: FieldProps<'file'> = $props();
+	let { id, name, value, minSelect, maxSelect, mimeTypes, required, ...props }: FieldProps<'file'> =
+		$props();
 
 	const multiple = $derived(maxSelect > 1);
-	let files: (string | File)[] = $state([]);
+	// Build the accept string for the file input (e.g. "image/png,image/jpeg")
+	const accept = $derived(mimeTypes?.length ? mimeTypes.join(',') : undefined);
 
+	let files: (string | File)[] = $state([]);
 	let is_over = $state(false);
 
 	$effect(() => {
@@ -36,14 +33,18 @@
 
 		fake_file_input.click();
 	}
-	function handle_file(file: File) {
-		//if (!file.type.startsWith('image/')) return;
-		files.push(file);
+	function handle_files(incoming: File[]) {
+		incoming.forEach((file) => files.push(file));
+	}
+	function on_input_change(e: Event) {
+		const input = e.currentTarget as HTMLInputElement;
+		if (!input.files?.length) return;
+		handle_files(Array.from(input.files));
+		input.value = '';
 	}
 
 	function on_drag_over(e: DragEvent) {
-		console.log('drag over');
-		e.preventDefault(); // Required to allow a drop
+		e.preventDefault();
 		is_over = true;
 	}
 
@@ -54,18 +55,14 @@
 	function on_drop(e: DragEvent) {
 		e.preventDefault();
 		is_over = false;
-
 		const dropped_files = e.dataTransfer?.files;
 		if (!dropped_files || dropped_files.length === 0) return;
-
-		if (multiple) {
-			Array.from(dropped_files).forEach(handle_file);
-		} else {
-			handle_file(dropped_files[0]);
-		}
+		handle_files(multiple ? Array.from(dropped_files) : [dropped_files[0]]);
 	}
 
-	onsubmit = async (form_data: FormData, cancel) => {
+	const form_action = use_form_action();
+
+	form_action?.register_hook(async ({ form_data, cancel }: FormActionContext) => {
 		const kept_files = new Set(files.filter((item) => typeof item === 'string'));
 
 		const server_strings = (Array.isArray(value) ? value : [value || []])
@@ -89,7 +86,7 @@
 				form_data.append(form_data_key, item);
 			}
 		});
-	};
+	});
 </script>
 
 <div
@@ -103,16 +100,22 @@
 
 	<div class={['divide-y border border-b-0 px-3', !files.length && 'border-t-0']}>
 		{#each files as file, i}
-			<Attachment {file} on_remove={() => files.splice(i, 1)} />
+			<FileAttachment {file} on_remove={() => files.splice(i, 1)} />
 		{/each}
 	</div>
 
 	<FieldButton onclick={upload} disabled={(files.length && !multiple) || false}>Upload</FieldButton>
 
+	<Error {name} />
+
 	<input
+		{accept}
+		multiple={multiple || undefined}
 		class="hidden"
 		type="file"
 		bind:this={fake_file_input}
-		onchange={(e) => e.currentTarget.files?.[0] && handle_file(e.currentTarget.files[0])}
+		onchange={on_input_change}
+		aria-hidden="true"
+		tabindex="-1"
 	/>
 </div>

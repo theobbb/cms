@@ -39,7 +39,8 @@
 
 	const fields = $derived(
 		collection?.fields.filter(
-			(field) => field.type != 'autodate' && !field.hidden && !field.table_only
+			(field) =>
+				field.type != 'autodate' && !field.hidden && !(field.snippet && field.display == 'table')
 		)
 	);
 
@@ -139,7 +140,7 @@
 			</div>
 		{/snippet}
 
-		<div class="flex flex-col gap-md pt-sm pb-12">
+		<div class="flex flex-col gap-3x pt-1x pb-12">
 			{#each fields as field, i}
 				{@const Component = FieldComponents[field.type as keyof typeof FieldComponents] ?? null}
 				{#if Component}
@@ -150,10 +151,10 @@
 						id="{field.name.toString()}-{props_id}"
 					/>
 				{:else}
-					type not implemented yet: {field.type}
+					type not implemented yet: {field.type} - for {field.name}
 				{/if}
 			{/each}
-			<div class="h-md"></div>
+			<div class="h-3x"></div>
 		</div>
 
 		{#snippet footer()}
