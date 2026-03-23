@@ -1,6 +1,7 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import NavLink from './nav-link.svelte';
-	import Section from './section.svelte';
+	import Section from '../section.svelte';
 
 	type Link = {
 		name: string;
@@ -8,7 +9,11 @@
 		icon?: string;
 	};
 
-	const { links: slug_links, base_path }: { links: Link[]; base_path?: string } = $props();
+	const {
+		links: slug_links = [],
+		base_path,
+		children
+	}: { links?: Link[]; base_path?: string; children?: Snippet } = $props();
 
 	const links = $derived(
 		[...slug_links].map((link) => ({
@@ -23,5 +28,6 @@
 		{#each links as link}
 			<NavLink {...link} {base_path} />
 		{/each}
+		{@render children?.()}
 	</nav>
 </Section>

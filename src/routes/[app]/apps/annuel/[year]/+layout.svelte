@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import NavDivider from '$lib/components/nav/nav-divider.svelte';
+	import NavLabel from '$lib/components/nav/nav-label.svelte';
+	import NavLink from '$lib/components/nav/nav-link.svelte';
 
-	import Nav from '$lib/components/nav.svelte';
+	import Nav from '$lib/components/nav/nav.svelte';
 
 	const { data, children } = $props();
 
@@ -17,6 +20,19 @@
 	const year = $derived(page.params.year || data.years[0]?.id);
 </script>
 
-<Nav {links} base_path="/{year}" />
+<Nav>
+	<NavLabel>{year}</NavLabel>
+
+	<NavLink href="/{year}/students" name="Finissant-e-s" />
+	<NavLink href="/{year}/projects" name="Projets" />
+	<NavLink href="/{year}/home" name="Accueil" />
+
+	<NavDivider />
+
+	<NavLabel>Global</NavLabel>
+
+	<NavLink href="/{year}/programs" name="Programmes" />
+	<NavLink href="/{year}/socials" name="Liens réseaux" />
+</Nav>
 
 {@render children()}

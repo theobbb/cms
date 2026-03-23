@@ -5,6 +5,7 @@
 	import { format_date } from '$lib/utils/format-date';
 	import type { RecordModel } from 'pocketbase';
 	import type { Snippet } from 'svelte';
+	import Version from '../version.svelte';
 
 	const {
 		record,
@@ -23,8 +24,8 @@
 
 {#if record}
 	<div class="mb-16 flex flex-col gap-2 text-sm">
-		<div class="flex items-center gap-2">
-			<Box color="green">
+		<div class="">
+			<Box color="green" class="w-fit">
 				<div class="px-2 py-0.5">En attente d'approbation</div>
 			</Box>
 
@@ -35,9 +36,8 @@
 				<div class="text-foreground-muted">créé: {format_date(record.created)}</div>
 			{/if}
 		</div>
-		<div>
-			version {record.draft_version}
-		</div>
+		<Version version={record.draft_version} />
+
 		<!-- <Box color="yellow">
 			<div class="px-2 py-1">
 				<strong>Attention:</strong> Seulement un brouillon peut être en attente à la fois. Si tu soumets

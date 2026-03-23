@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
-	import Button from '$lib/ui/components/button.svelte';
 	import type { RecordModel } from 'pocketbase';
-	import Guide from './guide.svelte';
 	import TableCollection from '$lib/ui/data-table/table-collection.svelte';
 	import { goto } from '$app/navigation';
 	import Search from '$lib/ui/components/search.svelte';

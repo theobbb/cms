@@ -12,11 +12,19 @@ export class Editor {
 	current: EditorTarget | null = $state(null);
 	collection: CollectionModel;
 
+	draft_data: Record<string, any> | null = $state(null);
+
 	#pocketbase = use_pocketbase();
 
 	constructor(collection: CollectionModel) {
 		this.collection = collection;
 		this.#init_from_url();
+	}
+
+	get draft_key() {
+		if (!this.current) return null;
+		const id = this.current.method === 'create' ? `create` : this.current.record.id;
+		return `editor_draft_${this.collection.id}_${id}`;
 	}
 
 	async #init_from_url() {
@@ -46,6 +54,7 @@ export class Editor {
 
 	open(editor: EditorTarget) {
 		this.current = editor;
+		this.draft_data = null;
 		let url = page.url.href;
 		url = url_query_param(url, 'editor', editor.method);
 		url = url_query_param(url, 'record', editor.method == 'update' ? editor.record.id : null);
@@ -54,10 +63,40 @@ export class Editor {
 
 	close() {
 		this.current = null;
+		this.draft_data = null;
 		let url = page.url.href;
 		url = url_query_param(url, 'editor', null);
 		url = url_query_param(url, 'record', null);
 		goto(url, { replaceState: true });
+	}
+
+	// --- Draft Methods ---
+
+	has_saved_draft(): string | null {
+		if (!this.draft_key) return null;
+		return localStorage.getItem(this.draft_key);
+	}
+
+	restore_draft(saved_str: string) {
+		try {
+			this.draft_data = JSON.parse(saved_str);
+			return true;
+		} catch (e) {
+			this.clear_draft(); // Purge if corrupted
+			return false;
+		}
+	}
+
+	save_draft(data: Record<string, any>) {
+		if (!this.draft_key) return;
+		localStorage.setItem(this.draft_key, JSON.stringify(data));
+	}
+
+	clear_draft() {
+		this.draft_data = null;
+		if (this.draft_key) {
+			localStorage.removeItem(this.draft_key);
+		}
 	}
 }
 

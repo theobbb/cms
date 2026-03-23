@@ -59,7 +59,7 @@
 	--red-surface-foreground: oklch(25.8% 0.092 26.042);
 	--red-surface-foreground-muted: oklch(44.4% 0.177 26.899);
 
-	--color-muted: white;
+	--color-muted: var(--foreground-muted);
 }
 
 :root.dark {
@@ -141,7 +141,7 @@
 	--color-red-surface-foreground: var(--red-surface-foreground);
 	--color-red-surface-foreground-muted: var(--red-surface-foreground-muted);
 
-	--color-muted: white;
+	--color-muted: var(--color-muted);
 }
 
 html {

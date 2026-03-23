@@ -9,7 +9,6 @@
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 	import { goto } from '$app/navigation';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
-	import OrderList from '$lib/ui/components/form/fields/order-list.svelte';
 
 	const { data } = $props();
 	const { student, collections } = $derived(data);
@@ -21,7 +20,7 @@
 
 	let socials: Social[] = $state(student?.socials || []);
 
-	$inspect(socials);
+	$inspect(student);
 	const pop_socials = new Pop();
 
 	const has_changed = true;

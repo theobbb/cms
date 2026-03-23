@@ -16,7 +16,7 @@ export async function load({ locals: { app, pocketbase, super_pocketbase, user, 
 		public_route,
 		header_links: [
 			{
-				name: 'Data',
+				name: 'Collections',
 				icon: 'icon-[ri--folder-2-line]',
 				href: `/`
 			}

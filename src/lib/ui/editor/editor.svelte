@@ -19,6 +19,7 @@
 	import ConfirmCancel from '../templates/confirm-cancel.svelte';
 	import { use_editor, type Editor } from './editor-context.svelte';
 	import type { RecordModel } from 'pocketbase';
+	import { FormDraft } from '$lib/logic/form-draft.svelte';
 
 	const {
 		onsubmit: outer_onsubmit
@@ -47,6 +48,15 @@
 	const update_record = $derived(current?.method == 'update' ? current.record : null);
 
 	const form_action = init_form_action();
+
+	// 1. Define the unique reactive key
+	const draft_key = $derived(
+		collection && method
+			? `cms_draft_${collection.name}_${method === 'create' ? 'new' : update_record?.id}`
+			: null
+	);
+
+	const form_draft = new FormDraft(() => draft_key);
 
 	const onsubmit = form_action.submit(async (ctx) => {
 		if (!collection || !method) return;

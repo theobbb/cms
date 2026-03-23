@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Nav from '$lib/components/nav.svelte';
+	import Nav from '$lib/components/nav/nav.svelte';
 	import Section from '$lib/components/section.svelte';
 	import { icons } from '$lib/ui/icons';
 
