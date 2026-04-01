@@ -4,6 +4,7 @@
 	const { children } = $props();
 
 	const links = [
+		{ name: 'Inspirathèque', slug: 'inspiratheque' },
 		{ name: 'Affiches', slug: 'posters' },
 		{ name: 'Association', slug: 'association' },
 		{ name: 'Membres', slug: 'members' },

@@ -62,9 +62,9 @@
 				<span class="icon-[ri--settings-line]"></span>
 				Paramètres
 			</a>
-			<button class="flex items-center gap-1.5">
+			<!-- <button class="flex items-center gap-1.5">
 				<span class="icon-[ri--bug-line]"></span>
-			</button>
+			</button> -->
 		</div>
 
 		<PopUser />

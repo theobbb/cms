@@ -25,7 +25,6 @@
 
 	<NavLink href="/{year}/students" name="Finissant-e-s" />
 	<NavLink href="/{year}/projects" name="Projets" />
-	<NavLink href="/{year}/home" name="Accueil" />
 
 	<NavDivider />
 
