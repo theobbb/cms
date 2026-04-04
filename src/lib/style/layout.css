@@ -16,7 +16,7 @@
 @theme static inline {
 	--spacing-1x: calc(var(--spacing) * 1);
 	--spacing-2x: calc(var(--spacing) * 2);
-	--spacing-3x: calc(var(--spacing) * 4);
+	--spacing-3x: calc(var(--spacing) * 6);
 	--spacing-4x: calc(var(--spacing) * 8);
 	--spacing-5x: calc(var(--spacing) * 16);
 }
@@ -88,7 +88,7 @@ input:-webkit-autofill:active {
 td,
 th {
 	user-select: none;
-	padding: 0.25rem 0.8rem;
+	padding: 0.5rem 0.8rem;
 	max-width: 14rem;
 }
 td.checkbox,

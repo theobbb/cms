@@ -7,8 +7,9 @@
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
 	import Info from '$lib/ui/templates/box/info.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
+	import { ClientResponseError, type RecordModel } from 'pocketbase';
 
 	const { data } = $props();
 	const { student, collections } = $derived(data);
@@ -20,35 +21,57 @@
 
 	let socials: Social[] = $state(student?.socials || []);
 
-	$inspect(student);
 	const pop_socials = new Pop();
 
 	const has_changed = true;
 
 	const form_action = init_form_action();
 
+	type DraftRecord =
+		| (RecordModel & { draft_of: string | null; draft: boolean; is_latest: boolean })
+		| null;
+
 	const onsubmit = form_action.submit(async ({ form_data }) => {
-		const root_id = student?.draft_of || student?.id;
-		if (root_id) {
-			form_data.set('draft_of', student.id);
+		const record = student as DraftRecord;
+
+		const body = {
+			...Object.fromEntries(form_data),
+			socials,
+			id: record?.draft ? record.id : undefined,
+			draft_of: record?.draft ? record.draft_of : record?.id || null,
+			draft: true,
+			is_latest: true,
+			year: page.params.year
+		};
+
+		const res = await fetch(`/public/${page.params.year}/api/draft?collection=students`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(body)
+		});
+		if (!res.ok) {
+			// 1. Safely parse the JSON (fallback to null if the server crashed hard)
+			const error_data = await res.json().catch(() => null);
+
+			// 2. Bypass the constructor's auto-unwrapping
+			const pb_err = new ClientResponseError();
+			pb_err.response = error_data || { message: 'Erreur serveur inattendue' };
+
+			// 3. Throw it so form-action catches it
+			throw pb_err;
 		}
-		form_data.set('year', page.params.year || '');
-		form_data.set('draft', 'true');
-		form_data.set('is_latest', 'true');
+		const new_record: DraftRecord = await res.json();
 
-		const next_version = student ? Number(student.draft_version) + 1 || 0 : 0;
-		form_data.set('draft_version', String(next_version));
+		console.log(new_record);
 
-		const body: any = Object.fromEntries(form_data);
-		body.socials = socials;
+		form_action.toaster.push('success', `Brouillon enregistré.`);
 
-		const created = await form_action.pocketbase.collection('students').create(body);
-
-		form_action.toaster.push('success', `Brouillon v${next_version} envoyé.`);
-
-		goto(`/public/${page.params.year}/finissant-e-s/draft?id=${created.id}`);
-
-		if (root_id) fetch(`/public/${page.params.year}/api/update-is-latest?id=${root_id}`);
+		// Redirect to the draft view if we weren't already there
+		if (!body.id && new_record) {
+			goto(`/public/${page.params.year}/finissant-es/draft?id=${new_record.id}`);
+		} else {
+			invalidate('data:draft');
+		}
 	});
 </script>
 
@@ -64,11 +87,18 @@
 
 	<Input name="first_name" label="Prénom" required value={student?.first_name} />
 	<Input name="last_name" label="Nom" required value={student?.last_name} />
+	<Input name="pronouns" label="Pronoms" value={student?.last_name} />
+
 	<Textarea name="description" label="description" rows={6} required value={student?.description} />
-
+	<div>
+		<Relation
+			{...collections.students.field_map.program}
+			label="programme"
+			record={student}
+			value={student?.program}
+		/>
+	</div>
 	<div class="space-y-3">
-		<Info>Tu peux ajouter des liens vers tes réseaux sociaux ou autres ressources (optionel)</Info>
-
 		<div>
 			<div class="">
 				<!-- <OrderList
@@ -89,14 +119,7 @@
 			<Socials bind:socials />
 		</div>
 	</div>
-	<div>
-		<Relation
-			{...collections.students.field_map.program}
-			label="programme"
-			record={student}
-			value={student?.program}
-		/>
-	</div>
+
 	{#if !virgin}
 		<div class="mb-gap mt-12 flex items-center justify-between border-b py-3">
 			<div class="text-xl">Projets</div>

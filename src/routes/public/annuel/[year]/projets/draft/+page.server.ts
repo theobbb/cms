@@ -1,4 +1,6 @@
-export async function load({ url, locals: { pocketbase } }) {
+export async function load({ url, locals: { pocketbase }, depends }) {
+	depends('data:draft');
+
 	const project_id = url.searchParams.get('id');
 
 	if (project_id) {

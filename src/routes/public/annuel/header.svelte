@@ -10,11 +10,8 @@
 	<div>Annuel {year}</div>
 	<div class="flex w-fit items-center gap-1 bg-surface p-1">
 		<a
-			class={[
-				'px-2.5 py-0.5',
-				param == 'finissant-e-s' ? 'bg-background' : 'text-foreground-muted'
-			]}
-			href="/public/{year}/finissant-e-s">Finissant-e-s</a
+			class={['px-2.5 py-0.5', param == 'finissant-es' ? 'bg-background' : 'text-foreground-muted']}
+			href="/public/{year}/finissant-es">Finissant-e-s</a
 		>
 		<a
 			class={['px-2.5 py-0.5', param == 'projets' ? 'bg-background' : 'text-foreground-muted']}

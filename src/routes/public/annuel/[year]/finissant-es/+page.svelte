@@ -17,7 +17,7 @@
 
 	<a
 		class="text-indigo-600 dark:text-indigo-400"
-		href="/public/{page.params.year}/finissant-e-s/draft"
+		href="/public/{page.params.year}/finissant-es/draft"
 	>
 		Inscription →
 	</a>
@@ -31,7 +31,7 @@
 			record_title: 'Finissant-e',
 			fields: {
 				hidden:
-					'year,draft_of,draft_version,is_latest,description,scholarship,socials,updated,program',
+					'year,draft_of,draft_version,is_latest,headshot,pronouns,description,scholarship,socials,updated,program',
 				labels: {
 					first_name: 'prénom',
 					last_name: 'nom',
@@ -45,7 +45,7 @@
 		})}
 		query={{ filter: `year = "${page.params.year}" && is_latest = true`, sort: '-created' }}
 		row_props={(row) => ({
-			onclick: () => goto(`/public/${page.params.year}/finissant-e-s/draft?id=${row.id}`)
+			onclick: () => goto(`/public/${page.params.year}/finissant-es/draft?id=${row.id}`)
 		})}
 	/>
 </div>
@@ -53,11 +53,16 @@
 {#snippet status(student: RecordModel)}
 	<div>
 		{#if student.draft}
-			<Box color={student.draft_of ? 'green' : 'blue'}>
-				<div class="px-1 text-xs">
-					{student.draft_of ? 'Nouveau' : `En attente d'approbation`}
+			<div
+				class={[
+					'rounded-full- w-fit border border-current/50 px-1.5 py-px',
+					student.draft_of ? 'bg-blue-200 text-blue-900 ' : 'bg-green-200 text-green-900'
+				]}
+			>
+				<div class="text-xs">
+					{student.draft_of ? `Modifié` : `Nouveau`}
 				</div>
-			</Box>
+			</div>
 		{/if}
 	</div>
 {/snippet}

@@ -49,7 +49,7 @@
 	<OrderList
 		items={socials}
 		add_item_text="Ajouter un lien"
-		label="liens"
+		label="liens externes"
 		on_add_item={pop.show}
 		{on_remove_item}
 	>

@@ -20,6 +20,7 @@
 	import { use_editor, type Editor } from './editor-context.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import { FormDraft } from '$lib/logic/form-draft.svelte';
+	import Drawer from '$lib/components/drawer.svelte';
 
 	const {
 		onsubmit: outer_onsubmit
@@ -104,7 +105,7 @@
 </script>
 
 <form {onsubmit} class="contents">
-	<Section size="lg">
+	<Drawer size="lg">
 		{#snippet header()}
 			<div class="flex items-center justify-between gap-4">
 				<div class="">
@@ -173,5 +174,5 @@
 				onclose={editor.close}
 			/>
 		{/snippet}
-	</Section>
+	</Drawer>
 </form>

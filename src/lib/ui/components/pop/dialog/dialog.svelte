@@ -39,7 +39,7 @@
 
 {#if pop.open}
 	<dialog use:open closedby="any" class={['m-auto', sizes[size]]} {onclose}>
-		<div class="flex flex-col gap-4x bg-background p-3x">
+		<div class="flex flex-col gap-4x border bg-background p-3x">
 			{@render children()}
 		</div>
 	</dialog>
@@ -54,7 +54,7 @@
 		outline: none;
 	}
 	dialog::backdrop {
-		background-color: rgba(0, 0, 0, 0.3);
+		background-color: rgba(0, 0, 0, 0.5);
 		/* backdrop-filter: brightness(0.5); */
 		/* backdrop-filter: blur(5px); */
 	}

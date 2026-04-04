@@ -23,8 +23,15 @@
 <Nav>
 	<NavLabel>{year}</NavLabel>
 
-	<NavLink href="/{year}/students" name="Finissant-e-s" />
+	<NavLink href="/{year}/students" name="Finissant.es" />
 	<NavLink href="/{year}/projects" name="Projets" />
+
+	<NavDivider />
+
+	<NavLabel>Brouillons</NavLabel>
+
+	<NavLink href="/{year}/drafts/students" name="Finissant.es" />
+	<NavLink href="/{year}/drafts/projects" name="Projets" />
 
 	<NavDivider />
 

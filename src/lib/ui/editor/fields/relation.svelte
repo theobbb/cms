@@ -13,7 +13,6 @@
 	import { use_form_action } from '$lib/logic/form-action.svelte';
 	import Error from '$lib/ui/components/form/error.svelte';
 	import FieldButton from '../field-button.svelte';
-	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 
@@ -82,7 +81,6 @@
 
 			options.filter = [search_filter, filter].filter((f) => Boolean(f)).join(' && ');
 
-			console.log(options.filter);
 			const res = await pocketbase.collection(collectionId).getList<RecordModel>(1, 32, options);
 			available_records = res.items;
 		} catch (error) {
@@ -227,7 +225,7 @@
 							onclick={() => toggle_selection(item)}
 						>
 							{#if selected}
-								<span class="text-primary icon-[ri--checkbox-line] text-xl"></span>
+								<span class="icon-[ri--checkbox-line] text-xl text-primary"></span>
 							{:else}
 								<span class="text-muted-foreground icon-[ri--checkbox-blank-line] text-xl"></span>
 							{/if}
@@ -239,7 +237,7 @@
 				</div>
 
 				<div class="space-y-3 border-t pt-3">
-					<div class="text-foreground-muted flex items-center gap-2 text-sm">
+					<div class="flex items-center gap-2 text-sm text-foreground-muted">
 						<div>Sélectionné</div>
 						{#if multiple}
 							({pop_selection.length} / {maxSelect})

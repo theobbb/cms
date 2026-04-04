@@ -5,7 +5,6 @@
 	import { format_date } from '$lib/utils/format-date';
 	import type { RecordModel } from 'pocketbase';
 	import type { Snippet } from 'svelte';
-	import Version from '../version.svelte';
 
 	const {
 		record,
@@ -16,19 +15,16 @@
 	const is_draft_mode = $derived(!!record?.id);
 </script>
 
-<div class="mb-8">
-	<a href="/public/{page.params.year}/finissant-e-s" class="mb-4 block hover:underline">
+<!-- <div class="mb-8">
+	<a href="/public/{page.params.year}/finissant-es" class="mb-4 block hover:underline">
 		← Liste de finissant-e-s
 	</a>
-</div>
+</div> -->
 
-{#if record}
+{#if record?.draft}
 	<div class="mb-16 flex flex-col gap-2 text-sm">
 		<div class="">
-			<Box color="green" class="w-fit">
-				<div class="px-2 py-0.5">En attente d'approbation</div>
-			</Box>
-
+			<div>Brouillon en attente de validation par le comité web.</div>
 			{#if record.created}
 				{#if record.created != record.updated}
 					<div class="mr-4 text-foreground-muted">modifié: {format_date(record.updated)}</div>
@@ -36,17 +32,19 @@
 				<div class="text-foreground-muted">créé: {format_date(record.created)}</div>
 			{/if}
 		</div>
-		<Version version={record.draft_version} />
 
-		<!-- <Box color="yellow">
-			<div class="px-2 py-1">
-				<strong>Attention:</strong> Seulement un brouillon peut être en attente à la fois. Si tu soumets
-				une nouvelle version, la précédente sera écrasée.
-			</div>
-		</Box> -->
-		<!-- <div class="rounded-md border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
-			
-		</div> -->
+		<div>⚠️</div>
+		<ul class="list-disc">
+			<li>
+				Un seul brouillon peut être en attente à la fois. Si tu en soumets un nouveau, celui-ci sera
+				écrasé.
+			</li>
+			<li>
+				Ce système n'est pas protégé par mot de passe — n'importe qui ayant accès au lien peut
+				modifier ou écraser ton brouillon.
+			</li>
+			<li>Garde toujours une copie de tes fichiers sur ton propre ordinateur.</li>
+		</ul>
 	</div>
 {/if}
 
