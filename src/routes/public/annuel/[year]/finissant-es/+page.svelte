@@ -6,8 +6,11 @@
 	import { goto } from '$app/navigation';
 	import Search from '$lib/ui/components/search.svelte';
 	import { process_collection } from '$config/utils.js';
+	import { use_editor } from '$lib/ui/editor/editor-context.svelte.js';
 
 	const { data } = $props();
+
+	const editor = use_editor();
 </script>
 
 <!-- <Guide /> -->
@@ -18,6 +21,9 @@
 	<a
 		class="text-indigo-600 dark:text-indigo-400"
 		href="/public/{page.params.year}/finissant-es/draft"
+		onclick={() => {
+			editor.open({ method: 'create' });
+		}}
 	>
 		Inscription →
 	</a>
@@ -45,7 +51,10 @@
 		})}
 		query={{ filter: `year = "${page.params.year}" && is_latest = true`, sort: '-created' }}
 		row_props={(row) => ({
-			onclick: () => goto(`/public/${page.params.year}/finissant-es/draft?id=${row.id}`)
+			onclick: () => {
+				editor.open({ method: 'update', record: row });
+				goto(`/public/${page.params.year}/finissant-es/draft?editor=update&record=${row.id}`);
+			}
 		})}
 	/>
 </div>

@@ -4,8 +4,8 @@
 
 	const { data, children } = $props();
 
-	init_editor(data.collections.projects);
-	set_collection(data.collections.projects);
+	init_editor(data.collections.students);
+	set_collection(data.collections.students);
 </script>
 
 {@render children()}

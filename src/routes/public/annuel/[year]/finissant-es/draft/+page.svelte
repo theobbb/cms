@@ -10,16 +10,20 @@
 	import { goto, invalidate } from '$app/navigation';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import { ClientResponseError, type RecordModel } from 'pocketbase';
+	import { use_editor } from '$lib/ui/editor/editor-context.svelte.js';
 
 	const { data } = $props();
-	const { student, collections } = $derived(data);
+	const { collections } = $derived(data);
+
+	const editor = use_editor();
+	const record = $derived(editor?.current?.method == 'update' ? editor?.current?.record : null);
 
 	const id = $derived(page.url.searchParams.get('id'));
 	const virgin = $derived(!page.url.searchParams.has('id'));
 
-	const projects = $derived(student?.expand?.['projects(students)']);
+	const projects = $derived(record?.expand?.['projects(students)']);
 
-	let socials: Social[] = $state(student?.socials || []);
+	let socials: Social[] = $state(record?.socials || []);
 
 	const pop_socials = new Pop();
 
@@ -32,8 +36,6 @@
 		| null;
 
 	const onsubmit = form_action.submit(async ({ form_data }) => {
-		const record = student as DraftRecord;
-
 		const body = {
 			...Object.fromEntries(form_data),
 			socials,
@@ -66,36 +68,34 @@
 
 		form_action.toaster.push('success', `Brouillon enregistré.`);
 
-		// Redirect to the draft view if we weren't already there
-		if (!body.id && new_record) {
-			goto(`/public/${page.params.year}/finissant-es/draft?id=${new_record.id}`);
-		} else {
-			invalidate('data:draft');
+		if (new_record) {
+			editor.open({ method: 'update', record: new_record });
+			goto(`/public/${page.params.year}/finissant-es/draft?editor=update&record=${new_record.id}`);
 		}
 	});
 </script>
 
 <form {onsubmit} class="space-y-6">
-	<DraftHeader record={student} {has_changed}>
-		{#if student}
-			{student?.first_name}
-			{student?.last_name}
+	<DraftHeader {record} {has_changed}>
+		{#if record}
+			{record?.first_name}
+			{record?.last_name}
 		{/if}
 	</DraftHeader>
 
 	<!-- <Info /> -->
 
-	<Input name="first_name" label="Prénom" required value={student?.first_name} />
-	<Input name="last_name" label="Nom" required value={student?.last_name} />
-	<Input name="pronouns" label="Pronoms" value={student?.last_name} />
+	<Input name="first_name" label="Prénom" required value={record?.first_name} />
+	<Input name="last_name" label="Nom" required value={record?.last_name} />
+	<Input name="pronouns" label="Pronoms" value={record?.last_name} />
 
-	<Textarea name="description" label="description" rows={6} required value={student?.description} />
+	<Textarea name="description" label="description" rows={6} required value={record?.description} />
 	<div>
 		<Relation
 			{...collections.students.field_map.program}
 			label="programme"
-			record={student}
-			value={student?.program}
+			{record}
+			value={record?.program}
 		/>
 	</div>
 	<div class="space-y-3">
@@ -124,7 +124,7 @@
 		<div class="mb-gap mt-12 flex items-center justify-between border-b py-3">
 			<div class="text-xl">Projets</div>
 
-			<a class="text-indigo-600" href="/public/{page.params.year}/projets/draft?student={id}">
+			<a class="text-indigo-600" href="/public/{page.params.year}/projets/draft?record={id}">
 				Nouveau projet +
 			</a>
 		</div>
