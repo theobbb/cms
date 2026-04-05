@@ -15,6 +15,7 @@
 	import FieldButton from '../field-button.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
+	import SortableList from '$lib/ui/components/sortable-list.svelte';
 
 	let {
 		id,
@@ -113,11 +114,7 @@
 			if (!multiple) {
 				pop_selection = [item];
 			} else {
-				// FIX: Enforce maxSelect
-				if (maxSelect && pop_selection.length >= maxSelect) {
-					// Optional: Add toast/alert here
-					return;
-				}
+				if (maxSelect && pop_selection.length >= maxSelect) return;
 				pop_selection = [...pop_selection, item];
 			}
 		}
@@ -136,6 +133,13 @@
 		close_picker();
 	}
 
+	// Handles array reordering and pushes the new IDs up
+	function handle_reorder(reordered_items: RecordModel[]) {
+		const new_ids = reordered_items.map((i) => i.id);
+		value = multiple ? new_ids : (new_ids[0] ?? null);
+		on_change?.(new_ids);
+	}
+
 	const form_action = use_form_action();
 
 	$effect(() => {
@@ -151,17 +155,6 @@
 		});
 		return unregister;
 	});
-	// Form submission handler
-	// onsubmit = async (form_data: FormData) => {
-	// 	// Clean existing entries for this name to prevent duplicates if called multiple times
-	// 	form_data.delete(name);
-
-	// 	if (selected_ids.length === 0) {
-	// 		form_data.append(name, '');
-	// 	} else {
-	// 		selected_ids.forEach((id) => form_data.append(name, id));
-	// 	}
-	// };
 </script>
 
 {#if collection}
@@ -172,10 +165,10 @@
 			{/if}
 
 			{#if items.length > 0}
-				<div class="flex flex-col">
-					{#each items as item (item.id)}
+				<SortableList {items} {multiple} on_reorder={handle_reorder} class="flex flex-col">
+					{#snippet children(item)}
 						<div
-							class="flex h-10 items-center justify-between gap-2 border border-b-0 px-2.5 pr-1.5"
+							class="flex h-10 items-center justify-between gap-2 border border-b-0 bg-surface px-2.5 pr-1.5"
 						>
 							<div class="truncate">
 								<RecordPresentable record={item} />
@@ -188,8 +181,8 @@
 								aria-label="Remove item"
 							/>
 						</div>
-					{/each}
-				</div>
+					{/snippet}
+				</SortableList>
 			{/if}
 
 			<div>

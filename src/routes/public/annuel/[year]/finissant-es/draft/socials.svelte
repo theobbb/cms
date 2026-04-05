@@ -61,9 +61,8 @@
 		{/snippet}
 	</OrderList>
 </div>
-
-<Dialog {pop} size="sm">
-	<form class="space-y-3x" {onsubmit}>
+<form class="space-y-2x" {onsubmit}>
+	<Dialog {pop} size="md">
 		<DialogHeader>
 			<DialogTitle>Nouveau lien</DialogTitle>
 		</DialogHeader>
@@ -83,5 +82,5 @@
 			<Button variant="ghost" type="reset" size="lg">Annuler</Button>
 			<Button variant="action" type="submit" size="lg" formaction="">Ajouter</Button>
 		</div>
-	</form>
-</Dialog>
+	</Dialog>
+</form>

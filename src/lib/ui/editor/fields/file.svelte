@@ -5,12 +5,21 @@
 	import FieldButton from '../field-button.svelte';
 	import { use_form_action, type FormActionContext } from '$lib/logic/form-action.svelte';
 	import Error from '$lib/ui/components/form/error.svelte';
+	import SortableList from '$lib/ui/components/sortable-list.svelte';
 
-	let { id, name, value, minSelect, maxSelect, mimeTypes, required, ...props }: FieldProps<'file'> =
-		$props();
+	let {
+		id,
+		name,
+		label,
+		value,
+		minSelect,
+		maxSelect,
+		mimeTypes,
+		required,
+		...props
+	}: FieldProps<'file'> = $props();
 
 	const multiple = $derived(maxSelect > 1);
-	// Build the accept string for the file input (e.g. "image/png,image/jpeg")
 	const accept = $derived(mimeTypes?.length ? mimeTypes.join(',') : undefined);
 
 	let files: (string | File)[] = $state([]);
@@ -22,7 +31,6 @@
 			return;
 		}
 		const new_values = Array.isArray(value) ? value : [value];
-
 		files = [...new_values];
 	});
 
@@ -30,12 +38,13 @@
 
 	function upload() {
 		if (files.length && !multiple) return;
-
 		fake_file_input.click();
 	}
+
 	function handle_files(incoming: File[]) {
 		incoming.forEach((file) => files.push(file));
 	}
+
 	function on_input_change(e: Event) {
 		const input = e.currentTarget as HTMLInputElement;
 		if (!input.files?.length) return;
@@ -63,27 +72,19 @@
 	const form_action = use_form_action();
 
 	form_action?.register_hook(async ({ form_data, cancel }: FormActionContext) => {
-		const kept_files = new Set(files.filter((item) => typeof item === 'string'));
+		form_data.delete(name);
 
-		const server_strings = (Array.isArray(value) ? value : [value || []])
-			.flat()
-			.filter((v) => typeof v === 'string');
+		if (files.length === 0) {
+			form_data.append(name, '');
+			return;
+		}
 
-		// 2. Handle Deletions:
-		// If it's in 'value' (Server) but NOT in 'files' (UI), it must be deleted.
-		server_strings.forEach((server_file) => {
-			if (!kept_files.has(server_file)) {
-				const filename = server_file.split('/').pop();
-				if (!filename) return;
-				form_data.append(name + '-', filename);
-			}
-		});
-
-		// 3. Handle New Uploads:
-		files.forEach(async (item) => {
-			if (item instanceof File) {
-				const form_data_key = multiple ? name + '+' : name;
-				form_data.append(form_data_key, item);
+		files.forEach((item) => {
+			if (typeof item === 'string') {
+				const filename = item.split('/').pop();
+				if (filename) form_data.append(name, filename);
+			} else if (item instanceof File) {
+				form_data.append(name, item);
 			}
 		});
 	});
@@ -96,13 +97,18 @@
 	ondrop={on_drop}
 	role="presentation"
 >
-	<Label {id} label={name || ''} icon="icon-[ri--image-line]" />
+	<Label {id} label={label || name || ''} icon="icon-[ri--image-line]" />
 
-	<div class={['divide-y border border-b-0 px-3', !files.length && 'border-t-0']}>
-		{#each files as file, i}
+	<SortableList
+		items={files}
+		{multiple}
+		on_reorder={(new_files) => (files = new_files)}
+		class={['divide-y border border-b-0 px-3', !files.length && 'border-t-0']}
+	>
+		{#snippet children(file, i)}
 			<FileAttachment {file} on_remove={() => files.splice(i, 1)} />
-		{/each}
-	</div>
+		{/snippet}
+	</SortableList>
 
 	<FieldButton onclick={upload} disabled={(files.length && !multiple) || false}>Upload</FieldButton>
 

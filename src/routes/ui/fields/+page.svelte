@@ -42,12 +42,9 @@ Le problème avec cette approche - et d'ailleurs le problème de ma vie - c'est 
 	];
 </script>
 
-<div class="h-24 w-sm bg-red-500"></div>
-<div class="h-24 w-md bg-red-500"></div>
-<div class="h-24 w-full max-w-lg bg-red-500"></div>
 <div class="w-md space-y-6">
 	{#each fields as { name, Component, ...rest }}
-		<Component {name} id={name} {...rest} />
+		<div class="relative"><Component {name} id={name} {...rest} /></div>
 	{/each}
 
 	<!-- <String name="label" id="label" />

@@ -11,13 +11,15 @@ export type EditorTarget = { method: 'create' } | { method: 'update'; record: Re
 export class Editor {
 	current: EditorTarget | null = $state(null);
 	collection: CollectionModel;
+	base_query = {};
 
 	draft_data: Record<string, any> | null = $state(null);
 
 	#pocketbase = use_pocketbase();
 
-	constructor(collection: CollectionModel) {
+	constructor(collection: CollectionModel, query = {}) {
 		this.collection = collection;
+		this.base_query = query;
 		this.#init_from_url();
 	}
 

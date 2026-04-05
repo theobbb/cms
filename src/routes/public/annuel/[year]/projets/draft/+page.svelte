@@ -75,28 +75,71 @@
 		{project?.name}
 	</DraftHeader>
 
-	<Warning>
-		Assures-toi de créer ton profil (et qu'il ait été validé) AVANT de créer tes projets.
-	</Warning>
-
 	<Input name="name" label="titre" required value={project?.name} />
 
 	<Textarea name="description" label="description" rows={6} required value={project?.description} />
 
+	{#if editor.current?.method == 'create'}
+		<Warning>
+			Seuls les profils de finissant-e <strong>validés</strong> peuvent être ajoutés.
+		</Warning>
+	{/if}
 	<div>
 		<Relation
 			{...collections.projects.field_map.students}
 			value={project?.students || (virgin_student_id ? [virgin_student_id] : [])}
 			record={project}
 			query={{ sort: 'created', filter: `year = "${page.params.year}" && draft = false` }}
+			label="finissant-e-s"
+		/>
+	</div>
+
+	<div>
+		<div class="mb-2 text-sm">
+			Aspect ratio 4:5 obligatoire 😡
+			<br />
+			Le thumbnail du projet est seulement visible dans la grille de projet — pas sur la page individuelle.
+		</div>
+		<File
+			{...collections.projects.field_map.thumbnail}
+			value={project?.thumbnail}
+			label="thumbnail"
+			required
 		/>
 	</div>
 
 	<div class="mt-8">
-		<div class="mb-2 border bg-blue px-3 py-2 text-sm text-blue-foreground">
-			Directives upload files
+		<div class="mb-2 text-sm">Limite ~ 5MB / fichier</div>
+		<File
+			{...collections.projects.field_map.files}
+			value={project?.files}
+			label="images et/ou vidéos"
+		/>
+	</div>
+	<div>
+		<div class="mb-2 text-sm">
+			Format : [Prénom] [Nom]
+			<br />
+			Example : Louise Paradis
 		</div>
-		<!-- <Files {...collections.projects.field_map.files} value={project?.files} /> -->
-		<File {...collections.projects.field_map.files} value={project?.files} />
+
+		<Input name="teacher" label="professeur-e" value={project?.teacher} />
+	</div>
+	<Input name="class" label="cours" value={project?.class} />
+	<div>
+		<div class="mb-2 text-sm">
+			Format : [2 derniers chiffres de l’année].[Automne : 0, Hiver: 1, Été: 2]
+			<br />
+
+			Example 1 : Automne 2024 → 24.0
+			<br />
+
+			Example 2 : Hiver 2025 → 25.1
+			<br />
+
+			Example 3 : Été 2026 → 26.2
+		</div>
+
+		<Input name="session" label="session" value={project?.session} />
 	</div>
 </form>

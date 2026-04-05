@@ -33,8 +33,8 @@
 			{/if}
 		</div>
 
-		<div>⚠️</div>
-		<ul class="list-disc">
+		<div>⚠️ Attention !</div>
+		<ul class="list-disc pl-4">
 			<li>
 				Un seul brouillon peut être en attente à la fois. Si tu en soumets un nouveau, celui-ci sera
 				écrasé.
@@ -43,7 +43,7 @@
 				Ce système n'est pas protégé par mot de passe — n'importe qui ayant accès au lien peut
 				modifier ou écraser ton brouillon.
 			</li>
-			<li>Garde toujours une copie de tes fichiers sur ton propre ordinateur.</li>
+			<li>Garde toujours une copie de tes fichiers / textes sur ton propre ordinateur.</li>
 		</ul>
 	</div>
 {/if}

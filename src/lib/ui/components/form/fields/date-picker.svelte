@@ -99,9 +99,9 @@
 		<Input {id} {name} value={inputValue} oninput={handleInput} placeholder="JJ/MM/YYYY" {label} />
 	</div>
 
-	<div class={[' hidden group-focus-within:block focus:block', TEST_POP && 'block!']}>
+	<div class={['not-group-focus-within:hidden focus:block', TEST_POP && 'block!']}>
 		<Anchor anchor="anchor-{id}" class="m-2">
-			<div class="w-64- bg-surface text-surface-foreground border p-3 text-sm">
+			<div class="w-64- border bg-surface p-3 text-sm text-surface-foreground">
 				<div class="mb-4 flex items-center justify-between">
 					<div>
 						<Button
