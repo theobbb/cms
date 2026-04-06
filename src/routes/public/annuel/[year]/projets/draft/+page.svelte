@@ -26,6 +26,11 @@
 
 	const form_action = init_form_action();
 
+	let background_color = $state('');
+	$effect(() => {
+		if (project?.background) background_color = project.background;
+	});
+
 	type DraftRecord =
 		| (RecordModel & { draft_of: string | null; draft: boolean; is_latest: boolean })
 		| null;
@@ -134,6 +139,20 @@
 		value={project?.files}
 		label="images et/ou vidéos"
 	/>
+
+	<Info>
+		<div>Tu peux définir une couleur de background pour ta page projet.</div>
+		<div>Format : Hex, RGB, HLS, OKLCH, Keyword (blue, green, etc.)</div>
+		<div>Example 1 : #D15E47</div>
+		<div>Example 2 : oklch(71.647% 0.06301 158.647)</div>
+	</Info>
+	<div class="relative">
+		<Input name="background" label="couleur background" bind:value={background_color} />
+		<div
+			class="absolute top-2 right-2 size-5 rounded-full"
+			style="background-color: {background_color};"
+		></div>
+	</div>
 
 	<Info>
 		<div>Format : [Prénom] [Nom]</div>

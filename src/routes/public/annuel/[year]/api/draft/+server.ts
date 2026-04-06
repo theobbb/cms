@@ -39,15 +39,14 @@ export async function POST({ url, request, locals: { super_pocketbase } }) {
 			// Draft exists. Just update it.
 			new_record = await super_pocketbase.collection(collection).update(id as string, body);
 		} else {
-			// New draft
+			// Create the single draft record (Files will automatically upload if body is FormData)
+			new_record = await super_pocketbase.collection(collection).create(body);
+
 			if (draft_of) {
 				await super_pocketbase.collection(collection).update(draft_of as string, {
 					is_latest: false
 				});
 			}
-
-			// Create the single draft record (Files will automatically upload if body is FormData)
-			new_record = await super_pocketbase.collection(collection).create(body);
 		}
 
 		return json(new_record);
