@@ -13,7 +13,7 @@
 	import SortableList from '$lib/ui/components/sortable-list.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import ListItem from '$lib/ui/components/list-item.svelte';
-	import Info from '../../../info.svelte';
+	import Info from '../../info.svelte';
 	import Button from '$lib/ui/components/button.svelte';
 
 	const { data } = $props();

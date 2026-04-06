@@ -85,10 +85,43 @@
 	--secondary-foreground: oklch(82% 0.0001 271.152);
 	--secondary-foreground-muted: oklch(65% 0.0001 271.152);
 
-	--accent: oklch(55% 0.12 251.813);
+	--accent: oklch(40.449% 0.06713 251.208);
 	--accent-hover: oklch(55% 0.12 251.813 / 0.528);
 	--accent-foreground: oklch(92% 0.04 250.528);
 	--accent-foreground-muted: oklch(78% 0.05 250.109);
+
+	/* --- utils */
+	--blue: oklch(27.703% 0.0264 253.32);
+	--blue-foreground: oklch(67.875% 0.06169 255.76);
+	--blue-foreground-muted: oklch(71.739% 0.06577 255.957 / 0.649);
+	--blue-surface: oklch(32.642% 0.09293 258.603);
+	--blue-surface-foreground: oklch(75.201% 0.08144 265.603);
+	--blue-surface-foreground-muted: oklch(75.201% 0.08144 265.603 / 0.687);
+	--foreground-blue: oklch(73.482% 0.09547 268.589);
+
+	--green: oklch(26.976% 0.03035 159.233);
+	--green-foreground: oklch(71.647% 0.06301 158.647);
+	--green-foreground-muted: oklch(71.647% 0.06301 158.647 / 0.639);
+	--green-surface: oklch(36.072% 0.0931 148.408);
+	--green-surface-foreground: oklch(80.28% 0.07472 151.886);
+	--green-surface-foreground-muted: oklch(80.28% 0.07472 151.886 / 0.701);
+	--foreground-green: oklch(73.043% 0.10592 157.059);
+
+	--yellow: #2a2820;
+	--yellow-foreground: oklch(72.814% 0.06444 79.386);
+	--yellow-foreground-muted: oklch(72.814% 0.06444 79.386 / 0.613);
+	--yellow-surface: oklch(38.943% 0.07688 71.749);
+	--yellow-surface-foreground: oklch(80.786% 0.0765 85.036);
+	--yellow-surface-foreground-muted: oklch(80.585% 0.07587 83.83 / 0.669);
+	--foreground-yellow: oklch(81.503% 0.07908 90.434);
+
+	--red: oklch(28.235% 0.02287 18.527);
+	--red-foreground: oklch(62.239% 0.07989 17.489);
+	--red-foreground-muted: oklch(62.239% 0.07989 17.489 / 0.598);
+	--red-surface: oklch(35.163% 0.11073 24.23);
+	--red-surface-foreground: oklch(80.251% 0.0767 17.817);
+	--red-surface-foreground-muted: oklch(80.251% 0.0767 17.817 / 0.706);
+	--foreground-red: oklch(71.344% 0.09821 17.341);
 }
 
 @theme inline static {
@@ -137,8 +170,8 @@
 	--color-yellow-foreground: var(--yellow-foreground);
 	--color-yellow-foreground-muted: var(--yellow-foreground-muted);
 	--color-yellow-surface: var(--yellow-surface);
-	--color-yellow-surface-foreground: var(--yellow-foreground);
-	--color-yellow-surface-foreground-muted: var(--yellow-foreground-muted);
+	--color-yellow-surface-foreground: var(--yellow-surface-foreground);
+	--color-yellow-surface-foreground-muted: var(--yellow-surface-foreground-muted);
 	--color-foreground-yellow: var(--foreground-yellow);
 
 	--color-red: var(--red);

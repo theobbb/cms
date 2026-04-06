@@ -8,10 +8,8 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
-
 	import Button from '$lib/ui/components/button.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
-	import OrderList from '$lib/ui/components/form/fields/order-list.svelte';
 	import Label from '$lib/ui/components/form/label.svelte';
 	import ListItem from '$lib/ui/components/list-item.svelte';
 	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
@@ -20,15 +18,13 @@
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import SortableList from '$lib/ui/components/sortable-list.svelte';
-	import Info from '../../../info.svelte';
+	import Info from '../../info.svelte';
 
 	let { socials = $bindable() }: { socials: Social[] } = $props();
 
 	const toaster = use_toaster();
 
 	const pop = new Pop();
-
-	pop.show();
 
 	let name: string = $state('');
 	const url_value = dev ? 'https://icon-sets.iconify.design/?query=poop' : '';
@@ -70,21 +66,6 @@
 	<div>Pour ce faire, supprime-le et crée-le à nouveau.</div>
 </Info>
 <div class="">
-	<!-- <OrderList
-		items={socials}
-		add_item_text="Ajouter un lien"
-		label="liens externes"
-		on_add_item={pop.show}
-		{on_remove_item}
-	>
-		{#snippet item_renderer(social: Social)}
-			<div class="py-1.5">
-				<div>{social.name}</div>
-				<div class="text-foreground-muted">{social.url}</div>
-			</div>
-		{/snippet}
-	</OrderList> -->
-
 	<div class="bg-surface text-surface-foreground">
 		<Label id="liens externes" label="liens externes" />
 

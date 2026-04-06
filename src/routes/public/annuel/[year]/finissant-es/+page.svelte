@@ -7,6 +7,7 @@
 	import Search from '$lib/ui/components/search.svelte';
 	import { process_collection } from '$config/utils.js';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte.js';
+	import DraftStatus from '../draft-status.svelte';
 
 	const { data } = $props();
 
@@ -59,21 +60,8 @@
 	/>
 </div>
 
-{#snippet status(student: RecordModel)}
-	<div>
-		{#if student.draft}
-			<div
-				class={[
-					'rounded-full- w-fit border border-current/50 px-1.5 py-px',
-					student.draft_of ? 'bg-blue-200 text-blue-900 ' : 'bg-green-200 text-green-900'
-				]}
-			>
-				<div class="text-xs">
-					{student.draft_of ? `Modifié` : `Nouveau`}
-				</div>
-			</div>
-		{/if}
-	</div>
+{#snippet status(record: RecordModel)}
+	<DraftStatus {record} />
 {/snippet}
 <!-- 
 <Button href="/public/{page.params.year}/projets/draft">Nouveau projet</Button>

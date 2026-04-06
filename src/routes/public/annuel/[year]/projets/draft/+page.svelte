@@ -10,7 +10,7 @@
 	import Warning from '$lib/ui/templates/flags/warning.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 	import { init_editor, use_editor } from '$lib/ui/editor/editor-context.svelte.js';
-	import Info from '../../../info.svelte';
+	import Info from '../../info.svelte';
 
 	const { data } = $props();
 	let { collections } = $derived(data);
