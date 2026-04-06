@@ -5,8 +5,9 @@ export const apps: Record<string, App> = {
 		title: 'Annuel de design',
 		param: 'annuel',
 		pocketbase: {
-			url: 'https://admin.annuel-design.uqam.ca'
-		}
+			url: 'https://api.annuel.3xw.ca'
+		},
+		aliases: ['admin.annuel-design.uqam.ca']
 	},
 	agraf: {
 		title: 'AGRAF',
