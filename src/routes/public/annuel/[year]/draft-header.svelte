@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
 	import Button from '$lib/ui/components/button.svelte';
+	import Info from '$lib/ui/templates/flags/info.svelte';
 	import { format_date } from '$lib/utils/format-date';
 	import type { RecordModel } from 'pocketbase';
 	import type { Snippet } from 'svelte';
@@ -23,7 +24,7 @@
 
 {#if record?.draft}
 	<div class="mb-16 flex flex-col gap-2 text-sm">
-		<div class="">
+		<div class="mb-4">
 			<div>Brouillon en attente de validation par le comité web.</div>
 			{#if record.created}
 				{#if record.created != record.updated}
@@ -32,19 +33,19 @@
 				<div class="text-foreground-muted">créé: {format_date(record.created)}</div>
 			{/if}
 		</div>
-
-		<div>⚠️ Attention !</div>
-		<ul class="list-disc pl-4">
-			<li>
-				Un seul brouillon peut être en attente à la fois. Si tu en soumets un nouveau, celui-ci sera
-				écrasé.
-			</li>
-			<li>
-				Ce système n'est pas protégé par mot de passe — n'importe qui ayant accès au lien peut
-				modifier ou écraser ton brouillon.
-			</li>
-			<li>Garde toujours une copie de tes fichiers / textes sur ton propre ordinateur.</li>
-		</ul>
+		<Info>
+			<ul class="list-disc pl-4">
+				<li>
+					Un seul brouillon peut être en attente à la fois. Si tu en soumets un nouveau, celui-ci
+					sera écrasé.
+				</li>
+				<li>
+					Ce système n'est pas protégé par mot de passe — n'importe qui ayant accès au lien peut
+					modifier ou écraser ton brouillon.
+				</li>
+				<li>Garde toujours une copie de tes fichiers / textes sur ton propre ordinateur.</li>
+			</ul>
+		</Info>
 	</div>
 {/if}
 

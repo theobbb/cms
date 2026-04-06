@@ -39,7 +39,7 @@
 
 {#if pop.open}
 	<dialog use:open closedby="any" class={['m-auto', sizes[size]]} {onclose}>
-		<div class="flex flex-col gap-4x border bg-background p-3x">
+		<div class="flex flex-col gap-3x border bg-background p-3x">
 			{@render children()}
 		</div>
 	</dialog>

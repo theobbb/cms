@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
-	import Warning from '$lib/ui/templates/box/warning.svelte';
+	import Warning from '$lib/ui/templates/flags/warning.svelte';
 
 	const { name } = $props();
 

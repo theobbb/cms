@@ -9,8 +9,8 @@
 	import Box from '../box.svelte';
 	import type { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import RecordPresentable from '../record-presentable.svelte';
-	import Warning from '$lib/ui/templates/box/warning.svelte';
-	import Info from '$lib/ui/templates/box/info.svelte';
+	import Warning from '$lib/ui/templates/flags/warning.svelte';
+	import Info from '$lib/ui/templates/flags/info.svelte';
 
 	type Invite = {
 		type: 'user' | 'device';
@@ -77,14 +77,14 @@
 				</Warning>
 			{/if}
 			<div>
-				<div class="text-foreground mb-2">Lien de connexion à usage unique (recommandé)</div>
+				<div class="mb-2 text-foreground">Lien de connexion à usage unique (recommandé)</div>
 				<Button
 					onclick={async () => {
 						await navigator.clipboard.writeText(invite_url);
 						toaster.push('info', 'Lien copié');
 					}}
 					variant="discrete"
-					class="bg-surface border-surface-foreground flex w-full items-start justify-start gap-1.5 border px-2 py-0.5 text-left leading-tight"
+					class="flex w-full items-start justify-start gap-1.5 border border-surface-foreground bg-surface px-2 py-0.5 text-left leading-tight"
 				>
 					<div class="icon-[ri--file-copy-line] shrink-0 translate-y-1"></div>
 					<div class="">

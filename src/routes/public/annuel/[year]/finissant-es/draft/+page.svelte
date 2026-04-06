@@ -5,15 +5,16 @@
 	import DraftHeader from '../../draft-header.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
-	import Info from '$lib/ui/templates/box/info.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
-	import { goto, invalidate } from '$app/navigation';
-	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
+	import { goto } from '$app/navigation';
 	import { ClientResponseError, type RecordModel } from 'pocketbase';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte.js';
 	import { use_pocketbase } from '$lib/pocketbase.js';
 	import SortableList from '$lib/ui/components/sortable-list.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
+	import ListItem from '$lib/ui/components/list-item.svelte';
+	import Info from '../../../info.svelte';
+	import Button from '$lib/ui/components/button.svelte';
 
 	const { data } = $props();
 	const { collections } = $derived(data);
@@ -24,17 +25,9 @@
 	const editor = use_editor();
 	const record = $derived(editor?.current?.method == 'update' ? editor?.current?.record : null);
 
-	const id = $derived(page.url.searchParams.get('id'));
-	const virgin = $derived(!page.url.searchParams.has('id'));
-
-	//const projects = $derived(record?.expand?.['projects(students)']);
-
 	let projects: RecordModel[] = $state([]);
 
 	let socials: Social[] = $state(record?.socials || []);
-
-	$inspect(projects);
-	const pop_socials = new Pop();
 
 	const has_changed = true;
 
@@ -55,6 +48,8 @@
 			is_latest: true,
 			year: page.params.year
 		};
+
+		console.log(socials);
 
 		const res = await fetch(`/public/${page.params.year}/api/draft?collection=students`, {
 			method: 'POST',
@@ -110,7 +105,10 @@
 		projects = sorted;
 	}
 	$effect(() => {
-		if (record) get_projects();
+		if (record) {
+			get_projects();
+			socials = record.socials;
+		}
 	});
 
 	async function on_reorder_projects(new_projects: RecordModel[]) {
@@ -130,8 +128,6 @@
 		{/if}
 	</DraftHeader>
 
-	<!-- <Info /> -->
-
 	<Input name="first_name" label="Prénom" required value={record?.first_name} />
 	<Input name="last_name" label="Nom" required value={record?.last_name} />
 	<Input name="pronouns" label="Pronoms" value={record?.last_name} />
@@ -145,26 +141,8 @@
 			value={record?.program}
 		/>
 	</div>
-	<div class="space-y-3">
-		<div>
-			<div class="">
-				<!-- <OrderList
-		items={socials}
-		add_item_text="Ajouter un lien"
-		label="liens"
-		on_add_item={pop_socials.show}
-		on_remove_item={() => socials = socials.filter((i) => i != item)}
-	>
-		{#snippet item_renderer(social: Social)}
-			<div class="py-1.5">
-				<div>{social.name}</div>
-				<div class="text-foreground-muted">{social.url}</div>
-			</div>
-		{/snippet}
-	</OrderList> -->
-			</div>
-			<Socials bind:socials />
-		</div>
+	<div>
+		<Socials bind:socials />
 	</div>
 
 	{#if editor.current?.method == 'update'}
@@ -175,24 +153,43 @@
 				Nouveau projet +
 			</a>
 		</div>
-
-		<div>
-			<SortableList
-				items={projects}
-				multiple={true}
-				on_reorder={(new_projects) => {
-					projects = new_projects;
-				}}
-				class={['divide-y border border-b-0 px-3']}
-			>
-				{#snippet children(project, i)}
-					<div>
-						{project.name}
-					</div>
-				{/snippet}
-			</SortableList>
-		</div>
+		{#if projects.length > 0}
+			<Info>
+				<div>
+					L’édition des projets et l’assignation de leur.s finissant.e.s se font à partir des pages
+					projet.
+				</div>
+				<div>Mais c’est ici que tu peux modifier l’ordre d’apparition de tes projets.</div>
+			</Info>
+			<div>
+				<SortableList
+					items={projects}
+					multiple={true}
+					on_reorder={(new_projects) => {
+						projects = new_projects;
+					}}
+					class={['border-b']}
+				>
+					{#snippet children(project, i)}
+						<ListItem>
+							<div class="group -my-1.5 flex w-full items-center justify-between py-1.5">
+								<div>{project.name}</div>
+								<div class="not-group-hover:opacity-0">
+									<Button
+										icon="icon-[ri--external-link-fill]"
+										href="/public/{page.params
+											.year}/projets/draft?editor=update&record={project.id}"
+									></Button>
+								</div>
+							</div>
+						</ListItem>
+					{/snippet}
+				</SortableList>
+			</div>
+		{:else}
+			<div class="text-muted">Aucun projet 🥺</div>
+		{/if}
 	{:else}
-		<Info>Tu pourras ajouter tes projets une fois que ton brouillon sera validé.</Info>
+		<Info>Tu pourras ajouter tes projets une fois que ton brouillon (ici) sera validé.</Info>
 	{/if}
 </form>

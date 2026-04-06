@@ -1,5 +1,5 @@
 <script lang="ts">
-	import TemplateBox from './template-box.svelte';
+	import TemplateBox from './flag.svelte';
 
 	const props = $props();
 </script>

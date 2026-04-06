@@ -7,9 +7,10 @@
 	import { page } from '$app/state';
 	import DraftHeader from '../../draft-header.svelte';
 	import { ClientResponseError, type RecordModel } from 'pocketbase';
-	import Warning from '$lib/ui/templates/box/warning.svelte';
+	import Warning from '$lib/ui/templates/flags/warning.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
 	import { init_editor, use_editor } from '$lib/ui/editor/editor-context.svelte.js';
+	import Info from '../../../info.svelte';
 
 	const { data } = $props();
 	let { collections } = $derived(data);
@@ -84,22 +85,39 @@
 			Seuls les profils de finissant-e <strong>validés</strong> peuvent être ajoutés.
 		</Warning>
 	{/if}
+	<Info>
+		<div>
+			L’ordre d’apparition des finissant.e.s est généré de manière aléatoire à chaque chargement.
+		</div>
+	</Info>
 	<div>
 		<Relation
 			{...collections.projects.field_map.students}
 			value={project?.students || (virgin_student_id ? [virgin_student_id] : [])}
 			record={project}
 			query={{ sort: 'created', filter: `year = "${page.params.year}" && draft = false` }}
-			label="finissant-e-s"
+			label="finissant.e.s"
 		/>
 	</div>
 
-	<div>
-		<div class="mb-2 text-sm">
-			Aspect ratio 4:5 obligatoire 😡
-			<br />
-			Le thumbnail du projet est seulement visible dans la grille de projet — pas sur la page individuelle.
+	<Info>
+		<div>Aspect ratio 4:5 obligatoire 😡</div>
+		<div>
+			Le thumbnail du projet est seulement visible dans la grille de projets — pas sur sa page
+			individuelle.
 		</div>
+		<br />
+		<div>
+			Si tu laisses ce champ vide → Un thumbnail sera automatiquement généré à partir de la
+			<span class="whitespace-nowrap">
+				1<sup>ère</sup>
+				image
+			</span>
+			fournie (au champ suivant ↓). Si cette image ne respecte pas le 4:5 (aspect ratio), elle sera
+			<span class="italic">crop</span> avec le centre comme point focal.
+		</div>
+	</Info>
+	<div>
 		<File
 			{...collections.projects.field_map.thumbnail}
 			value={project?.thumbnail}
@@ -108,38 +126,33 @@
 		/>
 	</div>
 
-	<div class="mt-8">
-		<div class="mb-2 text-sm">Limite ~ 5MB / fichier</div>
-		<File
-			{...collections.projects.field_map.files}
-			value={project?.files}
-			label="images et/ou vidéos"
-		/>
-	</div>
-	<div>
-		<div class="mb-2 text-sm">
-			Format : [Prénom] [Nom]
-			<br />
-			Example : Louise Paradis
-		</div>
+	<Info>
+		<div>Limite ~ 5MB / fichier</div>
+	</Info>
+	<File
+		{...collections.projects.field_map.files}
+		value={project?.files}
+		label="images et/ou vidéos"
+	/>
 
-		<Input name="teacher" label="professeur-e" value={project?.teacher} />
-	</div>
+	<Info>
+		<div>Format : [Prénom] [Nom]</div>
+		<div>Example : Louise Paradis</div>
+	</Info>
+	<Input name="teacher" label="professeur-e" value={project?.teacher} />
+
+	<Info>
+		<div>Format : [Nom complet du cours]</div>
+		<div>Example : Design d'interaction et expérience utilisateur</div>
+	</Info>
+
 	<Input name="class" label="cours" value={project?.class} />
-	<div>
-		<div class="mb-2 text-sm">
-			Format : [2 derniers chiffres de l’année].[Automne : 0, Hiver: 1, Été: 2]
-			<br />
 
-			Example 1 : Automne 2024 → 24.0
-			<br />
-
-			Example 2 : Hiver 2025 → 25.1
-			<br />
-
-			Example 3 : Été 2026 → 26.2
-		</div>
-
-		<Input name="session" label="session" value={project?.session} />
-	</div>
+	<Info>
+		<div>Format : [2 derniers chiffres de l’année].[Automne : 0, Hiver: 1, Été: 2]</div>
+		<div>Example 1 : Automne 2024 → 24.0</div>
+		<div>Example 2 : Hiver 2025 → 25.1</div>
+		<div>Example 3 : Été 2026 → 26.2</div>
+	</Info>
+	<Input name="session" label="session" value={project?.session} />
 </form>

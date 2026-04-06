@@ -16,6 +16,7 @@
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import SortableList from '$lib/ui/components/sortable-list.svelte';
+	import ListItem from '$lib/ui/components/list-item.svelte';
 
 	let {
 		id,
@@ -167,20 +168,11 @@
 			{#if items.length > 0}
 				<SortableList {items} {multiple} on_reorder={handle_reorder} class="flex flex-col">
 					{#snippet children(item)}
-						<div
-							class="flex h-10 items-center justify-between gap-2 border border-b-0 bg-surface px-2.5 pr-1.5"
-						>
+						<ListItem on_remove={() => remove_item(item)}>
 							<div class="truncate">
 								<RecordPresentable record={item} />
 							</div>
-							<Button
-								size="sm"
-								onclick={() => remove_item(item)}
-								variant="ghost"
-								icon="icon-[ri--close-fill]"
-								aria-label="Remove item"
-							/>
-						</div>
+						</ListItem>
 					{/snippet}
 				</SortableList>
 			{/if}

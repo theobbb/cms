@@ -31,7 +31,7 @@
 </script>
 
 <div class={['pointer-events-none fixed bottom-0 left-0 z-1000 flex items-center justify-center']}>
-	<div class="m-gap min-w-xs text-sm font-medium">
+	<div class="m-3x min-w-xs text-sm font-medium">
 		<div class="pointer-events-auto space-y-1.5 overflow-auto">
 			{#each toaster.toasts as toast, i (toast.id + toast.type)}
 				<Toast {toast} onclose={() => toaster.delete(toast.id)} />

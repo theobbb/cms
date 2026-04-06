@@ -1,4 +1,8 @@
 <script lang="ts">
+	import Danger from '$lib/ui/templates/flags/danger.svelte';
+	import Info from '$lib/ui/templates/flags/info.svelte';
+	import Warning from '$lib/ui/templates/flags/warning.svelte';
+
 	const colors = [
 		'background',
 		'surface',
@@ -49,12 +53,16 @@
 		</div>
 	{/each}
 
-	<!-- {#each utils as util}
-		<div
-			style="color: var(--color-{util}-foreground); border-color: var(--color-{util}-foreground);"
-		>
-			<div class="font-mono text-sm">{util}</div>
+	{#each utils as util}
+		<div style="color: var(--color-foreground-{util});">
+			<div class="font-mono text-sm">foreground-{util}</div>
 			<div>The quick brown fox jumps over the lazy dog.</div>
 		</div>
-	{/each} -->
+	{/each}
+
+	<div class="space-y-2">
+		<Info>Info</Info>
+		<Warning>Warning</Warning>
+		<Danger>Danger</Danger>
+	</div>
 </div>

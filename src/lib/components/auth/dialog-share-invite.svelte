@@ -6,7 +6,7 @@
 	import { use_toaster } from '../toaster/toaster-context.svelte';
 	import type { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import RecordPresentable from '../record-presentable.svelte';
-	import Warning from '$lib/ui/templates/box/warning.svelte';
+	import Warning from '$lib/ui/templates/flags/warning.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';

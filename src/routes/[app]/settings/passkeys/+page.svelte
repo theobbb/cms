@@ -6,7 +6,7 @@
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import { onMount } from 'svelte';
 	import type { RecordModel } from 'pocketbase';
-	import Info from '$lib/ui/templates/box/info.svelte';
+	import Info from '$lib/ui/templates/flags/info.svelte';
 	import PasskeyInfo from '$lib/ui/templates/passkey-info.svelte';
 
 	type Token = {
