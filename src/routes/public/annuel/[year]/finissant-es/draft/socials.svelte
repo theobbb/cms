@@ -30,6 +30,7 @@
 	const url_value = dev ? 'https://icon-sets.iconify.design/?query=poop' : '';
 
 	const suggestions = [
+		'Courriel',
 		'Site web',
 		'Linktree',
 		'Portfolio',

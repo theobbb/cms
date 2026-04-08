@@ -20,7 +20,7 @@
 	<span class="mr-1 text-foreground-muted">Pas encore dans la liste ?</span>
 
 	<a
-		class="text-indigo-600 dark:text-indigo-400"
+		class="text-link dark:text-indigo-400"
 		href="/public/{page.params.year}/finissant-es/draft"
 		onclick={() => {
 			editor.open({ method: 'create' });

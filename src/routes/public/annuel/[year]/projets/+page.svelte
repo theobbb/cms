@@ -21,7 +21,7 @@
 		onclick={() => {
 			editor.open({ method: 'create' });
 		}}
-		class="text-indigo-600 dark:text-indigo-400"
+		class="text-link dark:text-indigo-400"
 		href="/public/{page.params.year}/projets/draft"
 	>
 		Ajouter un projet →

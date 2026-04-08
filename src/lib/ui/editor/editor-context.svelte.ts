@@ -49,8 +49,14 @@ export class Editor {
 
 			if (relation_fields) query = { expand: relation_fields };
 
-			const record = await this.#pocketbase.collection(this.collection.id).getOne(record_id, query);
-			this.current = { method: 'update', record };
+			try {
+				const record = await this.#pocketbase
+					.collection(this.collection.id)
+					.getOne(record_id, query);
+				this.current = { method: 'update', record };
+			} catch (err) {
+				return null;
+			}
 		}
 	}
 

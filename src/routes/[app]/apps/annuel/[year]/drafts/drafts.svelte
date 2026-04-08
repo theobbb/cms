@@ -19,15 +19,12 @@
 
 	const list_options = $derived({
 		filter: `year = "${page.params.year}" && draft = true`,
-		expand: 'program'
+		sort: '-created',
+		...(collection == 'projects' ? {} : { expand: 'program' })
 	});
 
 	async function fetch_drafts() {
-		drafts = await pocketbase.collection(collection).getFullList({
-			filter: `year = "${page.params.year}" && draft = true`,
-			expand: 'program',
-			sort: '-created'
-		});
+		drafts = await pocketbase.collection(collection).getFullList(list_options);
 	}
 	$effect(() => {
 		fetch_drafts();
@@ -58,23 +55,60 @@
 	});
 
 	async function accept_draft(draft: DraftRecord) {
-		const body = { ...draft, draft: false, is_latest: true, id: undefined };
-		if (draft.draft_of) {
-			await pocketbase.collection(collection).update(draft.draft_of, body);
-			await pocketbase.collection(collection).delete(draft.id);
-		} else {
-			// Root doesnt exist yet
-			await pocketbase.collection(collection).update(draft.id, body);
+		const toast = toaster.push('info', 'Validation du brouillon en cours...');
+
+		try {
+			const res = await fetch(`/${page.params.year}/drafts/accept-draft`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					draft_id: draft.id,
+					collection: collection
+				})
+			});
+
+			if (!res.ok) {
+				throw new Error('Erreur réseau');
+			}
+
+			const data = await res.json();
+
+			// Optimistically remove the draft from the UI array
 			drafts = drafts.filter((i) => i.id !== draft.id);
+
+			toaster.update(toast, 'success', data.message || 'Brouillon accepté.');
+		} catch (err) {
+			console.error('Failed to accept draft:', err);
+			toaster.update(toast, 'error', 'Erreur lors de la validation du brouillon.');
 		}
-		//await pocketbase.collection(collection).update(root_id, body);
-		//if (draft.draft_of) await pocketbase.collection(collection).delete(draft.id);
-		toaster.push('success', 'Brouillon accepté.');
 	}
 	async function reject_draft(draft: DraftRecord) {
-		await pocketbase.collection(collection).delete(draft.id);
-		toaster.push('success', 'Brouillon rejeté.');
+		try {
+			await pocketbase.collection(collection).delete(draft.id);
+			// It will be removed from the UI automatically by your real-time subscription
+			toaster.push('success', 'Brouillon rejeté.');
+		} catch (err) {
+			toaster.push('error', 'Erreur lors de la suppression.');
+		}
 	}
+	// async function accept_draft(draft: DraftRecord) {
+	// 	const body = { ...draft, draft: false, is_latest: true, id: undefined };
+	// 	if (draft.draft_of) {
+	// 		await pocketbase.collection(collection).update(draft.draft_of, body);
+	// 		await pocketbase.collection(collection).delete(draft.id);
+	// 	} else {
+	// 		// Root doesnt exist yet
+	// 		await pocketbase.collection(collection).update(draft.id, body);
+	// 		drafts = drafts.filter((i) => i.id !== draft.id);
+	// 	}
+	// 	toaster.push('success', 'Brouillon accepté.');
+	// }
+	// async function reject_draft(draft: DraftRecord) {
+	// 	await pocketbase.collection(collection).delete(draft.id);
+	// 	toaster.push('success', 'Brouillon rejeté.');
+	// }
 </script>
 
 <Section size="full">

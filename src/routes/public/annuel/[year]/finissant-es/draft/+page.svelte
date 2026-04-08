@@ -110,86 +110,80 @@
 			socials = record.socials;
 		}
 	});
-
-	async function on_reorder_projects(new_projects: RecordModel[]) {
-		if (!record?.id) return;
-		const new_sort = [...new_projects].map((p) => p.id);
-		console.log(new_sort);
-		await pocketbase.collection('students').update(record.id, { sort_projects: new_sort });
-		toaster.push('success', 'Ordre de projets enregistré.');
-	}
 </script>
 
-<form {onsubmit} class="space-y-6">
-	<DraftHeader {record} {has_changed}>
-		{#if record}
-			{record?.first_name}
-			{record?.last_name}
-		{/if}
-	</DraftHeader>
+{#if editor?.current?.method == 'create' || (editor.current?.method == 'update' && editor.current?.record)}
+	<form {onsubmit} class="space-y-6">
+		<DraftHeader {record} {has_changed}>
+			{#if record}
+				{record?.first_name}
+				{record?.last_name}
+			{/if}
+		</DraftHeader>
 
-	<Input name="first_name" label="Prénom" required value={record?.first_name} />
-	<Input name="last_name" label="Nom" required value={record?.last_name} />
-	<Input name="pronouns" label="Pronoms" value={record?.last_name} />
+		<Input name="first_name" label="Prénom" required value={record?.first_name} />
+		<Input name="last_name" label="Nom" required value={record?.last_name} />
+		<Input name="pronouns" label="Pronoms" value={record?.last_name} />
 
-	<Textarea name="description" label="description" rows={8} value={record?.description} />
-	<div>
-		<Relation
-			{...collections.students.field_map.program}
-			label="programme"
-			{record}
-			value={record?.program}
-		/>
-	</div>
-	<div>
-		<Socials bind:socials />
-	</div>
-
-	{#if editor.current?.method == 'update'}
-		<div class="mb-gap mt-12 flex items-center justify-between border-b py-3">
-			<div class="text-xl">Projets</div>
-
-			<a class="text-indigo-600" href="/public/{page.params.year}/projets/draft?editor=create">
-				Nouveau projet +
-			</a>
+		<Textarea name="description" label="description" rows={8} value={record?.description} />
+		<div>
+			<Relation
+				{...collections.students.field_map.program}
+				label="programme"
+				{record}
+				value={record?.program}
+			/>
 		</div>
-		{#if projects.length > 0}
-			<Info>
-				<div>
-					L’édition des projets et l’assignation de leur.s finissant.e.s se font à partir des pages
-					projet.
-				</div>
-				<div>Mais c’est ici que tu peux modifier l’ordre d’apparition de tes projets.</div>
-			</Info>
-			<div>
-				<SortableList
-					items={projects}
-					multiple={true}
-					on_reorder={(new_projects) => {
-						projects = new_projects;
-					}}
-					class={['border-b']}
-				>
-					{#snippet children(project, i)}
-						<ListItem>
-							<div class="group -my-1.5 flex w-full items-center justify-between py-1.5">
-								<div>{project.name}</div>
-								<div class="not-group-hover:opacity-0">
-									<Button
-										icon="icon-[ri--external-link-fill]"
-										href="/public/{page.params
-											.year}/projets/draft?editor=update&record={project.id}"
-									></Button>
-								</div>
-							</div>
-						</ListItem>
-					{/snippet}
-				</SortableList>
+		<div>
+			<Socials bind:socials />
+		</div>
+
+		{#if editor.current?.method == 'update'}
+			<div class="mb-gap mt-12 flex items-center justify-between border-b py-3">
+				<div class="text-xl">Projets</div>
+
+				<a class="text-link" href="/public/{page.params.year}/projets/draft?editor=create">
+					Nouveau projet +
+				</a>
 			</div>
+			{#if projects.length > 0}
+				<Info>
+					<div>
+						L’édition des projets et l’assignation de leur.s finissant.e.s se font à partir des
+						pages projet.
+					</div>
+					<div>Mais c’est ici que tu peux modifier l’ordre d’apparition de tes projets.</div>
+				</Info>
+				<div>
+					<SortableList
+						items={projects}
+						multiple={true}
+						on_reorder={(new_projects) => {
+							projects = new_projects;
+						}}
+						class={['border-b']}
+					>
+						{#snippet children(project, i)}
+							<ListItem>
+								<div class="group -my-1.5 flex w-full items-center justify-between py-1.5">
+									<div>{project.name}</div>
+									<div class="not-group-hover:opacity-0">
+										<Button
+											icon="icon-[ri--external-link-fill]"
+											href="/public/{page.params
+												.year}/projets/draft?editor=update&record={project.id}"
+										></Button>
+									</div>
+								</div>
+							</ListItem>
+						{/snippet}
+					</SortableList>
+				</div>
+			{:else}
+				<div class="text-muted">Aucun projet 🥺</div>
+			{/if}
 		{:else}
-			<div class="text-muted">Aucun projet 🥺</div>
+			<Info>Tu pourras ajouter tes projets une fois que ton brouillon (ici) sera validé.</Info>
 		{/if}
-	{:else}
-		<Info>Tu pourras ajouter tes projets une fois que ton brouillon (ici) sera validé.</Info>
-	{/if}
-</form>
+	</form>
+{/if}
