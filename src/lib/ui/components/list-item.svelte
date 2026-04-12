@@ -6,16 +6,18 @@
 </script>
 
 <div
-	class="flex min-h-10 items-center justify-between gap-2 border border-b-0 bg-surface px-2.5 py-1.5 pr-1.5"
+	data-list-item
+	class="-list-item flex min-h-10 items-center justify-between gap-2 border border-b-0 bg-surface px-2.5 py-1.5 pr-2"
 >
 	{@render children()}
 	{#if on_remove}
 		<Button
-			size="sm"
+			class="text-muted"
 			onclick={on_remove}
 			variant="ghost"
 			icon="icon-[ri--close-fill]"
 			aria-label="Remove item"
+			tooltip="Supprimer"
 		/>
 	{/if}
 </div>

@@ -24,7 +24,7 @@
 			return null;
 		}
 	}
-
+	// $inspect(record);
 	/* TODO : Prevent fetch all individually → By either 1- Caching records if relation or 2- Emplement list options in fetching in Editor to expand sub-relations if they are part of presentable keys */
 </script>
 

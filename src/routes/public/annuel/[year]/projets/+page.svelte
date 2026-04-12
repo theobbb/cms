@@ -35,7 +35,7 @@
 			record_title: 'Finissant-e',
 			fields: {
 				hidden:
-					'year,draft_of,draft_version,thumbnail,background,foreground_white,is_latest,description,updated,tags,files,teacher,class,session',
+					'year,draft_of,draft_version,thumbnail,background,foreground_white,is_latest,description,updated,tags,files,teacher,class,session, project_files, meta_files',
 				labels: {
 					name: 'nom',
 					created: 'modifié',

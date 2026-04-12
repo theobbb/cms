@@ -29,6 +29,13 @@ export class Editor {
 		return `editor_draft_${this.collection.id}_${id}`;
 	}
 
+	get expand_string() {
+		return this.collection.fields
+			.filter((f) => f.type === 'relation')
+			.map((f) => f.name)
+			.join(',');
+	}
+
 	async #init_from_url() {
 		const method = page.url.searchParams.get('editor');
 		const record_id = page.url.searchParams.get('record');
@@ -42,10 +49,7 @@ export class Editor {
 
 		if (record_id) {
 			let query = {};
-			const relation_fields = this.collection.fields
-				.filter((f) => f.type === 'relation')
-				.map((f) => f.name)
-				.join(',');
+			const relation_fields = this.expand_string;
 
 			if (relation_fields) query = { expand: relation_fields };
 

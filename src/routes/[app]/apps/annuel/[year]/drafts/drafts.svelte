@@ -20,7 +20,7 @@
 	const list_options = $derived({
 		filter: `year = "${page.params.year}" && draft = true`,
 		sort: '-created',
-		...(collection == 'projects' ? {} : { expand: 'program' })
+		...(collection == 'projects' ? { expand: 'students' } : { expand: 'program' })
 	});
 
 	async function fetch_drafts() {
@@ -93,29 +93,13 @@
 			toaster.push('error', 'Erreur lors de la suppression.');
 		}
 	}
-	// async function accept_draft(draft: DraftRecord) {
-	// 	const body = { ...draft, draft: false, is_latest: true, id: undefined };
-	// 	if (draft.draft_of) {
-	// 		await pocketbase.collection(collection).update(draft.draft_of, body);
-	// 		await pocketbase.collection(collection).delete(draft.id);
-	// 	} else {
-	// 		// Root doesnt exist yet
-	// 		await pocketbase.collection(collection).update(draft.id, body);
-	// 		drafts = drafts.filter((i) => i.id !== draft.id);
-	// 	}
-	// 	toaster.push('success', 'Brouillon accepté.');
-	// }
-	// async function reject_draft(draft: DraftRecord) {
-	// 	await pocketbase.collection(collection).delete(draft.id);
-	// 	toaster.push('success', 'Brouillon rejeté.');
-	// }
 </script>
 
 <Section size="full">
 	<div>Brouillons ({drafts.length})</div>
 	<div class="flex flex-col items-center gap-8">
 		{#each drafts as draft}
-			<div class="w-md border px-4 py-3">
+			<div class="w-2xl border px-4 py-3">
 				<div class="flex justify-between gap-4">
 					<div class="flex shrink-0 gap-1">
 						<div>

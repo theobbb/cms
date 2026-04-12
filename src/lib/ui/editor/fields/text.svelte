@@ -2,8 +2,8 @@
 	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
 	import type { FieldProps } from '$config/field.types';
 
-	const { id, name, required, value }: FieldProps<'text'> = $props();
+	let { id, name, required, rows, value = $bindable('') }: FieldProps<'text'> = $props();
 </script>
 
-<Textarea {id} {name} label={name} {value} {required} label_icon="icon-[ri--text]" />
+<Textarea {id} {name} label={name} bind:value {rows} {required} label_icon="icon-[ri--text]" />
 <!-- <MdEditor {id} {name} {label} {value} {required} /> -->

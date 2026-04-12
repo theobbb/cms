@@ -14,6 +14,8 @@
 	}: { record?: RecordModel | null; has_changed: boolean; children?: Snippet } = $props();
 
 	const is_draft_mode = $derived(!!record?.id);
+
+	const collection = $derived(page.url.pathname.split('/')[3]);
 </script>
 
 <!-- <div class="mb-8">
@@ -33,6 +35,15 @@
 				<div class="text-foreground-muted">créé: {format_date(record.created)}</div>
 			{/if}
 		</div>
+		<div class="mb-4">
+			<a
+				class="text-link"
+				href="https://annuel.3xw.ca/{page.params.year}/{collection}/{record.id}"
+				target="_blank"
+			>
+				Voir le brouillon →
+			</a>
+		</div>
 		<Info>
 			<ul class="list-disc pl-4">
 				<li>
@@ -47,10 +58,18 @@
 			</ul>
 		</Info>
 	</div>
+{:else}
+	<a
+		class="mb-4 block text-link"
+		href="https://annuel.3xw.ca/{page.params.year}/{collection}/{record.id}"
+		target="_blank"
+	>
+		Page publique →
+	</a>
 {/if}
 
 <div
-	class="gap-x-gap py-gap-y sticky top-0 z-10 mb-12 flex items-center justify-between border-b bg-background"
+	class="sticky top-0 z-10 mb-12 flex items-center justify-between gap-x-4 border-b bg-background py-2"
 >
 	<div class="text-xl">
 		{#if !record}

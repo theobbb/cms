@@ -81,7 +81,11 @@
 			ondragleave={(e) => on_item_drag_leave(e, i)}
 			ondrop={(e) => on_item_drop(e, i)}
 			ondragend={on_item_drag_end}
-			class={['cursor-default', hovered_index === i && 'relative z-10 ring-2 ring-primary']}
+			class={[
+				'cursor-default',
+				hovered_index === i && 'relative z-10 ring-2 ring-primary',
+				dragged_index !== null && '**:pointer-events-none'
+			]}
 		>
 			{@render children(item, i)}
 		</div>

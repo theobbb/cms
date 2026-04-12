@@ -17,6 +17,7 @@
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import SortableList from '$lib/ui/components/sortable-list.svelte';
 	import ListItem from '$lib/ui/components/list-item.svelte';
+	import type { Snippet } from 'svelte';
 
 	let {
 		id,
@@ -29,12 +30,14 @@
 		maxSelect,
 		record,
 		query,
-		on_change
+		on_change,
+		children: outer_children
 	}: FieldProps<'relation'> & {
 		on_change?: (ids: string[]) => void;
 		label?: string;
 		record: RecordModel;
 		query?: RecordListOptions;
+		children?: Snippet<[RecordModel]>;
 	} = $props();
 
 	const pocketbase = use_pocketbase();
@@ -43,6 +46,8 @@
 	const collection: CollectionModel | undefined = $derived(
 		page.data.id_collections?.[collectionId]
 	);
+
+	$inspect(collectionId);
 
 	// Dialog state
 	let dialog_picker = new Pop();
@@ -166,12 +171,16 @@
 			{/if}
 
 			{#if items.length > 0}
-				<SortableList {items} {multiple} on_reorder={handle_reorder} class="flex flex-col">
+				<SortableList {items} {multiple} on_reorder={handle_reorder} class="">
 					{#snippet children(item)}
 						<ListItem on_remove={() => remove_item(item)}>
-							<div class="truncate">
-								<RecordPresentable record={item} />
-							</div>
+							{#if outer_children}
+								{@render outer_children(item)}
+							{:else}
+								<div class="truncate">
+									<RecordPresentable record={item} />
+								</div>
+							{/if}
 						</ListItem>
 					{/snippet}
 				</SortableList>

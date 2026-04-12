@@ -3,6 +3,8 @@ export type FieldConfig = {
 	text: FieldTextBase & { value: string; rows?: number };
 	markdown: FieldTextBase & { value: string; rows?: number };
 	number: {
+		min: number;
+		max: number;
 		value: number;
 	};
 	bool: {

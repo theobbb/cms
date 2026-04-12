@@ -10,6 +10,8 @@
 		pattern,
 		autogeneratePattern,
 		presentable,
+		min,
+		max,
 		...props
 	}: FieldProps<'text'> & {
 		record: RecordModel;
@@ -21,5 +23,11 @@
 {#if 'rows' in props}
 	<Text {...props} />
 {:else}
-	<Input {...props} label={props.label || props.name} label_icon="icon-[ri--text]" />
+	<Input
+		{...props}
+		minlength={Boolean(Number(min)) ? Number(min) : undefined}
+		maxlength={Boolean(Number(max)) ? Number(max) : undefined}
+		label={props.label || props.name}
+		label_icon="icon-[ri--text]"
+	/>
 {/if}

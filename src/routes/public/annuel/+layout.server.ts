@@ -4,7 +4,8 @@ import { super_auth_pocketbase } from '$lib/server/super-pocketbase';
 
 export async function load({ locals: { super_pocketbase } }) {
 	const collections = await super_pocketbase.collections.getFullList({
-		filter: 'name = "students" || name = "projects" || name = "programs" || name = "program_types"',
+		filter:
+			'name = "students" || name = "projects" || name = "project_files" || name = "programs" || name = "program_types"',
 		sort: 'name',
 		fields: 'id,fields,name,updateRule,viewRule,createRule,deleteRule'
 	});

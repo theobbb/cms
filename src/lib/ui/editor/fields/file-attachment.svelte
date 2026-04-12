@@ -4,10 +4,20 @@
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
 	import Button from '$lib/ui/components/button.svelte';
 
-	const { file, on_remove }: { file: string | File; on_remove?: () => void } = $props();
+	const {
+		file,
+		record_id,
+		collection,
+		on_remove
+	}: {
+		file: string | File;
+		record_id: string | null | undefined;
+		collection: string;
+		on_remove?: () => void;
+	} = $props();
 
 	const editor = use_editor();
-	const collection = get_collection();
+	//const collection = get_collection();
 	const app = get_app();
 
 	// 1. Convert src to state so we can mutate it safely in an effect
@@ -32,19 +42,15 @@
 		if (editor?.current?.method === 'create') {
 			src = '';
 		} else {
-			src = `${app.pocketbase.url}/api/files/${collection.id}/${editor?.current?.record.id}/${file}`;
+			src = `${app.pocketbase.url}/api/files/${collection}/${record_id}/${file}`;
 		}
 	});
 </script>
 
-<div class="flex items-center justify-between gap-2 py-3">
-	<a class="flex max-w-md min-w-0 flex-1 items-center gap-4" href={src} target="_blank">
+<div class="py-3">
+	<a class="flex max-w-md min-w-0 flex-1 items-center gap-4 pl-1.5" href={src} target="_blank">
 		<Media {src} alt={display_name} thumbnail />
 
 		<div class="truncate">{display_name}</div>
 	</a>
-
-	<div class="shrink-0">
-		<Button onclick={on_remove} icon="icon-[ri--close-fill]" variant="ghost"></Button>
-	</div>
 </div>

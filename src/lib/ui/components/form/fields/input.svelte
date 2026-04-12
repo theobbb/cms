@@ -9,8 +9,7 @@
 		name,
 		label = '',
 		label_icon,
-		min,
-		max,
+
 		required,
 		value = $bindable(),
 		...props
@@ -34,8 +33,6 @@
 			{...props}
 			{oninput}
 			{required}
-			minlength={Boolean(Number(min)) ? Number(min) : undefined}
-			maxlength={Boolean(Number(max)) ? Number(max) : undefined}
 			{name}
 			{type}
 			class={[
