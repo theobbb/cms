@@ -102,23 +102,29 @@
 
 		let final_record: DraftRecord = await res.json();
 
-		// 4. DIRECT UPLOAD: Sync Files, Deletions, & Ordering via PocketBase Client
 		if (final_record) {
 			try {
 				const file_payload = new FormData();
 
-				const getCurrentName = (oldName: string, serverFiles: string | string[]) => {
-					if (!serverFiles) return oldName;
+				// --- NEW: Bulletproof String Matching ---
+				const serverFiles = final_record?.files || [];
+				const serverThumbnails = Array.isArray(final_record?.thumbnail)
+					? final_record.thumbnail
+					: [final_record?.thumbnail].filter(Boolean);
 
-					// Force into an array to handle both single strings (thumbnail) and arrays (files)
-					const filesArray = Array.isArray(serverFiles) ? serverFiles : [serverFiles];
+				const getMappedFile = (oldName: string, arrayToSearch: string[]) => {
+					if (!arrayToSearch || arrayToSearch.length === 0) return oldName;
 
 					const dotIndex = oldName.lastIndexOf('.');
-					const base = dotIndex !== -1 ? oldName.substring(0, dotIndex) : oldName;
+					const baseOldName = dotIndex !== -1 ? oldName.substring(0, dotIndex) : oldName;
 					const ext = dotIndex !== -1 ? oldName.substring(dotIndex) : '';
 
-					// Use endsWith to ensure we don't accidentally match a similar filename with a different extension
-					return filesArray.find((sf) => sf.startsWith(base) && sf.endsWith(ext)) || oldName;
+					// PocketBase appends a new hash: "image_abc.jpg" -> "image_abc_xyz123.jpg"
+					// We find the file that starts with the old base and ends with the exact extension.
+					// This is completely immune to array order changes or stale draft states.
+					return (
+						arrayToSearch.find((sf) => sf.startsWith(baseOldName) && sf.endsWith(ext)) || oldName
+					);
 				};
 				// -------------------------------------------------------------------------
 
@@ -126,9 +132,9 @@
 					file_payload.append('files', '');
 				} else {
 					all_files.forEach((f) => {
-						if (f instanceof File && f.size === 0) return; // Safeguard against empty native file inputs
+						if (f instanceof File && f.size === 0) return;
 						if (typeof f === 'string') {
-							file_payload.append('files', getCurrentName(f, final_record?.files || []));
+							file_payload.append('files', getMappedFile(f, serverFiles));
 						} else {
 							file_payload.append('files', f);
 						}
@@ -139,9 +145,9 @@
 					file_payload.append('thumbnail', '');
 				} else {
 					all_thumbnails.forEach((f) => {
-						if (f instanceof File && f.size === 0) return; // Safeguard
+						if (f instanceof File && f.size === 0) return;
 						if (typeof f === 'string') {
-							file_payload.append('thumbnail', getCurrentName(f, final_record?.thumbnail || []));
+							file_payload.append('thumbnail', getMappedFile(f, serverThumbnails));
 						} else {
 							file_payload.append('thumbnail', f);
 						}
@@ -162,6 +168,7 @@
 					'Le texte a été sauvegardé, mais la mise à jour des fichiers a échoué.'
 				);
 				console.error('[PocketBase File Sync Error]', error);
+				return; // Stops the redirect so you can actually see the error if the payload is too large
 			}
 		}
 

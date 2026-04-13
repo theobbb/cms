@@ -9,6 +9,6 @@
 	{...props}
 	class={[
 		cx,
-		'bg-primary text-primary-foreground pointer-events-none px-1.5 py-0.5 text-xs opacity-0 transition duration-100 select-none peer-hover:opacity-100'
+		'pointer-events-none bg-primary px-1.5 py-0.5 text-xs text-primary-foreground transition duration-100 select-none not-peer-hover:opacity-0'
 	]}
 />

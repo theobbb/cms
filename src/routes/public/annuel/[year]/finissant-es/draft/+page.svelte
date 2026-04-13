@@ -20,11 +20,10 @@
 	const { collections } = $derived(data);
 
 	const pocketbase = use_pocketbase();
-	const toaster = use_toaster();
 
 	const editor = use_editor();
 	const record = $derived(editor?.current?.method == 'update' ? editor?.current?.record : null);
-
+	$inspect(record);
 	let projects: RecordModel[] = $state([]);
 
 	let socials: Social[] = $state(record?.socials || []);
@@ -40,7 +39,7 @@
 	const onsubmit = form_action.submit(async ({ form_data }) => {
 		const body = {
 			...Object.fromEntries(form_data),
-			socials,
+			socials: JSON.stringify($state.snapshot(socials)),
 			sort_projects: [...projects].map((p) => p.id),
 			id: record?.draft ? record.id : undefined,
 			draft_of: record?.draft ? record.draft_of : record?.id || null,
@@ -48,8 +47,6 @@
 			is_latest: true,
 			year: page.params.year
 		};
-
-		console.log(socials);
 
 		const res = await fetch(`/public/${page.params.year}/api/draft?collection=students`, {
 			method: 'POST',
@@ -138,7 +135,7 @@
 			<Socials bind:socials />
 		</div>
 
-		{#if editor.current?.method == 'update'}
+		{#if editor.current?.method == 'update' && (!record?.draft || record?.draft_of)}
 			<div class="mb-gap mt-12 flex items-center justify-between border-b py-3">
 				<div class="text-xl">Projets</div>
 

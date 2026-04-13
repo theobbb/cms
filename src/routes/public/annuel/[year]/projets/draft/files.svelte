@@ -14,6 +14,7 @@
 	import Info from '../../info.svelte';
 	import Media from '$lib/components/media.svelte';
 	import { untrack } from 'svelte';
+	import Button from '$lib/ui/components/button.svelte';
 
 	let {
 		project,
@@ -101,7 +102,7 @@
 					style="grid-column: {col_start} / span {col_span};"
 					class="group relative flex flex-col gap-1"
 				>
-					<div class="border-surface-200 relative overflow-hidden rounded-md border">
+					<div class=" relative overflow-hidden">
 						<Media
 							src={typeof file === 'string'
 								? pocketbase.files.getURL(project, file)
@@ -113,45 +114,54 @@
 							class="absolute inset-0 flex flex-col justify-between bg-black/60 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
 						>
 							<div class="flex items-start justify-between">
-								<button
-									class="rounded bg-black/50 p-1.5 text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-30"
-									disabled={col_start <= 1}
-									onclick={() => (meta_files[i].col_start -= 1)}
-									title="Déplacer à gauche"
-									type="button"
-								>
-									<span class="icon-[ri--arrow-left-line] block text-lg"></span>
-								</button>
-								<button
-									class="rounded bg-black/50 p-1.5 text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-30"
-									disabled={meta_files[i].col_start + meta_files[i].col_span > N_COLS}
-									onclick={() => (meta_files[i].col_start += 1)}
-									title="Déplacer à droite"
-									type="button"
-								>
-									<span class="icon-[ri--arrow-right-line] block text-lg"></span>
-								</button>
+								<div>
+									<Button
+										onclick={() => (meta_files[i].col_start -= 1)}
+										disabled={col_start <= 1}
+										tooltip="Déplacer à gauche"
+										class="bg-black/50! hover:bg-black!"
+										icon="icon-[ri--arrow-left-line]"
+										size="lg"
+										variant="ghost"
+									/>
+								</div>
+
+								<div>
+									<Button
+										onclick={() => (meta_files[i].col_start += 1)}
+										disabled={meta_files[i].col_start + meta_files[i].col_span > N_COLS}
+										tooltip="Déplacer à droite"
+										class="bg-black/50! hover:bg-black!"
+										icon="icon-[ri--arrow-right-line]"
+										size="lg"
+										variant="ghost"
+									/>
+								</div>
 							</div>
 
 							<div class="flex items-end justify-center gap-2">
-								<button
-									class="rounded bg-black/50 p-1.5 text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-30"
-									disabled={meta_files[i].col_span <= 1}
-									onclick={() => (meta_files[i].col_span -= 1)}
-									title="Réduire la largeur"
-									type="button"
-								>
-									<span class="icon-[ri--subtract-line] block text-lg"></span>
-								</button>
-								<button
-									class="rounded bg-black/50 p-1.5 text-white transition-colors hover:bg-black disabled:cursor-not-allowed disabled:opacity-30"
-									disabled={meta_files[i].col_start + meta_files[i].col_span > N_COLS}
-									onclick={() => (meta_files[i].col_span += 1)}
-									title="Augmenter la largeur"
-									type="button"
-								>
-									<span class="icon-[ri--add-line] block text-lg"></span>
-								</button>
+								<div>
+									<Button
+										onclick={() => (meta_files[i].col_span -= 1)}
+										disabled={meta_files[i].col_span <= 1}
+										tooltip="Réduire la largeur"
+										class="bg-black/50! hover:bg-black!"
+										icon="icon-[ri--subtract-line]"
+										size="lg"
+										variant="ghost"
+									/>
+								</div>
+								<div>
+									<Button
+										onclick={() => (meta_files[i].col_span += 1)}
+										disabled={meta_files[i].col_start + meta_files[i].col_span > N_COLS}
+										tooltip="Augmenter la largeur"
+										class="bg-black/50! hover:bg-black!"
+										icon="icon-[ri--add-line]"
+										size="lg"
+										variant="ghost"
+									/>
+								</div>
 							</div>
 						</div>
 					</div>

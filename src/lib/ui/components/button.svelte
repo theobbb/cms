@@ -28,11 +28,11 @@
 			variant: {
 				default: 'bg-secondary hover:not-disabled:bg-foreground/15',
 				action:
-					'text-primary-foreground disabled:bg-text/20 bg-primary border-black not-hover:border-black/90 hover:not-disabled:bg-black dark:hover:not-disabled:bg-white',
+					'disabled:bg-text/20 border-black bg-primary text-primary-foreground not-hover:border-black/90 hover:not-disabled:bg-black dark:hover:not-disabled:bg-white',
 				danger:
-					'bg-red-surface/80 text-red-surface-foreground border-red-surface hover:not-disabled:border-red-800 hover:not-disabled:bg-red-600/60',
+					'border-red-surface bg-red-surface/80 text-red-surface-foreground hover:not-disabled:border-red-800 hover:not-disabled:bg-red-600/60',
 				discrete: 'hover:not-disabled:bg-foreground/10',
-				ghost: 'hover:not-disabled:bg-foreground/15 not-hover:border-transparent',
+				ghost: 'not-hover:border-transparent hover:not-disabled:bg-foreground/15',
 				none: 'border-0'
 			},
 			size: {
@@ -111,3 +111,9 @@
 	{/if}
 	{@render children?.()}
 {/snippet}
+
+<style>
+	button + :global(.tooltip) {
+		display: none !important;
+	}
+</style>
