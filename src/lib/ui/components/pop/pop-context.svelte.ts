@@ -1,11 +1,11 @@
 import { createContext } from 'svelte';
 
-export class Pop {
+export class Pop<T = any> {
 	open = $state(false);
-	ctx: any = $state({});
+	ctx: T = $state({} as T);
 
 	toggle = () => (this.open = !this.open);
-	show = (ctx = {}) => {
+	show = (ctx: T) => {
 		this.open = true;
 		this.ctx = ctx;
 	};

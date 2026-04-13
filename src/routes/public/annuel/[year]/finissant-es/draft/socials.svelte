@@ -3,6 +3,10 @@
 		name: string;
 		url: string;
 	};
+	const seed_social = {
+		name: '',
+		url: ''
+	};
 </script>
 
 <script lang="ts">
@@ -24,10 +28,12 @@
 
 	const toaster = use_toaster();
 
-	const pop = new Pop();
+	const pop = new Pop<{ method: 'create' } | { method: 'update'; i: number }>();
 
 	let name: string = $state('');
-	const url_value = dev ? 'https://icon-sets.iconify.design/?query=poop' : '';
+	let url: string = $state(dev ? 'https://icon-sets.iconify.design/?query=poop' : '');
+
+	// type PopCtx = { method: 'create' } | { method: 'update'; social: Social };
 
 	const suggestions = [
 		'Courriel',
@@ -44,14 +50,13 @@
 
 	async function onsubmit(event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) {
 		event.preventDefault();
-		const form_data = new FormData(event.currentTarget, event.submitter);
-		const name = String(form_data.get('name'));
-		const url = String(form_data.get('url'));
+
 		if (!name || !url) return toaster.push('error');
-		socials.push({ name, url });
+		if (pop.ctx.method == 'create') socials.push({ name, url });
+		else socials[pop.ctx.i] = { name, url };
 
 		pop.close();
-		toaster.push('success', 'Lien ajouté');
+		toaster.push('success', pop.ctx.method == 'create' ? 'Lien ajouté' : 'Lien enregistré');
 	}
 
 	function on_remove_item(item: Social) {
@@ -75,24 +80,40 @@
 			multiple={socials.length > 1}
 			on_reorder={(new_items) => (socials = new_items)}
 		>
-			{#snippet children(item)}
+			{#snippet children(item, i)}
 				<ListItem on_remove={() => on_remove_item(item)}>
-					<div class=" leading-5">
-						<div>{item.name}</div>
-						<div class="text-muted">{item.url}</div>
+					<div class="flex gap-2.5">
+						<div>
+							<Button
+								icon="icon-[ri--edit-line]"
+								variant="ghost"
+								tooltip="Éditer"
+								onclick={() => {
+									name = item.name;
+									url = item.url;
+									pop.show({ method: 'update', i });
+								}}
+							/>
+						</div>
+						<div class="leading-5">
+							<div>{item.name}</div>
+							<div class="text-muted">{item.url}</div>
+						</div>
 					</div>
 				</ListItem>
 			{/snippet}
 		</SortableList>
 		<div>
-			<Button size="lg" class="w-full" onclick={pop.show}>Ajouter un lien</Button>
+			<Button size="lg" class="w-full" onclick={() => pop.show({ method: 'create' })}>
+				Ajouter un lien
+			</Button>
 		</div>
 	</div>
 </div>
 <form class="space-y-2x" {onsubmit}>
 	<Dialog {pop} size="md">
 		<DialogHeader>
-			<DialogTitle>Nouveau lien</DialogTitle>
+			<DialogTitle>{pop.ctx.method == 'create' ? 'Nouveau lien' : 'Éditer un lien'}</DialogTitle>
 			<DialogDescription>Vers tes ressources externes personnelles.</DialogDescription>
 		</DialogHeader>
 
@@ -111,10 +132,12 @@
 			</div>
 		</div>
 		<Input label="nom du lien" name="name" required bind:value={name} autofocus />
-		<Input label="url" name="url" required type="url" value={url_value} />
+		<Input label="url" name="url" required type="url" bind:value={url} />
 		<div class="flex justify-end gap-1.5">
 			<Button variant="ghost" type="reset" onclick={pop.close} size="lg">Annuler</Button>
-			<Button variant="action" type="submit" size="lg" formaction="">Ajouter</Button>
+			<Button variant="action" type="submit" size="lg" formaction=""
+				>{pop.ctx.method == 'create' ? 'Ajouter' : 'Enregistrer'}</Button
+			>
 		</div>
 	</Dialog>
 </form>

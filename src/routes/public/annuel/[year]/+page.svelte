@@ -10,6 +10,12 @@
 		dans le système de gestion de contenu <br /> de l’Annuel de design {page.params.year}.
 	</div>
 </div>
+
+<div class="mt-24 text-muted">
+	<div>TODO :</div>
+	<div>Explication du fonctionnement brouillon → validation</div>
+	<div>Mise en garde accès public</div>
+</div>
 <!-- <Info>Cet espace est destiné aux finissant-es de l’école de design de l’UQAM.</Info>
 
 <div class="flex items-center gap-1.5">
