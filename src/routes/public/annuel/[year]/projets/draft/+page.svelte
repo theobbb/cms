@@ -25,29 +25,17 @@
 	const pocketbase = use_pocketbase();
 	const project = $derived(editor.current?.method == 'update' ? editor.current?.record : null);
 
-	// Initialize as an array
 	let meta_files: MetaFiles = $state([]);
 	$inspect(meta_files);
-	$effect(() => {
-		if (project) {
-			untrack(() => {
-				// Safely load array from DB, with fallback migration for old dictionary data
-				if (Array.isArray(project.meta_files)) {
-					meta_files = [...project.meta_files];
-				} else if (project.meta_files) {
-					meta_files = (project.files || []).map(
-						(f: string) => project.meta_files[f] || { ...seed_meta_file }
-					);
-				}
-			});
-		}
-	});
 
 	const form_action = init_form_action();
 
 	let background_color = $state('');
 	$effect(() => {
-		if (project?.background) background_color = project.background;
+		if (project) {
+			meta_files = project.meta_files;
+			background_color = project.background;
+		}
 	});
 
 	type DraftRecord =

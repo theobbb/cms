@@ -1,23 +1,19 @@
 <script lang="ts">
 	import Media from '$lib/components/media.svelte';
-	import { get_app, get_collection } from '$lib/logic/ctx.svelte';
+	import { get_app } from '$lib/logic/ctx.svelte';
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte';
-	import Button from '$lib/ui/components/button.svelte';
 
 	const {
 		file,
 		record_id,
-		collection,
-		on_remove
+		collection
 	}: {
 		file: string | File;
 		record_id: string | null | undefined;
 		collection: string;
-		on_remove?: () => void;
 	} = $props();
 
 	const editor = use_editor();
-	//const collection = get_collection();
 	const app = get_app();
 
 	// 1. Convert src to state so we can mutate it safely in an effect
