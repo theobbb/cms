@@ -58,7 +58,7 @@
 			</ul>
 		</Info>
 	</div>
-{:else}
+{:else if record}
 	<a
 		class="mb-4 block text-link"
 		href="https://annuel.3xw.ca/{page.params.year}/{collection}/{record.id}"

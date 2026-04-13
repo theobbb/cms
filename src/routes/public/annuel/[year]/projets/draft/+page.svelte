@@ -107,13 +107,18 @@
 			try {
 				const file_payload = new FormData();
 
-				// --- NEW: Helper to map old filenames to newly generated server hashes ---
-				const getCurrentName = (oldName: string, serverFiles: string[]) => {
-					if (!serverFiles || !Array.isArray(serverFiles)) return oldName;
+				const getCurrentName = (oldName: string, serverFiles: string | string[]) => {
+					if (!serverFiles) return oldName;
+
+					// Force into an array to handle both single strings (thumbnail) and arrays (files)
+					const filesArray = Array.isArray(serverFiles) ? serverFiles : [serverFiles];
+
 					const dotIndex = oldName.lastIndexOf('.');
 					const base = dotIndex !== -1 ? oldName.substring(0, dotIndex) : oldName;
-					// PocketBase appends an underscore and hash (e.g., base_abc123.jpg)
-					return serverFiles.find((sf) => sf.startsWith(base) || sf === oldName) || oldName;
+					const ext = dotIndex !== -1 ? oldName.substring(dotIndex) : '';
+
+					// Use endsWith to ensure we don't accidentally match a similar filename with a different extension
+					return filesArray.find((sf) => sf.startsWith(base) && sf.endsWith(ext)) || oldName;
 				};
 				// -------------------------------------------------------------------------
 
@@ -121,6 +126,7 @@
 					file_payload.append('files', '');
 				} else {
 					all_files.forEach((f) => {
+						if (f instanceof File && f.size === 0) return; // Safeguard against empty native file inputs
 						if (typeof f === 'string') {
 							file_payload.append('files', getCurrentName(f, final_record?.files || []));
 						} else {
@@ -133,6 +139,7 @@
 					file_payload.append('thumbnail', '');
 				} else {
 					all_thumbnails.forEach((f) => {
+						if (f instanceof File && f.size === 0) return; // Safeguard
 						if (typeof f === 'string') {
 							file_payload.append('thumbnail', getCurrentName(f, final_record?.thumbnail || []));
 						} else {

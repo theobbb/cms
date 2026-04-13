@@ -22,7 +22,7 @@
 			editor.open({ method: 'create' });
 		}}
 		class="text-link dark:text-indigo-400"
-		href="/public/{page.params.year}/projets/draft"
+		href="/public/{page.params.year}/projets/draft?editor=create"
 	>
 		Ajouter un projet →
 	</a>
