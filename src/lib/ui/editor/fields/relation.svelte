@@ -47,8 +47,6 @@
 		page.data.id_collections?.[collectionId]
 	);
 
-	$inspect(collectionId);
-
 	// Dialog state
 	let dialog_picker = new Pop();
 

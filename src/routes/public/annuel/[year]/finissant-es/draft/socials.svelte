@@ -67,9 +67,6 @@
 <Info>
 	<div>Optionnel — Tu peux ajouter des liens vers tes ressources externes personnelles.</div>
 	<div>Tu pourras les modifier / supprimer dans le futur sur cette page.</div>
-	<br />
-	<div>Pour l’instant, il est impossible de modifier un lien déjà créé.</div>
-	<div>Pour ce faire, supprime-le et crée-le à nouveau.</div>
 </Info>
 <div class="">
 	<div class="bg-surface text-surface-foreground">

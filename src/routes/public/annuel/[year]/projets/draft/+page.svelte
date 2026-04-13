@@ -26,7 +26,7 @@
 	const project = $derived(editor.current?.method == 'update' ? editor.current?.record : null);
 
 	let meta_files: MetaFiles = $state([]);
-	$inspect(meta_files);
+	// $inspect(meta_files);
 
 	const form_action = init_form_action();
 

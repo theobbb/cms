@@ -39,7 +39,7 @@
 				labels: {
 					name: 'nom',
 					created: 'modifié',
-					students: 'finissant-e-s'
+					students: 'finissant-es'
 				},
 				overrides: {
 					students: {

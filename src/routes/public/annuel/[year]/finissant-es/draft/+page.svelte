@@ -23,7 +23,7 @@
 
 	const editor = use_editor();
 	const record = $derived(editor?.current?.method == 'update' ? editor?.current?.record : null);
-	$inspect(record);
+
 	let projects: RecordModel[] = $state([]);
 
 	let socials: Social[] = $state(record?.socials || []);

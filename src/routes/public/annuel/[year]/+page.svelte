@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import Box from '$lib/components/box.svelte';
-	import Info from '$lib/ui/templates/flags/info.svelte';
 </script>
 
 <div class="text-center">
