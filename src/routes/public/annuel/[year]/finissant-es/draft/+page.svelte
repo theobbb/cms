@@ -120,7 +120,7 @@
 
 		<Input name="first_name" label="Prénom" required value={record?.first_name} />
 		<Input name="last_name" label="Nom" required value={record?.last_name} />
-		<Input name="pronouns" label="Pronoms" value={record?.last_name} />
+		<Input name="pronouns" label="Pronoms" value={record?.pronouns} />
 
 		<Textarea name="description" label="description" rows={8} value={record?.description} />
 		<div>
