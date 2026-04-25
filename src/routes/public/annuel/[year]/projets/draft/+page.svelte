@@ -186,11 +186,6 @@
 			value={project?.description}
 		/>
 
-		{#if editor.current?.method == 'create'}
-			<Warning>
-				Seuls les profils de finissant-e <strong>validés</strong> peuvent être ajoutés.
-			</Warning>
-		{/if}
 		<Info>
 			<div>
 				L’ordre d’apparition des finissant.e.s est généré de manière aléatoire à chaque chargement.
@@ -205,6 +200,11 @@
 				label="finissant.e.s"
 			/>
 		</div>
+		{#if editor.current?.method == 'create'}
+			<Warning>
+				Seuls les profils de finissant-e <strong>validés</strong> peuvent être ajoutés.
+			</Warning>
+		{/if}
 
 		<Info>
 			<div>Format : [Prénom] [Nom]</div>

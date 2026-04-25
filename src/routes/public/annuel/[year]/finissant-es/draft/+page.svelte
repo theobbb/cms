@@ -131,6 +131,8 @@
 				value={record?.program}
 			/>
 		</div>
+		<Input name="email" label="Courriel" value={record?.email} type="email" />
+
 		<div>
 			<Socials bind:socials />
 		</div>

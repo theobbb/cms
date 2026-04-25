@@ -36,7 +36,6 @@
 	// type PopCtx = { method: 'create' } | { method: 'update'; social: Social };
 
 	const suggestions = [
-		'Courriel',
 		'Site web',
 		'Linktree',
 		'Portfolio',

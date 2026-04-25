@@ -73,7 +73,7 @@
 >
 	<div class="text-xl">
 		{#if !record}
-			Brouillon
+			Page {collection.slice(0, -1)} (brouillon)
 		{:else}
 			{@render children?.()}
 		{/if}

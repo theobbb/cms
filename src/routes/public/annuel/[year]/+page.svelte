@@ -9,10 +9,13 @@
 	</div>
 </div>
 
-<div class="mt-24 text-muted">
-	<div>TODO :</div>
+<div class="text-muted- mt-24">
+	Complète ton profil et ajoute tes projets à l'aide des onglets ci-haut. <br /> Tes fiches seront
+	enregistrées en brouillon et validées par le comité web avant publication — tu pourras les
+	modifier à tout moment.
+	<!-- <div>TODO :</div>
 	<div>Explication du fonctionnement brouillon → validation</div>
-	<div>Mise en garde accès public</div>
+	<div>Mise en garde accès public</div> -->
 </div>
 <!-- <Info>Cet espace est destiné aux finissant-es de l’école de design de l’UQAM.</Info>
 
