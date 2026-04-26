@@ -1,12 +1,21 @@
 <script module>
-	export type MetaFile = { caption: string; col_start: number; col_span: number };
+	export type MetaFile = {
+		caption: string;
+		col_start: number;
+		col_span: number;
+		mux_upload_id?: string;
+		mux_playback_id?: string;
+		is_uploading?: boolean;
+		upload_progress?: number;
+	};
 	export type MetaFiles = MetaFile[];
 
 	export const seed_meta_file = { caption: '', col_start: 2, col_span: 3 };
 </script>
 
 <script lang="ts">
-	import File from '$lib/ui/editor/fields/file.svelte';
+	import * as Upchunk from '@mux/upchunk';
+	import FileInput from '$lib/ui/editor/fields/file.svelte';
 	import { type RecordModel } from 'pocketbase';
 	import { page } from '$app/state';
 	import Info from '../../info.svelte';
@@ -14,6 +23,7 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from './preview-file.svelte';
+	import { extract_video_frame } from '$lib/utils/video';
 
 	let {
 		project,
@@ -22,36 +32,100 @@
 
 	const { collections } = $derived(page.data);
 
-	let files = $state(project?.files || []);
+	let files: (string | File)[] = $state(project?.files || []);
 	let prev_files = $state([...files]); // Keep a reference
 
-	// Watch for re-orders or deletions
+	const active_uploads = new Map<string, any>();
+
+	async function handle_mux_upload(video_file: File, index: number) {
+		get_meta(index).is_uploading = true;
+		get_meta(index).upload_progress = 0;
+
+		const res = await fetch(`/public/${page.params.year}/api/mux`, { method: 'POST' });
+		const data = await res.json();
+
+		if (!data.url) {
+			console.error('The server response is missing the "url" property.');
+			get_meta(index).is_uploading = false;
+			return;
+		}
+
+		get_meta(index).mux_upload_id = data.upload_id;
+
+		const upload = Upchunk.createUpload({
+			endpoint: data.url,
+			file: video_file,
+			chunkSize: 5120
+		});
+
+		// --- NEW: Store the upload instance ---
+		active_uploads.set(data.upload_id, upload);
+
+		upload.on('progress', (e) => {
+			get_meta(index).upload_progress = e.detail;
+		});
+
+		upload.on('success', () => {
+			get_meta(index).is_uploading = false;
+			get_meta(index).upload_progress = 100;
+			// Clean up the map since it's done
+			active_uploads.delete(data.upload_id);
+		});
+	}
+
 	$effect(() => {
-		// We reference 'files' so Svelte tracks it
 		const current_files = files;
 
 		untrack(() => {
 			let order_changed = false;
 
-			// Check if items moved around or if length changed
 			if (current_files.length === prev_files.length) {
 				order_changed = current_files.some((f, i) => f !== prev_files[i]);
 			} else {
-				order_changed = true; // Added or removed
+				order_changed = true;
 			}
 
 			if (order_changed) {
-				// Re-align the meta_files array to match the new files order
+				// --- NEW: Identify exactly which files were deleted ---
+				const removed_files = prev_files.filter((f) => !current_files.includes(f));
+
+				removed_files.forEach((removed_file) => {
+					const old_index = prev_files.indexOf(removed_file);
+					const old_meta = meta_files[old_index];
+
+					if (old_meta && old_meta.mux_upload_id) {
+						// 1. Abort the frontend upload if it's currently running
+						if (active_uploads.has(old_meta.mux_upload_id)) {
+							active_uploads.get(old_meta.mux_upload_id).abort();
+							active_uploads.delete(old_meta.mux_upload_id);
+						}
+
+						// 2. Tell the server to delete the asset from Mux
+						fetch(`/public/${page.params.year}/api/mux`, {
+							method: 'DELETE',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ upload_id: old_meta.mux_upload_id })
+						}).catch((err) => console.error('Failed to notify server of deletion', err));
+					}
+				});
+				// ------------------------------------------------------
+
 				meta_files = current_files
 					.map((file) => {
 						const old_index = prev_files.indexOf(file);
-						// If the file existed before, grab its old metadata.
-						// If not, it's a new upload, so let get_meta() handle it later (return undefined/null)
 						return old_index !== -1 ? meta_files[old_index] : null;
 					})
-					.map((meta) => meta || undefined) as MetaFiles; // clean up nulls
+					.map((meta) => meta || undefined) as MetaFiles;
 
-				prev_files = [...current_files]; // update reference
+				current_files.forEach((file, i) => {
+					if (file instanceof File && file.type.startsWith('video/')) {
+						extract_video_frame(file).then((placeholder) => {
+							files[i] = placeholder;
+						});
+						handle_mux_upload(file, i);
+					}
+				});
+				prev_files = [...current_files];
 			}
 		});
 	});
@@ -82,7 +156,7 @@
 	<Info>
 		<div>Limite ~ 5MB / fichier</div>
 	</Info>
-	<File
+	<FileInput
 		{...collections.projects.field_map.files}
 		bind:files
 		value={project?.files}
@@ -93,7 +167,7 @@
 			<FileAttachment {file} record_id={project?.id} collection="projects" />
 			<!-- <FileItem {file} {project} /> -->
 		{/snippet}
-	</File>
+	</FileInput>
 </div>
 
 <div class="mt-12 border-b pb-2 text-xl">Mise en page</div>
@@ -123,12 +197,21 @@
 			>
 				<div class=" relative overflow-hidden">
 					<PreviewFile {file} record_id={project?.id} />
-					<!-- <Media
-						src={typeof file === 'string' && project
-							? pocketbase.files.getURL(project, file)
-							: URL.createObjectURL(file)}
-						alt="preview"
-					/> -->
+					{#if meta.is_uploading}
+						<div
+							class="bg-surface-900/80 absolute inset-0 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity"
+						>
+							<span class="mb-2 font-mono text-sm tracking-wider text-white">
+								{Math.round(meta.upload_progress || 0)}%
+							</span>
+							<div class="bg-surface-700 h-1 w-24 overflow-hidden rounded-full">
+								<div
+									class="h-full bg-white transition-all duration-100 ease-linear"
+									style="width: {meta.upload_progress || 0}%"
+								></div>
+							</div>
+						</div>
+					{/if}
 
 					<div
 						class="absolute inset-0 flex flex-col justify-between bg-black/60 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
