@@ -8,10 +8,8 @@
 <script lang="ts">
 	import File from '$lib/ui/editor/fields/file.svelte';
 	import { type RecordModel } from 'pocketbase';
-	import { use_pocketbase } from '$lib/pocketbase.js';
 	import { page } from '$app/state';
 	import Info from '../../info.svelte';
-	import Media from '$lib/components/media.svelte';
 	import { untrack } from 'svelte';
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
@@ -115,9 +113,9 @@
 <div class="relative">
 	<div class="grid gap-4 pb-16" style="grid-template-columns: repeat({N_COLS}, minmax(0, 1fr))">
 		{#each files as file, i (file)}
-			{@const meta = meta_files[i] || seed_meta_file}
-			{@const col_start = Number(meta.col_start)}
-			{@const col_span = Number(meta.col_span)}
+			{@const meta = meta_files?.[i] || seed_meta_file}
+			{@const col_start = Number(meta?.col_start)}
+			{@const col_span = Number(meta?.col_span)}
 
 			<div
 				style="grid-column: {col_start} / span {col_span};"
