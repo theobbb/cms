@@ -70,7 +70,31 @@
 			get_meta(index).upload_progress = 100;
 			// Clean up the map since it's done
 			active_uploads.delete(data.upload_id);
+
+			poll_for_playback_id(data.upload_id, index);
 		});
+	}
+
+	async function poll_for_playback_id(upload_id: string, index: number) {
+		// Ping the server every 3 seconds
+		const interval = setInterval(async () => {
+			try {
+				const res = await fetch(`/public/${page.params.year}/api/mux/${upload_id}`);
+				const data = await res.json();
+
+				if (data.status === 'ready' && data.playback_id) {
+					// Inject the playback_id into your state
+					get_meta(index).mux_playback_id = data.playback_id;
+
+					// Stop the loop!
+					clearInterval(interval);
+					console.log('🎉 Mux Playback ID acquired:', data.playback_id);
+				}
+			} catch (error) {
+				console.error('Polling error', error);
+				// Optionally clear the interval if it fails too many times to prevent infinite loops
+			}
+		}, 3000);
 	}
 
 	$effect(() => {
@@ -101,11 +125,11 @@
 						}
 
 						// 2. Tell the server to delete the asset from Mux
-						fetch(`/public/${page.params.year}/api/mux`, {
-							method: 'DELETE',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ upload_id: old_meta.mux_upload_id })
-						}).catch((err) => console.error('Failed to notify server of deletion', err));
+						// fetch(`/public/${page.params.year}/api/mux`, {
+						// 	method: 'DELETE',
+						// 	headers: { 'Content-Type': 'application/json' },
+						// 	body: JSON.stringify({ upload_id: old_meta.mux_upload_id })
+						// }).catch((err) => console.error('Failed to notify server of deletion', err));
 					}
 				});
 				// ------------------------------------------------------
