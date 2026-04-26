@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Media from '$lib/components/media.svelte';
 	import { get_app } from '$lib/logic/ctx.svelte';
-	import { use_pocketbase } from '$lib/pocketbase';
 
 	const {
 		file,
