@@ -38,7 +38,7 @@
 			record_title: 'Finissant-e',
 			fields: {
 				hidden:
-					'year,draft_of,draft_version,is_latest,headshot,pronouns,description,scholarship,socials,updated,program,sort_projects',
+					'year,draft_of,draft_version,is_latest,headshot,pronouns,email,description,scholarship,socials,updated,program,sort_projects',
 				labels: {
 					first_name: 'prénom',
 					last_name: 'nom',
