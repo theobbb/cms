@@ -70,6 +70,9 @@ export const POST: RequestHandler = async ({ request, locals: { pocketbase }, fe
 				if (key === 'meta_files') {
 					// FIX: meta_files is an array of objects. We must stringify the entire array!
 					form_data.append(key, JSON.stringify(value));
+				} else if (key === 'socials') {
+					// FIX: Hardcoded rule to stringify socials and prevent "[object Object]" corruption
+					form_data.append(key, JSON.stringify(value));
 				}
 				// Handle standard text, relation, and JSON fields
 				else if (Array.isArray(value)) {
