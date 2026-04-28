@@ -15,6 +15,7 @@
 	import Files, { seed_meta_file, type MetaFiles } from './files.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import { untrack } from 'svelte';
+	import Bool from '$lib/ui/editor/fields/bool.svelte';
 
 	const { data } = $props();
 	let { collections } = $derived(data);
@@ -240,6 +241,17 @@
 				style="background-color: {background_color};"
 			></div>
 		</div>
+		{#if background_color}
+			<div>↓</div>
+			<div>
+				<Bool
+					value={project?.foreground_white}
+					label="Texte blanc? (Noir par défaut)"
+					name="foreground_white"
+					{...collections.projects.field_map.foreground_white}
+				/>
+			</div>
+		{/if}
 
 		<Info>
 			<div>Aspect ratio 4:5 obligatoire 😡</div>
