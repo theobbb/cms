@@ -178,7 +178,7 @@
 
 <div class="">
 	<Info>
-		<div>Limite ~ 5MB / fichier</div>
+		<div>Limite ~ 5MB / image (peut être + pour vidéo)</div>
 	</Info>
 	<FileInput
 		{...collections.projects.field_map.files}
