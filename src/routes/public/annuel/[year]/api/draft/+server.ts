@@ -98,6 +98,11 @@ export async function POST({ url, request, locals: { super_pocketbase }, fetch }
 				await duplicateFiles('files', retainedFiles);
 				await duplicateFiles('thumbnail', retainedThumbnails);
 
+				//'null' tells the function to just copy the file over
+				// without checking if the client "retained" it, which is perfect
+				// since the student doesn't interact with this field.
+				await duplicateFiles('headshot', null);
+
 				// Create the new record with the duplicated files
 				new_record = await super_pocketbase.collection(collection).create(pbPayload, pb_options);
 
