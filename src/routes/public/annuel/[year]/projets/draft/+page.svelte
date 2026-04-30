@@ -51,13 +51,11 @@
 		const all_files = form_data.getAll('files');
 		const all_thumbnails = form_data.getAll('thumbnail');
 
-		// --- NEW: Tell the server exactly which existing files we are keeping ---
 		const retained_files = all_files.filter((f) => typeof f === 'string');
 		form_data.set('retained_files', JSON.stringify(retained_files));
 
 		const retained_thumbnails = all_thumbnails.filter((f) => typeof f === 'string');
 		form_data.set('retained_thumbnails', JSON.stringify(retained_thumbnails));
-		// ------------------------------------------------------------------------
 
 		form_data.delete('files');
 		form_data.delete('thumbnail');
@@ -73,7 +71,7 @@
 		const clean_meta_files = $state.snapshot(meta_files);
 		form_data.set('meta_files', JSON.stringify(clean_meta_files));
 
-		// 3. SEND TEXT ONLY to SvelteKit API
+		// SEND TEXT ONLY to SvelteKit API
 		const res = await fetch(
 			`/public/${page.params.year}/api/draft?collection=projects&expand=${expand_query}`,
 			{
@@ -84,18 +82,35 @@
 
 		if (!res.ok) {
 			const error_data = await res.json().catch(() => null);
+
+			// Extract the main PocketBase message
+			let error_message = error_data?.message || 'Erreur serveur inattendue';
+
+			// Extract specific field validation errors (e.g., "description: Cannot be blank")
+			if (error_data?.data && Object.keys(error_data.data).length > 0) {
+				const field_errors = Object.entries(error_data.data)
+					.map(([field, details]: [string, any]) => `• ${field} : ${details.message}`)
+					.join('\n');
+
+				error_message += `\n\n${field_errors}`;
+			}
+
+			// Show it in the toaster and stop execution
+			toaster.update(toast_id, 'error', error_message);
+
 			const pb_err = new ClientResponseError();
 			pb_err.response = error_data || { message: 'Erreur serveur inattendue' };
 			throw pb_err;
 		}
 
 		let final_record: DraftRecord = await res.json();
+		let file_upload_failed = false;
 
 		if (final_record) {
 			try {
 				const file_payload = new FormData();
 
-				// --- NEW: Bulletproof String Matching ---
+				// --- Bulletproof String Matching ---
 				const serverFiles = final_record?.files || [];
 				const serverThumbnails = Array.isArray(final_record?.thumbnail)
 					? final_record.thumbnail
@@ -145,23 +160,32 @@
 
 				file_payload.append('meta_files', JSON.stringify(clean_meta_files));
 
+				// Attempt to update the draft with the files
 				final_record = await pocketbase
 					.collection('projects')
 					.update(final_record.id, file_payload, {
 						expand: expand_query
 					});
 			} catch (error) {
-				toaster.update(
-					toast_id,
-					'warning',
-					'Le texte a été sauvegardé, mais la mise à jour des fichiers a échoué.'
-				);
+				// toaster.update(
+				// 	toast_id,
+				// 	'warning',
+				// 	'Le texte a été sauvegardé, mais la mise à jour des fichiers a échoué.'
+				// );
+				file_upload_failed = true;
 				console.error('[PocketBase File Sync Error]', error);
-				return; // Stops the redirect so you can actually see the error if the payload is too large
 			}
 		}
 
-		toaster.update(toast_id, 'success', `Brouillon enregistré.`);
+		if (file_upload_failed) {
+			toaster.update(
+				toast_id,
+				'warning',
+				'Le texte a été sauvegardé, mais la mise à jour des fichiers a échoué. Vérifie la taille de tes images.'
+			);
+		} else {
+			toaster.update(toast_id, 'success', `Brouillon enregistré.`);
+		}
 
 		if (final_record) {
 			editor.clear_draft();
