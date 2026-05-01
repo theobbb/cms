@@ -1,5 +1,5 @@
 <script lang="ts">
-	import File from '$lib/ui/editor/fields/file.svelte';
+	import FileInput from '$lib/ui/editor/fields/file.svelte';
 	import Relation from '$lib/ui/editor/fields/relation.svelte';
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Textarea from '$lib/ui/components/form/fields/textarea.svelte';
@@ -42,6 +42,56 @@
 	type DraftRecord =
 		| (RecordModel & { draft_of: string | null; draft: boolean; is_latest: boolean })
 		| null;
+
+	async function compress_image(file: File, max_size_mb: number = 3): Promise<File> {
+		if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+		if (file.size <= max_size_mb * 1024 * 1024) return file;
+
+		return new Promise((resolve) => {
+			const img = new Image();
+			img.onload = () => {
+				URL.revokeObjectURL(img.src);
+				const canvas = document.createElement('canvas');
+
+				const MAX_DIM = 1920; // down from 2560
+				let { width, height } = img;
+				if (width > MAX_DIM || height > MAX_DIM) {
+					const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
+					width = Math.round(width * ratio);
+					height = Math.round(height * ratio);
+				}
+
+				canvas.width = width;
+				canvas.height = height;
+				const ctx = canvas.getContext('2d');
+				if (!ctx) return resolve(file);
+				ctx.drawImage(img, 0, 0, width, height);
+
+				let quality = 0.82; // start lower
+				const attempt_compression = () => {
+					canvas.toBlob(
+						(blob) => {
+							if (!blob) return resolve(file);
+							if (blob.size <= max_size_mb * 1024 * 1024 || quality <= 0.3) {
+								const new_name = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+								resolve(
+									new File([blob], new_name, { type: 'image/jpeg', lastModified: Date.now() })
+								);
+							} else {
+								quality -= 0.08; // finer steps
+								attempt_compression();
+							}
+						},
+						'image/jpeg',
+						quality
+					);
+				};
+				attempt_compression();
+			};
+			img.onerror = () => resolve(file);
+			img.src = URL.createObjectURL(file);
+		});
+	}
 
 	const onsubmit = form_action.submit(async ({ form_data }) => {
 		const toast_id = toaster.push('loading');
@@ -135,27 +185,29 @@
 				if (all_files.length === 0) {
 					file_payload.append('files', '');
 				} else {
-					all_files.forEach((f) => {
-						if (f instanceof File && f.size === 0) return;
+					for (const f of all_files) {
+						if (f instanceof File && f.size === 0) continue;
 						if (typeof f === 'string') {
 							file_payload.append('files', getMappedFile(f, serverFiles));
 						} else {
-							file_payload.append('files', f);
+							const final_file = await compress_image(f); // Max 5MB
+							file_payload.append('files', final_file);
 						}
-					});
+					}
 				}
 
 				if (all_thumbnails.length === 0) {
 					file_payload.append('thumbnail', '');
 				} else {
-					all_thumbnails.forEach((f) => {
-						if (f instanceof File && f.size === 0) return;
+					for (const f of all_thumbnails) {
+						if (f instanceof File && f.size === 0) continue;
 						if (typeof f === 'string') {
 							file_payload.append('thumbnail', getMappedFile(f, serverThumbnails));
 						} else {
-							file_payload.append('thumbnail', f);
+							const final_file = await compress_image(f); // Max 5MB
+							file_payload.append('thumbnail', final_file);
 						}
-					});
+					}
 				}
 
 				file_payload.append('meta_files', JSON.stringify(clean_meta_files));
@@ -167,11 +219,6 @@
 						expand: expand_query
 					});
 			} catch (error) {
-				// toaster.update(
-				// 	toast_id,
-				// 	'warning',
-				// 	'Le texte a été sauvegardé, mais la mise à jour des fichiers a échoué.'
-				// );
 				file_upload_failed = true;
 				console.error('[PocketBase File Sync Error]', error);
 			}
@@ -295,7 +342,7 @@
 			</div>
 		</Info>
 		<div>
-			<File
+			<FileInput
 				{...collections.projects.field_map.thumbnail}
 				value={project?.thumbnail}
 				label="thumbnail"
