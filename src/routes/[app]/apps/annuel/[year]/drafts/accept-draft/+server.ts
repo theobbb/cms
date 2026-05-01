@@ -39,16 +39,12 @@ export const POST: RequestHandler = async ({ request, locals: { pocketbase }, fe
 				'draft',
 				'is_latest',
 				'draft_of',
-				'expand',
-				'headshot'
+				'expand'
 			];
 			if (skip_fields.includes(key)) continue;
 
-			const file_fields = ['files', 'thumbnail'];
+			const file_fields = ['files', 'thumbnail', 'headshot'];
 			if (file_fields.includes(key)) {
-				//const file_names = Array.isArray(value) ? value : value ? [value] : [];
-				// Handle file fields (images, videos, thumbnails)
-				//if (collection === 'projects' && (key === 'files' || key === 'thumbnail')) {
 				const file_names = Array.isArray(value) ? value : value ? [value] : [];
 
 				if (file_names.length === 0) {
