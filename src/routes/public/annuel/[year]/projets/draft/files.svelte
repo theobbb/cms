@@ -7,6 +7,7 @@
 		mux_playback_id?: string;
 		is_uploading?: boolean;
 		upload_progress?: number;
+		is_processing?: boolean; // <-- Add this
 	};
 	export type MetaFiles = MetaFile[];
 
@@ -68,9 +69,9 @@
 		upload.on('success', () => {
 			get_meta(index).is_uploading = false;
 			get_meta(index).upload_progress = 100;
-			// Clean up the map since it's done
-			active_uploads.delete(data.upload_id);
+			get_meta(index).is_processing = true; // <-- Start processing state
 
+			active_uploads.delete(data.upload_id);
 			poll_for_playback_id(data.upload_id, index);
 		});
 	}
@@ -82,11 +83,11 @@
 				const res = await fetch(`/public/${page.params.year}/api/mux/${upload_id}`);
 				const data = await res.json();
 
+				// Inside poll_for_playback_id
 				if (data.status === 'ready' && data.playback_id) {
-					// Inject the playback_id into your state
 					get_meta(index).mux_playback_id = data.playback_id;
+					get_meta(index).is_processing = false; // <-- End processing state
 
-					// Stop the loop!
 					clearInterval(interval);
 					console.log('🎉 Mux Playback ID acquired:', data.playback_id);
 				}
@@ -94,7 +95,7 @@
 				console.error('Polling error', error);
 				// Optionally clear the interval if it fails too many times to prevent infinite loops
 			}
-		}, 3000);
+		}, 2000);
 	}
 
 	$effect(() => {
@@ -188,8 +189,48 @@
 		record={project}
 	>
 		{#snippet children(file, i)}
-			<FileAttachment {file} record_id={project?.id} collection="projects" />
-			<!-- <FileItem {file} {project} /> -->
+			{@const meta = meta_files?.[i] || seed_meta_file}
+
+			<div class="relative overflow-hidden rounded-md">
+				<FileAttachment {file} record_id={project?.id} collection="projects" />
+
+				<!-- Video Badge Indicator -->
+				{#if meta.mux_upload_id || meta.mux_playback_id}
+					<div
+						class="absolute top-1.5 left-1.5 z-20 flex items-center gap-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white backdrop-blur-md"
+					>
+						<span class="icon-[ri--video-line]"></span> VIDÉO
+						{#if meta.mux_playback_id}
+							<!-- Green dot indicating ready -->
+							<span
+								class="ml-1 size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"
+								title="Prêt"
+							></span>
+						{/if}
+					</div>
+				{/if}
+
+				<!-- Upload & Processing Overlay -->
+				{#if meta.is_uploading || meta.is_processing}
+					<div
+						class="bg-surface-900/80 absolute inset-0 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity"
+					>
+						{#if meta.is_uploading}
+							<span class="mb-1.5 font-mono text-xs tracking-wider text-white">
+								{Math.round(meta.upload_progress || 0)}%
+							</span>
+							<div class="bg-surface-700 h-1 w-16 overflow-hidden rounded-full">
+								<div
+									class="h-full bg-white transition-all duration-100 ease-linear"
+									style="width: {meta.upload_progress || 0}%"
+								></div>
+							</div>
+						{:else if meta.is_processing}
+							<span class="icon-[ri--loader-4-line] animate-spin text-xl text-white"></span>
+						{/if}
+					</div>
+				{/if}
+			</div>
 		{/snippet}
 	</FileInput>
 </div>
