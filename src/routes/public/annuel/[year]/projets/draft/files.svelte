@@ -3,11 +3,12 @@
 		caption: string;
 		col_start: number;
 		col_span: number;
+		aspect_ratio?: number;
 		mux_upload_id?: string;
 		mux_playback_id?: string;
 		is_uploading?: boolean;
 		upload_progress?: number;
-		is_processing?: boolean; // <-- Add this
+		is_processing?: boolean;
 	};
 	export type MetaFiles = MetaFile[];
 
@@ -144,8 +145,11 @@
 
 				current_files.forEach((file, i) => {
 					if (file instanceof File && file.type.startsWith('video/')) {
-						extract_video_frame(file).then((placeholder) => {
-							files[i] = placeholder;
+						extract_video_frame(file).then(({ thumbnail, aspect_ratio }) => {
+							files[i] = thumbnail;
+
+							const meta = get_meta(i);
+							meta.aspect_ratio = aspect_ratio;
 						});
 						handle_mux_upload(file, i);
 					}

@@ -1,4 +1,6 @@
-export async function extract_video_frame(file: File): Promise<File> {
+export async function extract_video_frame(
+	file: File
+): Promise<{ thumbnail: File; aspect_ratio: number }> {
 	return new Promise((resolve) => {
 		const video = document.createElement('video');
 		video.preload = 'metadata';
@@ -12,6 +14,8 @@ export async function extract_video_frame(file: File): Promise<File> {
 		};
 
 		video.onseeked = () => {
+			const aspect_ratio = video.videoWidth / video.videoHeight;
+
 			const canvas = document.createElement('canvas');
 			canvas.width = video.videoWidth;
 			canvas.height = video.videoHeight;
@@ -22,12 +26,17 @@ export async function extract_video_frame(file: File): Promise<File> {
 				(blob) => {
 					// Swap the extension to .jpg
 					const filename = file.name.replace(/\.[^/.]+$/, '.jpg');
-					resolve(new File([blob!], filename, { type: 'image/jpeg' }));
+					const thumbnail = new File([blob!], filename, { type: 'image/jpeg' });
+					resolve({ thumbnail, aspect_ratio });
 					URL.revokeObjectURL(video.src);
 				},
 				'image/jpeg',
 				0.8
 			);
+		};
+		video.onerror = () => {
+			// Fallback if video fails to load
+			resolve({ thumbnail: file, aspect_ratio: 1 });
 		};
 	});
 }

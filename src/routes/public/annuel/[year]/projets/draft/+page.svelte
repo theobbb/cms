@@ -47,19 +47,33 @@
 		| (RecordModel & { draft_of: string | null; draft: boolean; is_latest: boolean })
 		| null;
 
-	async function compress_image(file: File, max_size_mb: number = 3): Promise<File> {
-		if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
-		if (file.size <= max_size_mb * 1024 * 1024) return file;
+	async function process_image(
+		file: File,
+		max_size_mb: number = 3
+	): Promise<{ file: File; aspect_ratio: number }> {
+		const fallback = { file, aspect_ratio: 1 };
+		if (!file.type.startsWith('image/') || file.type === 'image/gif')
+			return { file, aspect_ratio: 1 };
+		//if (file.size <= max_size_mb * 1024 * 1024) return fallback;
 
 		return new Promise((resolve) => {
 			const img = new Image();
 			img.onload = () => {
 				URL.revokeObjectURL(img.src);
-				const canvas = document.createElement('canvas');
+				const aspect_ratio = img.width / img.height;
 
-				const MAX_DIM = 1920; // down from 2560
+				const is_too_large = file.size > max_size_mb * 1024 * 1024;
+				const MAX_DIM = 1920;
+				const needs_resizing = img.width > MAX_DIM || img.height > MAX_DIM;
+
+				if (!is_too_large && !needs_resizing) {
+					return resolve({ file, aspect_ratio });
+				}
+
+				const canvas = document.createElement('canvas');
 				let { width, height } = img;
-				if (width > MAX_DIM || height > MAX_DIM) {
+
+				if (needs_resizing) {
 					const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
 					width = Math.round(width * ratio);
 					height = Math.round(height * ratio);
@@ -68,19 +82,24 @@
 				canvas.width = width;
 				canvas.height = height;
 				const ctx = canvas.getContext('2d');
-				if (!ctx) return resolve(file);
+
+				if (!ctx) return resolve({ file, aspect_ratio });
 				ctx.drawImage(img, 0, 0, width, height);
 
 				let quality = 0.82; // start lower
 				const attempt_compression = () => {
 					canvas.toBlob(
 						(blob) => {
-							if (!blob) return resolve(file);
+							if (!blob) return resolve({ file, aspect_ratio });
+
+							// If size is acceptable or quality is bottomed out
 							if (blob.size <= max_size_mb * 1024 * 1024 || quality <= 0.3) {
 								const new_name = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
-								resolve(
-									new File([blob], new_name, { type: 'image/jpeg', lastModified: Date.now() })
-								);
+								const compressed_file = new File([blob], new_name, {
+									type: 'image/jpeg',
+									lastModified: Date.now()
+								});
+								resolve({ file: compressed_file, aspect_ratio });
 							} else {
 								quality -= 0.08; // finer steps
 								attempt_compression();
@@ -92,7 +111,7 @@
 				};
 				attempt_compression();
 			};
-			img.onerror = () => resolve(file);
+			img.onerror = () => resolve({ file, aspect_ratio: 1 });
 			img.src = URL.createObjectURL(file);
 		});
 	}
@@ -122,8 +141,8 @@
 		form_data.set('is_latest', 'true');
 		form_data.set('year', page.params.year || '');
 
-		const clean_meta_files = $state.snapshot(meta_files);
-		form_data.set('meta_files', JSON.stringify(clean_meta_files));
+		const initial_meta_files = $state.snapshot(meta_files);
+		form_data.set('meta_files', JSON.stringify(initial_meta_files));
 
 		// SEND TEXT ONLY to SvelteKit API
 		const res = await fetch(
@@ -189,12 +208,18 @@
 				if (all_files.length === 0) {
 					file_payload.append('files', '');
 				} else {
-					for (const f of all_files) {
+					for (const [i, f] of all_files.entries()) {
 						if (f instanceof File && f.size === 0) continue;
+
 						if (typeof f === 'string') {
 							file_payload.append('files', getMappedFile(f, serverFiles));
 						} else {
-							const final_file = await compress_image(f); // Max 5MB
+							const { file: final_file, aspect_ratio } = await process_image(f); // Max 3MB
+
+							if (!meta_files[i]) meta_files[i] = { ...seed_meta_file };
+
+							meta_files[i].aspect_ratio = aspect_ratio;
+
 							file_payload.append('files', final_file);
 						}
 					}
@@ -208,13 +233,14 @@
 						if (typeof f === 'string') {
 							file_payload.append('thumbnail', getMappedFile(f, serverThumbnails));
 						} else {
-							const final_file = await compress_image(f); // Max 5MB
+							const { file: final_file } = await process_image(f);
 							file_payload.append('thumbnail', final_file);
 						}
 					}
 				}
 
-				file_payload.append('meta_files', JSON.stringify(clean_meta_files));
+				const updated_meta_files = $state.snapshot(meta_files);
+				file_payload.append('meta_files', JSON.stringify(updated_meta_files));
 
 				// Attempt to update the draft with the files
 				final_record = await pocketbase

@@ -9,6 +9,7 @@
 	import PreviewFile from '../../../../../../public/annuel/[year]/projets/draft/preview-file.svelte';
 	import { seed_meta_file } from '../../../../../../public/annuel/[year]/projets/draft/files.svelte';
 	import { get_app } from '$lib/logic/ctx.svelte';
+	import Bool from '$lib/ui/editor/fields/bool.svelte';
 
 	type DraftRecord = RecordModel & { draft_of: string | null; draft: boolean; is_latest: boolean };
 
@@ -62,12 +63,20 @@
 				disabled
 			/>
 
-			<Input
-				{...page.data.collections.projects.field_map.background}
-				value={project.background}
-				label="Background"
-				disabled
-			/>
+			<div class="grid grid-cols-2 gap-3x">
+				<Input
+					{...page.data.collections.projects.field_map.background}
+					value={project.background}
+					label="Background"
+					disabled
+				/>
+				<Bool
+					{...page.data.collections.projects.field_map.foreground_white}
+					value={project.background}
+					label="texte blanc"
+					disabled
+				/>
+			</div>
 
 			{#if project?.thumbnail}
 				<div class="my-12">
