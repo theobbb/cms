@@ -1,8 +1,8 @@
 <script module>
 	export type MetaFile = {
-		caption: string;
-		col_start: number;
-		col_span: number;
+		caption?: string;
+		col_start?: number;
+		col_span?: number;
 		aspect_ratio?: number;
 		mux_upload_id?: string;
 		mux_playback_id?: string;
@@ -170,9 +170,9 @@
 
 	const get_meta = (i: number) => {
 		if (!meta_files[i]) {
-			// Fill any gaps with seeds up to the index we need
+			// Fill any gaps with empty objects to keep payload lean
 			for (let j = 0; j <= i; j++) {
-				if (!meta_files[j]) meta_files[j] = { ...seed_meta_file };
+				if (!meta_files[j]) meta_files[j] = {};
 			}
 		}
 		return meta_files[i];
@@ -193,7 +193,7 @@
 		record={project}
 	>
 		{#snippet children(file, i)}
-			{@const meta = meta_files?.[i] || seed_meta_file}
+			{@const meta = meta_files?.[i] || {}}
 
 			<div class="relative overflow-hidden rounded-md">
 				<FileAttachment {file} record_id={project?.id} collection="projects" />
@@ -256,9 +256,9 @@
 <div class="relative">
 	<div class="grid gap-4 pb-16" style="grid-template-columns: repeat({N_COLS}, minmax(0, 1fr))">
 		{#each files as file, i (file)}
-			{@const meta = meta_files?.[i] || seed_meta_file}
-			{@const col_start = Number(meta?.col_start)}
-			{@const col_span = Number(meta?.col_span)}
+			{@const meta = meta_files?.[i] || {}}
+			{@const col_start = Number(meta.col_start ?? seed_meta_file.col_start)}
+			{@const col_span = Number(meta.col_span ?? seed_meta_file.col_span)}
 
 			<div
 				style="grid-column: {col_start} / span {col_span};"
@@ -288,7 +288,7 @@
 						<div class="flex items-start justify-between">
 							<div>
 								<Button
-									onclick={() => (get_meta(i).col_start -= 1)}
+									onclick={() => (get_meta(i).col_start = col_start - 1)}
 									disabled={col_start <= 1}
 									tooltip="Déplacer à gauche"
 									class="bg-black/50! hover:bg-black!"
@@ -300,7 +300,7 @@
 
 							<div>
 								<Button
-									onclick={() => (get_meta(i).col_start += 1)}
+									onclick={() => (get_meta(i).col_start = col_start + 1)}
 									disabled={col_start + col_span > N_COLS}
 									tooltip="Déplacer à droite"
 									class="bg-black/50! hover:bg-black!"
@@ -314,7 +314,7 @@
 						<div class="flex items-end justify-center gap-2">
 							<div>
 								<Button
-									onclick={() => (get_meta(i).col_span -= 1)}
+									onclick={() => (get_meta(i).col_span = col_span - 1)}
 									disabled={col_span <= 1}
 									tooltip="Réduire la largeur"
 									class="bg-black/50! hover:bg-black!"
@@ -325,7 +325,7 @@
 							</div>
 							<div>
 								<Button
-									onclick={() => (get_meta(i).col_span += 1)}
+									onclick={() => (get_meta(i).col_span = col_span + 1)}
 									disabled={col_start + col_span > N_COLS}
 									tooltip="Augmenter la largeur"
 									class="bg-black/50! hover:bg-black!"

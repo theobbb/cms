@@ -216,7 +216,7 @@
 						} else {
 							const { file: final_file, aspect_ratio } = await process_image(f); // Max 3MB
 
-							if (!meta_files[i]) meta_files[i] = { ...seed_meta_file };
+							if (!meta_files[i]) meta_files[i] = {};
 
 							meta_files[i].aspect_ratio = aspect_ratio;
 
