@@ -19,7 +19,7 @@
 
 	const list_options = $derived({
 		filter: `year = "${page.params.year}" && draft = true`,
-		sort: '-created',
+		sort: '-updated',
 		...(collection == 'projects' ? { expand: 'students' } : { expand: 'program' })
 	});
 
@@ -123,23 +123,21 @@
 
 					<div class="text-sm text-foreground-muted">{format_date(draft.created)}</div>
 				</div>
-				{@render children(draft)}
-				<!-- <div class="text-sm text-muted">Prénom</div>
-				<div>{draft.first_name}</div>
-				<div>Nom</div>
-				<div>{draft.last_name}</div>
-				<div>{draft.description}</div>
-				<div>{draft.pronouns}</div>
 
-				<div>{draft.expand?.program?.name}</div>
 				<div>
-					{#each draft.socials as social}
-						<div class="">
-							<div>{social.name}</div>
-							<a href={social.url} target="_blank">{social.url}</a>
-						</div>
-					{/each}
-				</div> -->
+					<div class="mt-2 mb-4">
+						<a
+							class="text-link"
+							href="https://annuel.3xw.ca/{page.params.year}/{collection == 'projects'
+								? 'projets'
+								: 'finissant-es'}/{draft.id}"
+							target="_blank"
+						>
+							Voir le brouillon →
+						</a>
+					</div>
+				</div>
+				{@render children(draft)}
 			</div>
 		{/each}
 	</div>
