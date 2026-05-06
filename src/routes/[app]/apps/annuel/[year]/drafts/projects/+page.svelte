@@ -95,9 +95,9 @@
 						style="grid-template-columns: repeat({N_COLS}, minmax(0, 1fr))"
 					>
 						{#each project?.files as file, i (file)}
-							{@const meta = project?.meta_files?.[i] || seed_meta_file}
-							{@const col_start = Number(meta?.col_start)}
-							{@const col_span = Number(meta?.col_span)}
+							{@const meta = project?.meta_files?.[i] || {}}
+							{@const col_start = Number(meta.col_start ?? seed_meta_file.col_start)}
+							{@const col_span = Number(meta.col_span ?? seed_meta_file.col_span)}
 
 							<div
 								style="grid-column: {col_start} / span {col_span};"
