@@ -31,6 +31,10 @@
 
 	const form_action = init_form_action();
 
+	const has_only_videos = $derived(
+		meta_files.length > 0 && meta_files.every((m) => m?.mux_upload_id || m?.mux_playback_id)
+	);
+
 	let background_color = $state('');
 	$effect(() => {
 		if (project) {
@@ -349,6 +353,12 @@
 				required
 				record={project}
 			/>
+
+			{#if has_only_videos && !project?.thumbnail}
+				<p class="mt-2 animate-pulse text-sm text-amber-500">
+					⚠️ Thumbail requis — Ton projet ne contient que des vidéos.
+				</p>
+			{/if}
 		</div>
 
 		<Files {project} bind:meta_files />
