@@ -38,7 +38,7 @@
 		<div class="mb-4">
 			<a
 				class="text-link"
-				href="https://annuel.3xw.ca/{page.params.year}/{collection}/{record.id}"
+				href="https://annuel-design.uqam.ca/{page.params.year}/{collection}/{record.id}"
 				target="_blank"
 			>
 				Voir le brouillon →
@@ -61,7 +61,7 @@
 {:else if record}
 	<a
 		class="mb-4 block text-link"
-		href="https://annuel.3xw.ca/{page.params.year}/{collection}/{record.id}"
+		href="https://annuel-design.uqam.ca/{page.params.year}/{collection}/{record.id}"
 		target="_blank"
 	>
 		Page publique →
