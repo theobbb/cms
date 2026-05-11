@@ -24,7 +24,7 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from './preview-file.svelte';
-	import { extract_video_frame, file_is_video } from '$lib/utils/video';
+	import { extract_video_frame, file_is_video, video_thumbnail_cache } from '$lib/utils/video';
 	import { MuxUploader } from '$lib/logic/mux';
 
 	let {
@@ -39,9 +39,9 @@
 
 	const mux_uploader = new MuxUploader();
 
+	let thumbnail_count = $state(0);
+
 	$effect(() => {
-		// Explicitly track files. length ensures the effect triggers on add/remove
-		// Accessing [...files] ensures we have a non-proxy snapshot for comparison
 		const current_files = [...files];
 
 		untrack(() => {
@@ -61,20 +61,12 @@
 				}
 			});
 
-			const next_meta = current_files.map((file, i) => {
-				// First, try to find the file by reference (handles reordering)
+			// 2. Build NEW meta_files array based on the NEW files array
+			// We look up the meta object from the PREVIOUS state
+			const next_meta = current_files.map((file) => {
 				const old_idx = prev_files.indexOf(file);
-				if (old_idx !== -1) return meta_files[old_idx];
-
-				// Second, check if this is a thumbnail swap
-				// If the file at this index in prev_files was a video,
-				// and we're now at the same length, carry over the meta.
-				if (current_files.length === prev_files.length && meta_files[i]) {
-					return meta_files[i];
-				}
-
-				// Otherwise, it's a genuinely new file
-				return {};
+				// Return existing meta if found, otherwise a fresh object
+				return old_idx !== -1 ? meta_files[old_idx] : { ...seed_meta_file };
 			});
 
 			// 3. Update state
@@ -93,18 +85,9 @@
 						//thumbnail_cache.set(file, thumbnail);
 						meta.aspect_ratio = aspect_ratio;
 
-						mux_uploader.upload(file, meta).then(() => {
-							const current_index = files.indexOf(file);
-							if (current_index !== -1) {
-								// THE FIX: Update prev_files FIRST so the diffing engine
-								// doesn't think the video was deleted and replaced by a brand new image
-								prev_files[current_index] = thumbnail;
-
-								// Now swap the actual file
-								files[current_index] = thumbnail;
-							}
-						});
+						video_thumbnail_cache.set(file, thumbnail);
 					});
+					mux_uploader.upload(file, meta);
 				}
 			});
 
@@ -131,7 +114,6 @@
 		}
 		return meta_files[i];
 	};
-
 	const N_COLS = 5;
 </script>
 
@@ -213,13 +195,14 @@
 			{@const meta = meta_files?.[i] || {}}
 			{@const col_start = Number(meta.col_start ?? seed_meta_file.col_start)}
 			{@const col_span = Number(meta.col_span ?? seed_meta_file.col_span)}
+			{@const preview = (file instanceof File && video_thumbnail_cache.get(file)) || file}
 
 			<div
 				style="grid-column: {col_start} / span {col_span};"
 				class="group relative flex flex-col gap-1"
 			>
 				<div class=" relative overflow-hidden">
-					<PreviewFile {file} record_id={project?.id} />
+					<PreviewFile file={preview} record_id={project?.id} />
 					{#if meta.is_uploading}
 						<div
 							class="bg-surface-900/80 absolute inset-0 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity"

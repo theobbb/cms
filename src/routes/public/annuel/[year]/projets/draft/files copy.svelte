@@ -16,6 +16,7 @@
 </script>
 
 <script lang="ts">
+	import * as Upchunk from '@mux/upchunk';
 	import FileInput from '$lib/ui/editor/fields/file.svelte';
 	import { type RecordModel } from 'pocketbase';
 	import { page } from '$app/state';
@@ -24,8 +25,9 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from './preview-file.svelte';
-	import { extract_video_frame, file_is_video } from '$lib/utils/video';
+	import { extract_video_frame } from '$lib/utils/video';
 	import { MuxUploader } from '$lib/logic/mux';
+	import { FileProcessor } from '$lib/logic/file-processor';
 
 	let {
 		project,
@@ -35,81 +37,131 @@
 	const { collections } = $derived(page.data);
 
 	let files: (string | File)[] = $state(project?.files || []);
-	let prev_files = [...files]; // Keep a reference
 
 	const mux_uploader = new MuxUploader();
+	const file_processor = new FileProcessor(mux_uploader, files);
+
+	let prev_files = $state([...files]); // Keep a reference
+
+	const active_uploads = new Map<string, any>();
+
+	async function handle_mux_upload(video_file: File, index: number) {
+		get_meta(index).is_uploading = true;
+		get_meta(index).upload_progress = 0;
+
+		const res = await fetch(`/public/${page.params.year}/api/mux`, { method: 'POST' });
+		const data = await res.json();
+
+		if (!data.url) {
+			console.error('The server response is missing the "url" property.');
+			get_meta(index).is_uploading = false;
+			return;
+		}
+
+		get_meta(index).mux_upload_id = data.upload_id;
+
+		const upload = Upchunk.createUpload({
+			endpoint: data.url,
+			file: video_file,
+			chunkSize: 5120
+		});
+
+		// --- NEW: Store the upload instance ---
+		active_uploads.set(data.upload_id, upload);
+
+		upload.on('progress', (e) => {
+			get_meta(index).upload_progress = e.detail;
+		});
+
+		upload.on('success', () => {
+			get_meta(index).is_uploading = false;
+			get_meta(index).upload_progress = 100;
+			get_meta(index).is_processing = true; // <-- Start processing state
+
+			active_uploads.delete(data.upload_id);
+			poll_for_playback_id(data.upload_id, index);
+		});
+	}
+
+	async function poll_for_playback_id(upload_id: string, index: number) {
+		// Ping the server every 3 seconds
+		const interval = setInterval(async () => {
+			try {
+				const res = await fetch(`/public/${page.params.year}/api/mux/${upload_id}`);
+				const data = await res.json();
+
+				// Inside poll_for_playback_id
+				if (data.status === 'ready' && data.playback_id) {
+					get_meta(index).mux_playback_id = data.playback_id;
+					get_meta(index).is_processing = false; // <-- End processing state
+
+					clearInterval(interval);
+					console.log('🎉 Mux Playback ID acquired:', data.playback_id);
+				}
+			} catch (error) {
+				console.error('Polling error', error);
+				// Optionally clear the interval if it fails too many times to prevent infinite loops
+			}
+		}, 2000);
+	}
 
 	$effect(() => {
-		// Explicitly track files. length ensures the effect triggers on add/remove
-		// Accessing [...files] ensures we have a non-proxy snapshot for comparison
-		const current_files = [...files];
+		const current_files = files;
 
 		untrack(() => {
-			// Check if anything actually changed
-			const is_same =
-				current_files.length === prev_files.length &&
-				current_files.every((f, i) => f === prev_files[i]);
+			let order_changed = false;
 
-			if (is_same) return;
+			if (current_files.length === prev_files.length) {
+				order_changed = current_files.some((f, i) => f !== prev_files[i]);
+			} else {
+				order_changed = true;
+			}
 
-			// 1. Identify removals to cancel uploads
-			const removed = prev_files.filter((f) => !current_files.includes(f));
-			removed.forEach((file) => {
-				const idx = prev_files.indexOf(file);
-				if (meta_files[idx]?.mux_upload_id) {
-					mux_uploader.cancel(meta_files[idx].mux_upload_id);
-				}
-			});
+			if (order_changed) {
+				// --- NEW: Identify exactly which files were deleted ---
+				const removed_files = prev_files.filter((f) => !current_files.includes(f));
 
-			const next_meta = current_files.map((file, i) => {
-				// First, try to find the file by reference (handles reordering)
-				const old_idx = prev_files.indexOf(file);
-				if (old_idx !== -1) return meta_files[old_idx];
+				removed_files.forEach((removed_file) => {
+					const old_index = prev_files.indexOf(removed_file);
+					const old_meta = meta_files[old_index];
 
-				// Second, check if this is a thumbnail swap
-				// If the file at this index in prev_files was a video,
-				// and we're now at the same length, carry over the meta.
-				if (current_files.length === prev_files.length && meta_files[i]) {
-					return meta_files[i];
-				}
+					if (old_meta && old_meta.mux_upload_id) {
+						// 1. Abort the frontend upload if it's currently running
+						if (active_uploads.has(old_meta.mux_upload_id)) {
+							active_uploads.get(old_meta.mux_upload_id).abort();
+							active_uploads.delete(old_meta.mux_upload_id);
+						}
 
-				// Otherwise, it's a genuinely new file
-				return {};
-			});
+						// 2. Tell the server to delete the asset from Mux
+						// fetch(`/public/${page.params.year}/api/mux`, {
+						// 	method: 'DELETE',
+						// 	headers: { 'Content-Type': 'application/json' },
+						// 	body: JSON.stringify({ upload_id: old_meta.mux_upload_id })
+						// }).catch((err) => console.error('Failed to notify server of deletion', err));
+					}
+				});
+				// ------------------------------------------------------
 
-			// 3. Update state
-			meta_files = next_meta;
+				meta_files = current_files
+					.map((file) => {
+						const old_index = prev_files.indexOf(file);
+						return old_index !== -1 ? meta_files[old_index] : null;
+					})
+					.map((meta) => meta || undefined) as MetaFiles;
 
-			// 4. Handle Video Processing for NEWLY added files
-			current_files.forEach((file, i) => {
-				const was_already_there = prev_files.includes(file);
+				current_files.forEach((file, i) => {
+					if (file instanceof File && file.type.startsWith('video/')) {
+						extract_video_frame(file).then(({ thumbnail, aspect_ratio }) => {
+							files[i] = thumbnail;
 
-				if (!was_already_there && file instanceof File && file_is_video(file)) {
-					const meta = meta_files[i];
-
-					extract_video_frame(file).then(({ thumbnail, aspect_ratio }) => {
-						// Update the file in the state array to show the thumbnail
-						//files[i] = thumbnail;
-						//thumbnail_cache.set(file, thumbnail);
-						meta.aspect_ratio = aspect_ratio;
-
-						mux_uploader.upload(file, meta).then(() => {
-							const current_index = files.indexOf(file);
-							if (current_index !== -1) {
-								// THE FIX: Update prev_files FIRST so the diffing engine
-								// doesn't think the video was deleted and replaced by a brand new image
-								prev_files[current_index] = thumbnail;
-
-								// Now swap the actual file
-								files[current_index] = thumbnail;
-							}
+							const meta = get_meta(i);
+							meta.aspect_ratio = aspect_ratio;
 						});
-					});
-				}
-			});
-
-			// Sync prev_files for the next run
-			prev_files = [...current_files];
+						handle_mux_upload(file, i);
+					}
+				});
+				prev_files = [...current_files];
+			}
 		});
 	});
 

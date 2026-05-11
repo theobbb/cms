@@ -5,9 +5,9 @@ export class Pop<T = any> {
 	ctx: T = $state({} as T);
 
 	toggle = () => (this.open = !this.open);
-	show = (ctx: T) => {
+	show = (ctx?: T) => {
 		this.open = true;
-		this.ctx = ctx;
+		if (ctx) this.ctx = ctx;
 	};
 	close = () => (this.open = false);
 }

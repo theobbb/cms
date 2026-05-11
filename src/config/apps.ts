@@ -16,5 +16,13 @@ export const apps: Record<string, App> = {
 			url: 'https://api.agraf.xyz'
 		},
 		aliases: ['admin.agraf.xyz']
+	},
+	yuki: {
+		title: 'Yuki',
+		param: 'yuki',
+		pocketbase: {
+			url: 'https://api.yuki.3xw.ca'
+		},
+		aliases: ['admin.yukitoshi.art']
 	}
 };

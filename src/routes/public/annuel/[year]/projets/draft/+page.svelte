@@ -12,9 +12,8 @@
 	import { use_editor } from '$lib/ui/editor/editor-context.svelte.js';
 	import { use_pocketbase } from '$lib/pocketbase.js';
 	import Info from '../../info.svelte';
-	import Files, { seed_meta_file, type MetaFiles } from './files.svelte';
+	import Files, { type MetaFiles } from './files.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
-	import { untrack } from 'svelte';
 	import Bool from '$lib/ui/editor/fields/bool.svelte';
 
 	const { data } = $props();
@@ -111,12 +110,15 @@
 				};
 				attempt_compression();
 			};
-			img.onerror = () => resolve({ file, aspect_ratio: 1 });
+			img.onerror = () => {
+				URL.revokeObjectURL(img.src);
+				resolve({ file, aspect_ratio: 1 });
+			};
 			img.src = URL.createObjectURL(file);
 		});
 	}
 
-	const onsubmit = form_action.submit(async ({ form_data }) => {
+	const onsubmit = form_action.submit(async ({ form_data, cancel }) => {
 		const toast_id = toaster.push('loading');
 		const record = project as DraftRecord;
 		const expand_query = editor.expand_string;
@@ -205,10 +207,14 @@
 				};
 				// -------------------------------------------------------------------------
 
-				if (all_files.length === 0) {
+				const valid_files = all_files.filter(
+					(f) => (typeof f === 'string' && f.trim() !== '') || (f instanceof File && f.size > 0)
+				);
+
+				if (valid_files.length === 0) {
 					file_payload.append('files', '');
 				} else {
-					for (const [i, f] of all_files.entries()) {
+					for (const [i, f] of valid_files.entries()) {
 						if (f instanceof File && f.size === 0) continue;
 
 						if (typeof f === 'string') {
@@ -217,7 +223,6 @@
 							const { file: final_file, aspect_ratio } = await process_image(f); // Max 3MB
 
 							if (!meta_files[i]) meta_files[i] = {};
-
 							meta_files[i].aspect_ratio = aspect_ratio;
 
 							file_payload.append('files', final_file);
@@ -225,10 +230,14 @@
 					}
 				}
 
-				if (all_thumbnails.length === 0) {
+				const valid_thumbnails = all_thumbnails.filter(
+					(f) => (typeof f === 'string' && f.trim() !== '') || (f instanceof File && f.size > 0)
+				);
+
+				if (valid_thumbnails.length === 0) {
 					file_payload.append('thumbnail', '');
 				} else {
-					for (const f of all_thumbnails) {
+					for (const f of valid_thumbnails) {
 						if (f instanceof File && f.size === 0) continue;
 						if (typeof f === 'string') {
 							file_payload.append('thumbnail', getMappedFile(f, serverThumbnails));

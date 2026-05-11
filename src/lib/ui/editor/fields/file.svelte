@@ -24,11 +24,13 @@
 		record,
 		collection: outer_collection,
 		children: outer_children,
+		onchange,
 		...props
 	}: FieldProps<'file'> & {
 		files: (string | File)[];
 		record: RecordModel;
 		collection?: string;
+		onchange?: () => void;
 		children?: Snippet<[any, number]>;
 	} = $props();
 
@@ -64,6 +66,7 @@
 		if (!input.files?.length) return;
 		handle_files(Array.from(input.files));
 		input.value = '';
+		onchange?.();
 	}
 
 	function on_drag_over(e: DragEvent) {
@@ -133,12 +136,7 @@
 				{#if outer_children}
 					{@render outer_children(file, i)}
 				{:else}
-					<FileAttachment
-						{file}
-						record_id={record.id}
-						{collection}
-						on_remove={() => files.splice(i, 1)}
-					/>
+					<FileAttachment {file} record_id={record.id} {collection} />
 				{/if}
 			</ListItem>
 		{/snippet}

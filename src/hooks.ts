@@ -3,7 +3,7 @@ import type { Reroute } from '@sveltejs/kit';
 import { resolveAppKey } from './utils';
 
 // Routes accessible from any subdomain without app context
-export const global_routes = ['public', 'help', 'ui'];
+export const global_routes = ['public', 'help', 'ui', 'api'];
 
 // Routes that exist in [app] root (not in /apps folder)
 const shared_routes = ['auth', 'settings', 'members', 'profile', 'stats'];

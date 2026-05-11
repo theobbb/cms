@@ -8,7 +8,7 @@
 	<a
 		href="/help/passkeys"
 		target="_blank"
-		class="peer text-indigo-600"
+		class="peer text-link"
 		style="anchor-name: --anchor-passkey-info-{props_id};"
 	>
 		passkey

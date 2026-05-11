@@ -20,7 +20,7 @@
 	import { type RecordModel } from 'pocketbase';
 	import { page } from '$app/state';
 	import Info from '../../info.svelte';
-	import { untrack } from 'svelte';
+	import { tick, untrack } from 'svelte';
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from './preview-file.svelte';
@@ -35,17 +35,40 @@
 	const { collections } = $derived(page.data);
 
 	let files: (string | File)[] = $state(project?.files || []);
-	let prev_files = [...files]; // Keep a reference
+	let prev_files = $state([...files]); // Keep a reference
 
 	const mux_uploader = new MuxUploader();
+	const processed_videos = new WeakSet<File>(); // <-- 2. Add this tracker
+
+	async function on_file_change() {
+		await tick();
+
+		files.forEach((file, i) => {
+			if (file instanceof File && file_is_video(file) && !processed_videos.has(file)) {
+				processed_videos.add(file);
+
+				const meta = meta_files[i];
+
+				extract_video_frame(file).then(({ thumbnail, aspect_ratio }) => {
+					meta.aspect_ratio = aspect_ratio;
+
+					mux_uploader.upload(file, meta).then(() => {
+						const current_index = files.indexOf(file);
+
+						if (current_index !== -1) {
+							files[current_index] = thumbnail;
+							prev_files[current_index] = thumbnail;
+						}
+					});
+				});
+			}
+		});
+	}
 
 	$effect(() => {
-		// Explicitly track files. length ensures the effect triggers on add/remove
-		// Accessing [...files] ensures we have a non-proxy snapshot for comparison
 		const current_files = [...files];
 
 		untrack(() => {
-			// Check if anything actually changed
 			const is_same =
 				current_files.length === prev_files.length &&
 				current_files.every((f, i) => f === prev_files[i]);
@@ -61,63 +84,32 @@
 				}
 			});
 
-			const next_meta = current_files.map((file, i) => {
-				// First, try to find the file by reference (handles reordering)
+			// 2. Rebuild meta_files tracking the new file positions
+			meta_files = current_files.map((file, i) => {
+				// Reorder: Find by reference
 				const old_idx = prev_files.indexOf(file);
 				if (old_idx !== -1) return meta_files[old_idx];
 
-				// Second, check if this is a thumbnail swap
-				// If the file at this index in prev_files was a video,
-				// and we're now at the same length, carry over the meta.
+				// Thumbnail swap edge case: The file reference changed, but the array length
+				// is identical. Carry over the meta from the previous state.
 				if (current_files.length === prev_files.length && meta_files[i]) {
 					return meta_files[i];
 				}
 
-				// Otherwise, it's a genuinely new file
-				return {};
+				// Brand new file
+				return { ...seed_meta_file };
 			});
 
-			// 3. Update state
-			meta_files = next_meta;
-
-			// 4. Handle Video Processing for NEWLY added files
-			current_files.forEach((file, i) => {
-				const was_already_there = prev_files.includes(file);
-
-				if (!was_already_there && file instanceof File && file_is_video(file)) {
-					const meta = meta_files[i];
-
-					extract_video_frame(file).then(({ thumbnail, aspect_ratio }) => {
-						// Update the file in the state array to show the thumbnail
-						//files[i] = thumbnail;
-						//thumbnail_cache.set(file, thumbnail);
-						meta.aspect_ratio = aspect_ratio;
-
-						mux_uploader.upload(file, meta).then(() => {
-							const current_index = files.indexOf(file);
-							if (current_index !== -1) {
-								// THE FIX: Update prev_files FIRST so the diffing engine
-								// doesn't think the video was deleted and replaced by a brand new image
-								prev_files[current_index] = thumbnail;
-
-								// Now swap the actual file
-								files[current_index] = thumbnail;
-							}
-						});
-					});
-				}
-			});
-
-			// Sync prev_files for the next run
+			// 3. Sync prev_files for the next run
 			prev_files = [...current_files];
 		});
 	});
 
-	// 3. Sync if the database record updates (e.g., after save)
 	$effect(() => {
 		if (project?.files) {
 			untrack(() => {
 				files = project.files;
+				prev_files = [...files];
 			});
 		}
 	});
@@ -145,6 +137,7 @@
 		value={project?.files}
 		label="images et/ou vidéos"
 		record={project}
+		onchange={on_file_change}
 	>
 		{#snippet children(file, i)}
 			{@const meta = meta_files?.[i] || {}}

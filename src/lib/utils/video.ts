@@ -40,3 +40,8 @@ export async function extract_video_frame(
 		};
 	});
 }
+
+export const file_is_video = (file: File) =>
+	file.type.startsWith('video/') || /\.(mp4|mov|webm|avi|mkv)$/i.test(file.name);
+
+export const video_thumbnail_cache = new WeakMap<File, File>();

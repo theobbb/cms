@@ -3,10 +3,8 @@
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
-	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
-	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
 	import { type RecordModel } from 'pocketbase';
 	import PopConfirmCancel from '$lib/ui/templates/pop-confirm-cancel.svelte';
 

@@ -1,14 +1,12 @@
 <script lang="ts">
-	import Section from '$lib/components/section.svelte';
 	import Button from '$lib/ui/components/button.svelte';
 	import { format_bytes } from '$lib/utils/format-bytes.js';
 
 	const { data } = $props();
-
-	$inspect(data);
 </script>
 
-<div>
+À venir
+<!-- <div>
 	<div>
 		Sauvegarde et restauration des données <Button
 			icon="icon-[ri--upload-cloud-line]"
@@ -24,7 +22,7 @@
 				<div class="flex items-center gap-3">
 					<div class="icon-[ri--folder-zip-line]"></div>
 					<div class="font-mono text-sm"><span>{backup.key}</span></div>
-					<div class="text-foreground-muted text-sm">{format_bytes(backup.size)}</div>
+					<div class="text-sm text-foreground-muted">{format_bytes(backup.size)}</div>
 				</div>
 				<div class="flex gap-1 transition duration-100 not-group-hover:opacity-0">
 					<div><Button icon="icon-[ri--download-line]" variant="ghost" tooltip="Download" /></div>
@@ -34,4 +32,4 @@
 			</div>
 		{/each}
 	</div>
-</div>
+</div> -->
