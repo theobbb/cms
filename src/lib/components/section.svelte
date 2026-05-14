@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { ClassValue } from 'svelte/elements';
 
 	const {
 		size = 'md',
+		class: cx,
 		children,
 		header,
 		footer
 	}: {
 		size?: 'sm' | 'md' | 'lg' | 'full';
+		class?: ClassValue;
 		children: Snippet;
 		header?: Snippet;
 		footer?: Snippet;
@@ -22,7 +25,7 @@
 </script>
 
 <section
-	class={['w-full flex-1 p-3x pt-2x', sizes[size]]}
+	class={['w-full flex-1 p-3x pt-2x', sizes[size], cx]}
 	style="height: calc(100svh - var(--spacing)*9);"
 >
 	<div
