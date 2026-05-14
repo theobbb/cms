@@ -12,6 +12,8 @@ export type FormActionContext = {
 	canceled: () => boolean;
 };
 
+type HookFn = (ctx: FormActionContext) => void | Promise<void>;
+
 export class FormAction {
 	toaster = use_toaster();
 	pocketbase = use_pocketbase();
@@ -21,9 +23,9 @@ export class FormAction {
 
 	canceled = $state(false);
 
-	private _hooks: Array<(ctx: FormActionContext) => Promise<void>> = [];
+	private _hooks: Array<HookFn> = [];
 
-	register_hook(fn: (ctx: FormActionContext) => Promise<void>) {
+	register_hook(fn: HookFn) {
 		this._hooks.push(fn);
 		return () => {
 			this._hooks = this._hooks.filter((h) => h !== fn);

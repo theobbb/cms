@@ -24,7 +24,8 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from './preview-file.svelte';
-	import { extract_video_frame, file_is_video } from '$lib/utils/video';
+	import { extract_video_frame } from '$lib/utils/video';
+	import { file_is_video } from '$lib/utils/files';
 	import { MuxUploader } from '$lib/logic/mux';
 
 	let {

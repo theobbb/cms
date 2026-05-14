@@ -30,7 +30,7 @@
 		files: (string | File)[];
 		record: RecordModel;
 		collection?: string;
-		onchange?: () => void;
+		onchange?: (incoming: File[]) => void;
 		children?: Snippet<[any, number]>;
 	} = $props();
 
@@ -58,6 +58,7 @@
 	}
 
 	function handle_files(incoming: File[]) {
+		onchange?.(incoming);
 		incoming.forEach((file) => files.push(file));
 	}
 
@@ -66,7 +67,6 @@
 		if (!input.files?.length) return;
 		handle_files(Array.from(input.files));
 		input.value = '';
-		onchange?.();
 	}
 
 	function on_drag_over(e: DragEvent) {

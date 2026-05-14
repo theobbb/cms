@@ -3,11 +3,12 @@ import * as Upchunk from '@mux/upchunk';
 const API_ENDPOINT = '/api/mux';
 
 export type MuxMetaState = {
-	mux_upload_id?: string;
-	mux_playback_id?: string;
+	upload_id?: string;
+	playback_id?: string;
 	is_uploading?: boolean;
 	upload_progress?: number;
 	is_processing?: boolean;
+	aspect_ratio?: number;
 };
 
 export class MuxUploader {
@@ -31,7 +32,7 @@ export class MuxUploader {
 					return;
 				}
 
-				meta.mux_upload_id = data.upload_id;
+				meta.upload_id = data.upload_id;
 
 				const upload_instance = Upchunk.createUpload({
 					endpoint: data.url,
@@ -77,7 +78,7 @@ export class MuxUploader {
 				const data = await res.json();
 
 				if (data.status === 'ready' && data.playback_id) {
-					meta.mux_playback_id = data.playback_id;
+					meta.playback_id = data.playback_id;
 					meta.is_processing = false;
 
 					clearInterval(interval);
@@ -103,20 +104,28 @@ export class MuxUploader {
 	 * Aborts an ongoing upload and notifies the server to delete the asset.
 	 */
 	async remove(meta: MuxMetaState) {
-		if (!meta.mux_upload_id) return;
+		if (!meta.upload_id) return;
 
 		// 1. Abort the frontend upload if it's currently running
-		this.cancel(meta.mux_upload_id);
+		this.cancel(meta.upload_id);
 
 		// 2. Tell the server to delete the asset from Mux
 		try {
 			await fetch(API_ENDPOINT, {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ upload_id: meta.mux_upload_id })
+				body: JSON.stringify({ upload_id: meta.upload_id })
 			});
 		} catch (err) {
 			console.error('Failed to notify server of deletion', err);
 		}
 	}
+}
+
+export function delete_mux(upload_id: string) {
+	fetch(API_ENDPOINT, {
+		method: 'DELETE',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ upload_id })
+	});
 }

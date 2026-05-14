@@ -5,9 +5,11 @@
 
 	const links = [
 		{ name: 'Posts', slug: 'posts' },
+		{ name: 'Background', slug: 'background' },
+
 		{ name: 'Tags', slug: 'tags' },
 		{ name: 'Groupes', slug: 'groups' },
-		{ name: 'Global', slug: 'global' }
+		{ name: 'Global', slug: 'globals' }
 	];
 </script>
 

@@ -21,10 +21,15 @@
 	import type { RecordModel } from 'pocketbase';
 	import { FormDraft } from '$lib/logic/form-draft.svelte';
 	import Drawer from '$lib/components/drawer.svelte';
+	import type { Snippet } from 'svelte';
 
 	const {
-		onsubmit: outer_onsubmit
-	}: { onsubmit?: (ctx: EditorFormActionContext) => Promise<void | boolean> } = $props();
+		onsubmit: outer_onsubmit,
+		children
+	}: {
+		onsubmit?: (ctx: EditorFormActionContext) => Promise<void | boolean>;
+		children?: Snippet<[RecordModel | null]>;
+	} = $props();
 
 	const editor = use_editor();
 
@@ -150,23 +155,26 @@
 				{/if}
 			</div>
 		{/snippet}
-
-		<div class="flex flex-col gap-3x pt-1x pb-12">
-			{#each fields as field, i}
-				{@const Component = FieldComponents[field.type as keyof typeof FieldComponents] ?? null}
-				{#if Component}
-					<Component
-						record={update_record}
-						{...field}
-						value={update_record?.[field.name]}
-						id="{field.name.toString()}-{props_id}"
-					/>
-				{:else}
-					type not implemented yet: {field.type} - for {field.name}
-				{/if}
-			{/each}
-			<div class="h-3x"></div>
-		</div>
+		{#if children}
+			{@render children(update_record)}
+		{:else}
+			<div class="flex flex-col gap-3x pt-1x pb-12">
+				{#each fields as field, i}
+					{@const Component = FieldComponents[field.type as keyof typeof FieldComponents] ?? null}
+					{#if Component}
+						<Component
+							record={update_record}
+							{...field}
+							value={update_record?.[field.name]}
+							id="{field.name.toString()}-{props_id}"
+						/>
+					{:else}
+						type not implemented yet: {field.type} - for {field.name}
+					{/if}
+				{/each}
+				<div class="h-3x"></div>
+			</div>
+		{/if}
 
 		{#snippet footer()}
 			<ConfirmCancel

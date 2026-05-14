@@ -24,9 +24,9 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from './preview-file.svelte';
-
+	import { extract_video_frame } from '$lib/utils/video';
+	import { file_is_video } from '$lib/utils/files';
 	import { MuxUploader } from '$lib/logic/mux';
-	import FileProcessorMux from '$lib/ui/file-processors/file-processor-mux.svelte';
 
 	let {
 		project,
@@ -53,6 +53,15 @@
 
 			if (is_same) return;
 
+			// 1. Identify removals to cancel uploads
+			const removed = prev_files.filter((f) => !current_files.includes(f));
+			removed.forEach((file) => {
+				const idx = prev_files.indexOf(file);
+				if (meta_files[idx]?.mux_upload_id) {
+					mux_uploader.cancel(meta_files[idx].mux_upload_id);
+				}
+			});
+
 			const next_meta = current_files.map((file, i) => {
 				// First, try to find the file by reference (handles reordering)
 				const old_idx = prev_files.indexOf(file);
@@ -73,6 +82,32 @@
 			meta_files = next_meta;
 
 			// 4. Handle Video Processing for NEWLY added files
+			current_files.forEach((file, i) => {
+				const was_already_there = prev_files.includes(file);
+
+				if (!was_already_there && file instanceof File && file_is_video(file)) {
+					const meta = meta_files[i];
+
+					extract_video_frame(file).then(({ thumbnail, aspect_ratio }) => {
+						// Update the file in the state array to show the thumbnail
+						//files[i] = thumbnail;
+						//thumbnail_cache.set(file, thumbnail);
+						meta.aspect_ratio = aspect_ratio;
+
+						mux_uploader.upload(file, meta).then(() => {
+							const current_index = files.indexOf(file);
+							if (current_index !== -1) {
+								// THE FIX: Update prev_files FIRST so the diffing engine
+								// doesn't think the video was deleted and replaced by a brand new image
+								prev_files[current_index] = thumbnail;
+
+								// Now swap the actual file
+								files[current_index] = thumbnail;
+							}
+						});
+					});
+				}
+			});
 
 			// Sync prev_files for the next run
 			prev_files = [...current_files];
@@ -113,9 +148,47 @@
 		record={project}
 	>
 		{#snippet children(file, i)}
+			{@const meta = meta_files?.[i] || {}}
+
 			<div class="relative overflow-hidden rounded-md">
 				<FileAttachment {file} record_id={project?.id} collection="projects" />
-				<FileProcessorMux bind:file={files[i]} bind:meta={meta_files[i]} uploader={mux_uploader} />
+
+				<!-- Video Badge Indicator -->
+				{#if meta.mux_upload_id || meta.mux_playback_id}
+					<div
+						class="absolute top-1.5 left-1.5 z-20 flex items-center gap-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white backdrop-blur-md"
+					>
+						<span class="icon-[ri--video-line]"></span> VIDÉO
+						{#if meta.mux_playback_id}
+							<!-- Green dot indicating ready -->
+							<span
+								class="ml-1 size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"
+								title="Prêt"
+							></span>
+						{/if}
+					</div>
+				{/if}
+
+				<!-- Upload & Processing Overlay -->
+				{#if meta.is_uploading || meta.is_processing}
+					<div
+						class="bg-surface-900/80 absolute inset-0 z-10 flex flex-col items-center justify-center backdrop-blur-sm transition-opacity"
+					>
+						{#if meta.is_uploading}
+							<span class="mb-1.5 font-mono text-xs tracking-wider text-white">
+								{Math.round(meta.upload_progress || 0)}%
+							</span>
+							<div class="bg-surface-700 h-1 w-16 overflow-hidden rounded-full">
+								<div
+									class="h-full bg-white transition-all duration-100 ease-linear"
+									style="width: {meta.upload_progress || 0}%"
+								></div>
+							</div>
+						{:else if meta.is_processing}
+							<span class="icon-[ri--loader-4-line] animate-spin text-xl text-white"></span>
+						{/if}
+					</div>
+				{/if}
 			</div>
 		{/snippet}
 	</FileInput>

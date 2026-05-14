@@ -15,6 +15,7 @@
 	import Files, { type MetaFiles } from './files.svelte';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import Bool from '$lib/ui/editor/fields/bool.svelte';
+	import { process_image } from '$lib/utils/media.js';
 
 	const { data } = $props();
 	let { collections } = $derived(data);
@@ -26,7 +27,6 @@
 	const project = $derived(editor.current?.method == 'update' ? editor.current?.record : null);
 
 	let meta_files: MetaFiles = $state([]);
-	// $inspect(meta_files);
 
 	const form_action = init_form_action();
 
@@ -46,75 +46,18 @@
 		| (RecordModel & { draft_of: string | null; draft: boolean; is_latest: boolean })
 		| null;
 
-	async function process_image(
-		file: File,
-		max_size_mb: number = 3
-	): Promise<{ file: File; aspect_ratio: number }> {
-		const fallback = { file, aspect_ratio: 1 };
-		if (!file.type.startsWith('image/') || file.type === 'image/gif')
-			return { file, aspect_ratio: 1 };
-		//if (file.size <= max_size_mb * 1024 * 1024) return fallback;
+	function process_legacy_meta_files(meta: MetaFiles): MetaFiles {
+		if (!meta) return [];
 
-		return new Promise((resolve) => {
-			const img = new Image();
-			img.onload = () => {
-				URL.revokeObjectURL(img.src);
-				const aspect_ratio = img.width / img.height;
+		return meta.map((file) => {
+			const props = file as any; // "as any" au besoin selon le typage de MetaFiles
 
-				const is_too_large = file.size > max_size_mb * 1024 * 1024;
-				const MAX_DIM = 1920;
-				const needs_resizing = img.width > MAX_DIM || img.height > MAX_DIM;
+			return {
+				...props,
 
-				if (!is_too_large && !needs_resizing) {
-					return resolve({ file, aspect_ratio });
-				}
-
-				const canvas = document.createElement('canvas');
-				let { width, height } = img;
-
-				if (needs_resizing) {
-					const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
-					width = Math.round(width * ratio);
-					height = Math.round(height * ratio);
-				}
-
-				canvas.width = width;
-				canvas.height = height;
-				const ctx = canvas.getContext('2d');
-
-				if (!ctx) return resolve({ file, aspect_ratio });
-				ctx.drawImage(img, 0, 0, width, height);
-
-				let quality = 0.82; // start lower
-				const attempt_compression = () => {
-					canvas.toBlob(
-						(blob) => {
-							if (!blob) return resolve({ file, aspect_ratio });
-
-							// If size is acceptable or quality is bottomed out
-							if (blob.size <= max_size_mb * 1024 * 1024 || quality <= 0.3) {
-								const new_name = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
-								const compressed_file = new File([blob], new_name, {
-									type: 'image/jpeg',
-									lastModified: Date.now()
-								});
-								resolve({ file: compressed_file, aspect_ratio });
-							} else {
-								quality -= 0.08; // finer steps
-								attempt_compression();
-							}
-						},
-						'image/jpeg',
-						quality
-					);
-				};
-				attempt_compression();
+				...(props.upload_id ? { mux_upload_id: props.upload_id } : {}),
+				...(props.playback_id ? { mux_playback_id: props.playback_id } : {})
 			};
-			img.onerror = () => {
-				URL.revokeObjectURL(img.src);
-				resolve({ file, aspect_ratio: 1 });
-			};
-			img.src = URL.createObjectURL(file);
 		});
 	}
 
@@ -144,7 +87,7 @@
 		form_data.set('year', page.params.year || '');
 
 		const initial_meta_files = $state.snapshot(meta_files);
-		form_data.set('meta_files', JSON.stringify(initial_meta_files));
+		form_data.set('meta_files', JSON.stringify(process_legacy_meta_files(initial_meta_files)));
 
 		// SEND TEXT ONLY to SvelteKit API
 		const res = await fetch(
@@ -249,7 +192,10 @@
 				}
 
 				const updated_meta_files = $state.snapshot(meta_files);
-				file_payload.append('meta_files', JSON.stringify(updated_meta_files));
+				file_payload.append(
+					'meta_files',
+					JSON.stringify(process_legacy_meta_files(updated_meta_files))
+				);
 
 				// Attempt to update the draft with the files
 				final_record = await pocketbase
