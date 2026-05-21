@@ -8,6 +8,7 @@
 	import AboutPasskeys from '$lib/ui/templates/about-passkeys.svelte';
 	import Logo from '$lib/assets/logo.svelte';
 	import { use_copy } from '$lib/copy/index.js';
+	import Input from '$lib/ui/components/form/fields/input.svelte';
 
 	const { data } = $props();
 
@@ -81,7 +82,16 @@
 		{#if data.error}
 			<div class="text-red-600">{data.error}</div>
 		{:else}
-			<form class="mt-2x flex justify-center" method="POST" use:enhance={onsubmit}>
+			<form
+				class="mt-2x flex w-full flex-col items-center justify-center gap-4"
+				method="POST"
+				use:enhance={onsubmit}
+			>
+				{#if is_new_credential}
+					<div class="w-full">
+						<Input name="device_name" label="Identifiant de l’appareil" class="w-full" required />
+					</div>
+				{/if}
 				<Button size="lg" class="flex items-center" type="submit" disabled={submitting}>
 					<div class="-ml-1 flex size-5 items-center justify-center">
 						{#if submitting}

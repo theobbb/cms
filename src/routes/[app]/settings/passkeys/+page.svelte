@@ -9,20 +9,20 @@
 	import Info from '$lib/ui/templates/flags/info.svelte';
 	import PasskeyInfo from '$lib/ui/templates/passkey-info.svelte';
 
-	type Token = {
-		device_invite_token: string;
-		device_invite_expires: string;
-	};
-
 	const pocketbase = use_pocketbase();
 
 	const pop = new Pop();
+
+	let passkeys: RecordModel[] = $state([]);
 
 	let invite: RecordModel | null = $state(null);
 
 	const user = $derived(page.data.user);
 
-	$inspect(page.data.user);
+	async function fetch_passkeys() {
+		passkeys = await pocketbase.collection('_passkeys').getFullList();
+	}
+	// $inspect(page.data);
 
 	async function fetch_invite() {
 		invite = await get_existing_invite();
@@ -50,10 +50,18 @@
 	}
 
 	onMount(() => {
+		fetch_passkeys();
 		fetch_invite();
 	});
 </script>
 
+<div class="mb-12">
+	{#each passkeys as passkey}
+		<div>
+			{passkey.device_name}
+		</div>
+	{/each}
+</div>
 <div class="max-w-md space-y-4x">
 	<div>
 		<div class="">

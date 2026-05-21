@@ -74,13 +74,15 @@ export async function load({ url, cookies, locals: { app, super_pocketbase } }) 
 }
 
 export const actions: Actions = {
-	default: async ({ request, cookies, locals: { pocketbase, super_pocketbase, app }, url }) => {
+	default: async ({ request, cookies, locals: { pocketbase, super_pocketbase }, url }) => {
 		const isRegistration = url.searchParams.has('register');
 		const isPairing = url.searchParams.has('pair');
 
 		const formData = await request.formData();
 		const credentialJSON = formData.get('credential') as string;
 		if (!credentialJSON) return fail(400, { message: 'Missing credentials' });
+
+		const device_name = formData.get('device_name') as string;
 
 		const credential = JSON.parse(credentialJSON);
 		const challengeKey =
@@ -109,7 +111,7 @@ export const actions: Actions = {
 					verified: true
 				});
 
-				await save_passkey(super_pocketbase, user.id, verified);
+				await save_passkey(super_pocketbase, user.id, verified, device_name);
 
 				userId = user.id;
 			} else if (isPairing) {
@@ -123,7 +125,7 @@ export const actions: Actions = {
 
 				await super_pocketbase.collection('_passkey_invites').delete(pair_id);
 
-				await save_passkey(super_pocketbase, device_invite.user, verified);
+				await save_passkey(super_pocketbase, device_invite.user, verified, device_name);
 
 				userId = device_invite.user;
 			} else {
@@ -195,10 +197,12 @@ function get_registration_options(
 async function save_passkey(
 	super_pocketbase: any,
 	userId: string,
-	verified: Awaited<ReturnType<typeof server.verifyRegistration>>
+	verified: Awaited<ReturnType<typeof server.verifyRegistration>>,
+	device_name: string
 ) {
 	await super_pocketbase.collection('_passkeys').create({
 		user: userId,
+		device_name,
 		credential_id: verified.credential.id,
 		public_key: verified.credential.publicKey,
 		algorithm: verified.credential.algorithm,
