@@ -29,6 +29,6 @@ export const apps: Record<string, App> = {
 		pocketbase: {
 			url: 'https://api.yuki.3xw.ca'
 		},
-		aliases: ['admin.yukitoshi.art']
+		aliases: ['atelier.yukitoshi.art']
 	}
 };

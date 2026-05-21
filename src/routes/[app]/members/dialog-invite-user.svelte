@@ -8,29 +8,42 @@
 	import { type RecordModel } from 'pocketbase';
 	import PopConfirmCancel from '$lib/ui/templates/pop-confirm-cancel.svelte';
 	import { use_copy } from '$lib/copy';
+	import Select from '$lib/ui/components/pop/select/select.svelte';
+	import { page } from '$app/state';
+	import { roles } from './select-role.svelte';
 
 	const { pop, callback }: { pop: Pop; callback: (record: RecordModel) => void } = $props();
 
 	const copy = use_copy();
 	const form_action = init_form_action();
 
-	let name: string = $state('');
+	const self_role = parseInt(page.data.user.role);
 
-	async function create_user() {
+	let name: string = $state('');
+	let role: string = $state(String(self_role));
+
+	const available_roles = $derived(
+		roles
+			.map((r) => ({ ...r, disabled: parseInt(r.value) < self_role }))
+			.filter((r) => (self_role == -1 ? true : parseInt(r.value) >= 0))
+	);
+
+	const onsubmit = form_action.submit(async ({ form_data }) => {
 		const temp_password = Math.random().toString(36).slice(-12);
 
 		const created = await form_action.pocketbase.collection('users').create({
 			name,
 			password: temp_password,
-			passwordConfirm: temp_password
+			passwordConfirm: temp_password,
+			role
 		});
 		pop.close();
 		form_action.toaster.push('success', copy.members.dialog_invite_new_member.toast_sucess);
 		callback(created);
-	}
+	});
 </script>
 
-<form class="contents" onsubmit={form_action.submit(create_user)}>
+<form class="contents" {onsubmit}>
 	<Dialog {pop}>
 		<DialogHeader>
 			<DialogTitle>
@@ -45,6 +58,8 @@
 			required
 			bind:value={name}
 		/>
+		<div>role</div>
+		<Select name="role" bind:value={role} options={available_roles} />
 
 		<PopConfirmCancel confirm={copy.members.dialog_invite_new_member.confirm} />
 	</Dialog>

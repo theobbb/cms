@@ -7,8 +7,12 @@
 	import Loader from '$lib/ui/components/loader.svelte';
 	import AboutPasskeys from '$lib/ui/templates/about-passkeys.svelte';
 	import Logo from '$lib/assets/logo.svelte';
+	import { use_copy } from '$lib/copy/index.js';
 
 	const { data } = $props();
+
+	const copy = use_copy();
+	const toaster = use_toaster();
 
 	const options = $derived(data.options);
 
@@ -17,7 +21,6 @@
 
 	const is_new_credential = $derived(!!register_user || !!pair_invite);
 
-	const toaster = use_toaster();
 	let submitting = $state(false);
 
 	const onsubmit: SubmitFunction = async ({ formData, cancel }) => {
@@ -50,7 +53,7 @@
 			cancel();
 		}
 		return async ({ result, update }) => {
-			if (result.type === 'redirect') toaster.push('success');
+			if (result.type === 'redirect') toaster.push('success', copy.auth.toaster_success);
 			else if (result.type === 'failure') toaster.push('error');
 			await update();
 			submitting = false;
@@ -66,10 +69,7 @@
 			Atelier
 		</div>
 		<div class="text-center text-sm text-balance">
-			<div>Bienvenue sur le tableau de bord.</div>
-			<div>
-				C’est ici que les administrateurs du site peuvent se connecter pour gérer le site web.
-			</div>
+			<div>{copy.auth.description}</div>
 		</div>
 
 		{#if register_user}

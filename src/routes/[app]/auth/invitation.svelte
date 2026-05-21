@@ -1,16 +1,16 @@
 <script>
-	import { page } from '$app/state';
 	import Box from '$lib/components/box.svelte';
-	import Warning from '$lib/ui/templates/flags/warning.svelte';
+	import { use_copy } from '$lib/copy';
+	import { txt } from '$lib/copy/utils';
+	import Info from '$lib/ui/templates/flags/info.svelte';
 
 	const { name } = $props();
 
-	const register_user = $derived(page.data.register);
-	const pair_invite = $derived(page.data.pair);
+	const copy = use_copy();
 </script>
 
 <Box color="surface" class="my-4x w-full space-y-3x p-3x">
-	<div class="text-center text-xl">Bienvenue, {name}.</div>
+	<div class="text-center text-xl">{txt(copy.auth.register.title, { name })}</div>
 
-	<Warning>Connecte-toi depuis ton ordinateur principal (pas ton téléphone).</Warning>
+	<Info>{copy.auth.register.info}</Info>
 </Box>

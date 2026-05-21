@@ -60,7 +60,7 @@
 		<Button
 			onclick={copy_link}
 			variant="discrete"
-			class="flex w-full items-start justify-start gap-3 border border-surface-foreground bg-surface px-2.5 py-1.5 pr-2.5 text-left leading-tight break-all"
+			class="flex w-full items-start justify-start gap-3 border bg-surface px-2.5 py-1.5 pr-2.5 text-left leading-tight break-all"
 		>
 			<div>{invite_url}</div>
 			<div class="icon-[ri--file-copy-line] shrink-0 translate-y-1"></div>

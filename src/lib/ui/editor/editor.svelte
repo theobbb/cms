@@ -11,7 +11,6 @@
 	import { use_pocketbase } from '$lib/pocketbase';
 	import { FieldComponents } from './field.components';
 	import Button from '../components/button.svelte';
-	import Section from '$lib/components/section.svelte';
 
 	import { Pop } from '../components/pop/pop-context.svelte';
 	import DropdownMenu from '../components/pop/dropdown-menu/dropdown-menu.svelte';

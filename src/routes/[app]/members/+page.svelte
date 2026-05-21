@@ -13,6 +13,9 @@
 	import Section from '$lib/components/section.svelte';
 	import { process_collection } from '$config/utils';
 	import { use_copy } from '$lib/copy/index.js';
+	import SelectRole from './select-role.svelte';
+	import Select from '$lib/ui/components/pop/select/select.svelte';
+	import { page } from '$app/state';
 
 	const { data } = $props();
 
@@ -37,6 +40,37 @@
 		dialog_see_invite.show();
 	}
 </script>
+
+<div class="flex-">
+	<div class="mx-auto max-w-5xl">
+		<Section size="full">
+			{#snippet header()}
+				<TableHeader title="Membres">
+					<Button onclick={dialog_new_invite.show}>
+						+ {copy.members.invite_new_member_button}
+					</Button>
+				</TableHeader>
+			{/snippet}
+			<TableCollection
+				collection={process_collection(data.collections.users, {
+					fields: {
+						hidden: 'updated,email,verified,created',
+						labels: {
+							name: 'nom'
+						},
+						snippets: {
+							name: { snippet: name },
+							status: { snippet: verified, index: 1 },
+							controls: { snippet: controls, index: 6 },
+							role: { snippet: role }
+						}
+					}
+				})}
+				query={{ sort: '-created' }}
+			/>
+		</Section>
+	</div>
+</div>
 
 {#snippet name(row: RecordModel)}
 	<div class="flex items-center gap-2">
@@ -70,35 +104,11 @@
 	</div>
 {/snippet}
 
-<div class="flex-">
-	<div class="mx-auto max-w-5xl">
-		<Section size="full">
-			{#snippet header()}
-				<TableHeader title="Membres">
-					<Button onclick={dialog_new_invite.show}>
-						+ {copy.members.invite_new_member_button}
-					</Button>
-				</TableHeader>
-			{/snippet}
-			<TableCollection
-				collection={process_collection(data.collections.users, {
-					fields: {
-						hidden: 'updated,email,verified,created',
-						labels: {
-							name: 'nom'
-						},
-						snippets: {
-							name: { snippet: name },
-							status: { snippet: verified, index: 1 },
-							controls: { snippet: controls, index: 6 }
-						}
-					}
-				})}
-				query={{ sort: '-created' }}
-			/>
-		</Section>
+{#snippet role(row: RecordModel)}
+	<div>
+		<SelectRole user={row} />
 	</div>
-</div>
+{/snippet}
 
 {#if dialog_new_invite.open}
 	<DialogInviteUser pop={dialog_new_invite} callback={see_invite} />

@@ -12,6 +12,12 @@ export const copy_fr = {
   "tooltips": {
     "exportButton": "Export your data as CSV"
   },
+  "roles": {
+    "0": "Administrateur",
+    "1": "Éditeur",
+    "2": "Lecteur",
+    "-1": "Dev"
+  },
   "members": {
     "invite_new_member_button": "Inviter",
     "self_quit": "Quitter",
@@ -23,14 +29,24 @@ export const copy_fr = {
       },
       "confirm": "Inviter",
       "toast_sucess": "Invitation créée"
-    },
-    "dialog_share_invite": {
-      "title": "Lien d’invitation",
-      "description": "À envoyer manuellement à {name}",
-      "warning": "À ouvrir sur l’appareil cible",
-      "toast_on_copy_link_clipboard": "Lien copié"
     }
-  }
+  },
+  "dialog_share_invite": {
+    "title": "Lien d’invitation",
+    "description": "À envoyer manuellement à {name}",
+    "warning": "À ouvrir sur l’appareil cible",
+    "toast_on_copy_link_clipboard": "Lien copié"
+  },
+  "auth": {
+    "description": "Bienvenue sur le tableau de bord. C’est ici que les administrateurs du site peuvent se connecter pour gérer le site web.",
+    "button": "Connexion",
+    "toaster_success": "Bienvenue",
+    "register": {
+      "title": "Bienvenue, {name}.",
+      "info": "Connecte-toi depuis ton ordinateur principal (pas ton téléphone)."
+    }
+  },
+  "about_passkeys": "Authentification par <PasskeyInfo /> — sans mot de passe."
 } as const
 
 export type Copy = typeof copy_fr
