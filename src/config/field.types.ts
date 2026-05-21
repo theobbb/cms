@@ -23,6 +23,9 @@ export type FieldConfig = {
 	autodate: {
 		value: string;
 	};
+	color: {
+		value: string;
+	};
 	select: {
 		value: string;
 	};

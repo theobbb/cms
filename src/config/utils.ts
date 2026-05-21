@@ -67,44 +67,17 @@ export function process_collection(
 	return { ...collection, fields: all_fields };
 }
 
-// export function process_collection(
-// 	collection: CollectionModel,
-// 	options: ProcessCollectionOptions
-// ): CollectionModel {
-// 	const { hidden = [], labels = {}, overrides = {} } = options.fields;
-
-// 	collection.title = options.title;
-// 	collection.record_title = options.record_title;
-
-// 	const hidden_keys = Array.isArray(hidden)
-// 		? hidden
-// 		: hidden
-// 				.split(',')
-// 				.map((s) => s.trim())
-// 				.filter(Boolean);
-
-// 	return {
-// 		...collection,
-// 		fields: collection.fields.map((field) => {
-// 			const override = overrides[field.name] || {};
-// 			return {
-// 				...field,
-// 				...override,
-// 				...(labels[field.name] ? { label: labels[field.name] } : {}),
-// 				hidden: field.hidden || hidden_keys.includes(field.name) || override.hidden
-// 			};
-// 		}) as CollectionField[]
-// 	};
-// }
-
 export function process_collections(collections: CollectionModel[]): {
 	collections: Record<string, CollectionModel>;
 	id_collections: Record<string, CollectionModel>;
 } {
 	for (const collection of collections) {
-		collection.fields = collection.fields.filter(
-			(field) => !field.hidden && field.name != 'id' && field.name != 'emailVisibility'
-		);
+		collection.fields = collection.fields.filter((field) => {
+			if (field.hidden) return false;
+			if (field.name == 'emailVisibility') return false;
+			if (field.name == 'id' && !field.presentable) return false;
+			return true;
+		});
 		collection.field_map = Object.fromEntries(
 			collection.fields.map((field) => [field.name, field])
 		);

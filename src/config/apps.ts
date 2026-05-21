@@ -1,4 +1,10 @@
-export type App = { title: string; param: string; pocketbase: { url: string }; aliases?: string[] };
+export type App = {
+	title: string;
+	param: string;
+	pocketbase: { url: string };
+	aliases?: string[];
+	lang?: 'fr' | 'en';
+};
 
 export const apps: Record<string, App> = {
 	annuel: {
