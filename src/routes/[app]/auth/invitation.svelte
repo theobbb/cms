@@ -12,5 +12,5 @@
 <Box color="surface" class="my-4x w-full space-y-3x p-3x">
 	<div class="text-center text-xl">Bienvenue, {name}.</div>
 
-	<Warning>Connecte-toi depuis ton appareil principal (pas ton téléphone).</Warning>
+	<Warning>Connecte-toi depuis ton ordinateur principal (pas ton téléphone).</Warning>
 </Box>

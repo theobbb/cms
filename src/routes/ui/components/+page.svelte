@@ -3,9 +3,6 @@
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
 	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
-	import Anchor from '$lib/ui/components/pop/anchor.svelte';
-	import Tooltip from '$lib/ui/components/pop/tooltip.svelte';
-	import DropdownMenu from '$lib/ui/components/pop/dropdown-menu/dropdown-menu.svelte';
 
 	import Select from '$lib/ui/components/pop/select/select.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';

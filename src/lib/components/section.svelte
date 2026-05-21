@@ -25,7 +25,7 @@
 </script>
 
 <section
-	class={['w-full flex-1 p-3x pt-2x', sizes[size], cx]}
+	class={['w-full flex-1 p-3x py-2x', sizes[size], cx]}
 	style="height: calc(100svh - var(--spacing)*9);"
 >
 	<div
@@ -49,7 +49,7 @@
 			{@render children()}
 		</main>
 		{#if footer}
-			<footer class="border-t pt-3x">
+			<footer class="border-t pt-2x">
 				{@render footer()}
 			</footer>
 		{/if}

@@ -18,6 +18,7 @@
 	import SortableList from '$lib/ui/components/sortable-list.svelte';
 	import ListItem from '$lib/ui/components/list-item.svelte';
 	import type { Snippet } from 'svelte';
+	import { build_relation_query } from '$lib/pocketbase/utils/query';
 
 	let {
 		id,
@@ -75,16 +76,19 @@
 
 	async function fetch_records(search: string = '') {
 		if (!collection) return;
-
 		search = search.trim();
 		try {
 			const { filter, ...rest_query } = query || {};
+			const options: RecordListOptions = { ...rest_query };
 
-			const options: RecordListOptions = { sort: '-created', ...rest_query };
+			const relation_query = build_relation_query(collection, page.data.id_collections);
+			if (relation_query) {
+				options.expand = relation_query.expand;
+				options.fields = `*,-expand,${relation_query.fields}`;
+			}
 
 			const search_filter = get_search_keys(search, collection.presentable_keys);
-
-			options.filter = [search_filter, filter].filter((f) => Boolean(f)).join(' && ');
+			options.filter = [search_filter, filter].filter(Boolean).join(' && ');
 
 			const res = await pocketbase.collection(collectionId).getList<RecordModel>(1, 32, options);
 			available_records = res.items;
@@ -236,7 +240,7 @@
 						{/if}
 					</div>
 
-					<div class="flex max-h-24 flex-wrap gap-1.5 overflow-y-auto">
+					<div class="flex max-h-24 min-h-6 flex-wrap gap-1.5 overflow-y-auto">
 						{#each pop_selection as selected (selected.id)}
 							<div
 								class="bg-surface-100 flex w-fit items-center gap-1.5 rounded-full border py-0.5 pr-1 pl-2 text-xs"

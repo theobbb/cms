@@ -12,9 +12,11 @@
 	import TableHeader from '$lib/ui/data-table/table-header.svelte';
 	import Section from '$lib/components/section.svelte';
 	import { process_collection } from '$config/utils';
+	import { use_copy } from '$lib/copy/index.js';
 
 	const { data } = $props();
 
+	const copy = use_copy();
 	const pocketbase = use_pocketbase();
 	const toaster = use_toaster();
 
@@ -35,6 +37,15 @@
 		dialog_see_invite.show();
 	}
 </script>
+
+{#snippet name(row: RecordModel)}
+	<div class="flex items-center gap-2">
+		{row.name}
+		{#if row.id == data.user?.id}
+			<div class="w-fit bg-blue px-1.5 text-xs">vous</div>
+		{/if}
+	</div>
+{/snippet}
 
 {#snippet controls(row: RecordModel)}
 	<div class="flex items-center justify-end">
@@ -64,17 +75,20 @@
 		<Section size="full">
 			{#snippet header()}
 				<TableHeader title="Membres">
-					<Button onclick={dialog_new_invite.show}>+ Inviter</Button>
+					<Button onclick={dialog_new_invite.show}>
+						+ {copy.members.invite_new_member_button}
+					</Button>
 				</TableHeader>
 			{/snippet}
 			<TableCollection
 				collection={process_collection(data.collections.users, {
 					fields: {
-						hidden: 'updated,email,verified',
+						hidden: 'updated,email,verified,created',
 						labels: {
-							created: 'créé'
+							name: 'nom'
 						},
 						snippets: {
+							name: { snippet: name },
 							status: { snippet: verified, index: 1 },
 							controls: { snippet: controls, index: 6 }
 						}

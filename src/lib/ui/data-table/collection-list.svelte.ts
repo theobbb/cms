@@ -3,7 +3,7 @@ import { page } from '$app/state';
 import { goto } from '$app/navigation';
 import { url_query_param } from '$lib/utils/url';
 import { use_pocketbase } from '$lib/pocketbase';
-import { get_search_keys } from '$config/utils';
+import { get_collection_presentable_keys, get_search_keys } from '$config/utils';
 import {
 	ClientResponseError,
 	type CollectionField,
@@ -14,6 +14,7 @@ import {
 import { confirm } from '$lib/logic/confirm.svelte';
 import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
 import { set_collection } from '$lib/logic/ctx.svelte';
+import { build_relation_query } from '$lib/pocketbase/utils/query';
 
 const PER_PAGE = 64;
 
@@ -49,10 +50,11 @@ export class CollectionList {
 		return this.collection.fields.filter((f) => !f.hidden && !f.editor_only);
 	}
 	get relation_fields() {
-		return this.collection.fields
-			.filter((f) => f.type === 'relation')
-			.map((f) => f.name)
-			.join(',');
+		return this.collection.fields.filter((f) => f.type === 'relation');
+	}
+	get relation_fields_query() {
+		if (!this.relation_fields?.length) return null;
+		return build_relation_query(this.collection, page.data.id_collections);
 	}
 
 	constructor(collection: CollectionModel, default_query: RecordListOptions = {}) {
@@ -101,7 +103,11 @@ export class CollectionList {
 		const query = { ...this.default_query };
 
 		if (this.sort) query.sort = this.sort;
-		if (this.relation_fields) query.expand = this.relation_fields;
+		if (this.relation_fields_query) {
+			query.expand = this.relation_fields_query.expand;
+
+			query.fields = `*,${this.relation_fields_query.fields}`;
+		}
 
 		const filters = [
 			query.filter,
@@ -109,7 +115,6 @@ export class CollectionList {
 		].filter(Boolean);
 
 		query.filter = filters.join(' && ');
-
 		return query;
 	}
 

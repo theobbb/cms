@@ -6,6 +6,7 @@
 	import Invitation from './invitation.svelte';
 	import Loader from '$lib/ui/components/loader.svelte';
 	import AboutPasskeys from '$lib/ui/templates/about-passkeys.svelte';
+	import Logo from '$lib/assets/logo.svelte';
 
 	const { data } = $props();
 
@@ -46,7 +47,6 @@
 		} catch (err: any) {
 			submitting = false;
 			toaster.push('error');
-			console.error(err);
 			cancel();
 		}
 		return async ({ result, update }) => {
@@ -58,10 +58,18 @@
 	};
 </script>
 
-<div class="mx-auto grid h-screen max-w-xs grid-rows-[1fr_auto] items-center">
+<div class="mx-auto grid h-screen max-w-sm grid-rows-[1fr_auto] items-center">
 	<div class="flex flex-col justify-center gap-4x py-4x">
-		<div class="text-center text-xl">
+		<div class="flex items-center justify-center gap-2 text-center text-2xl">
 			<div>{data.app.title}</div>
+			<div><Logo /></div>
+			Atelier
+		</div>
+		<div class="text-center text-sm text-balance">
+			<div>Bienvenue sur le tableau de bord.</div>
+			<div>
+				C’est ici que les administrateurs du site peuvent se connecter pour gérer le site web.
+			</div>
 		</div>
 
 		{#if register_user}

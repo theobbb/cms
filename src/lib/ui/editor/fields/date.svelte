@@ -8,4 +8,3 @@
 </script>
 
 <DatePicker {id} {name} label={name} value={date} {required} />
-<!-- <Input {id} {name} {label} {type} {value} required={options?.required} /> -->

@@ -6,4 +6,3 @@
 </script>
 
 <Textarea {id} {name} label={name} bind:value {rows} {required} label_icon="icon-[ri--text]" />
-<!-- <MdEditor {id} {name} {label} {value} {required} /> -->

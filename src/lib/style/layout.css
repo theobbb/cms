@@ -28,7 +28,9 @@ section {
 body:has(dialog[open]) {
 	overflow: hidden;
 }
-
+button + .tooltip {
+	opacity: 100 !important;
+}
 .grid-12 {
 	display: grid;
 	grid-template-columns: repeat(12, minmax(0, 1fr));

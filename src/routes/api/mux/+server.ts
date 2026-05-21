@@ -14,7 +14,7 @@ export async function POST() {
 			new_asset_settings: {
 				playback_policy: ['public']
 			},
-			cors_origin: '*' // Restrict this to your domain in production
+			cors_origin: '*'
 		});
 
 		return json({

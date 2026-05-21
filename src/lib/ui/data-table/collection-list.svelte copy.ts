@@ -3,16 +3,25 @@ import { page } from '$app/state';
 import { goto } from '$app/navigation';
 import { url_query_param } from '$lib/utils/url';
 import { use_pocketbase } from '$lib/pocketbase';
-import { get_search_keys } from '$config/utils';
-import type { CollectionField, CollectionModel, RecordListOptions, RecordModel } from 'pocketbase';
+import { get_collection_presentable_keys, get_search_keys } from '$config/utils';
+import {
+	ClientResponseError,
+	type CollectionField,
+	type CollectionModel,
+	type RecordListOptions,
+	type RecordModel
+} from 'pocketbase';
+import { confirm } from '$lib/logic/confirm.svelte';
+import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
+import { set_collection } from '$lib/logic/ctx.svelte';
 
 const PER_PAGE = 64;
 
 export class CollectionList {
 	// — Dependencies —
-	private pocketbase = use_pocketbase();
-	private collection: CollectionModel;
-	private default_query: RecordListOptions;
+	protected pocketbase = use_pocketbase();
+	public collection: CollectionModel;
+	protected default_query: RecordListOptions;
 
 	// — State —
 	items: RecordModel[] = $state([]);
@@ -20,11 +29,6 @@ export class CollectionList {
 	loaded_pages = $state(0);
 	loading = $state(true);
 
-	// — Checked rows —
-	checked_set = new SvelteSet<string>();
-	get all_checked() {
-		return this.checked_set.size === this.items.length && this.items.length > 0;
-	}
 	get has_more() {
 		return this.items.length < this.total_items;
 	}
@@ -45,51 +49,80 @@ export class CollectionList {
 		return this.collection.fields.filter((f) => !f.hidden && !f.editor_only);
 	}
 	get relation_fields() {
-		return this.collection.fields
-			.filter((f) => f.type === 'relation')
-			.map((f) => f.name)
+		return this.collection.fields.filter((f) => f.type === 'relation');
+	}
+	get relation_fields_query() {
+		if (!this.relation_fields?.length) return null;
+		const expand = this.relation_fields.map((f) => f.name).join(',');
+
+		const fields = this.relation_fields
+			.flatMap((rel) => {
+				const related_collection = page.data.id_collections[rel.collectionId];
+
+				if (!related_collection) return [`expand.${rel.name}`];
+
+				const presentable_keys = related_collection.presentable_keys;
+				if (!presentable_keys.length) return [`expand.${rel.name}`];
+
+				return ['id', 'collectionId', 'collectionName', ...presentable_keys].map(
+					(key) => `expand.${rel.name}.${key}`
+				);
+			})
 			.join(',');
+		return { expand, fields };
 	}
 
 	constructor(collection: CollectionModel, default_query: RecordListOptions = {}) {
 		this.collection = collection;
 		this.default_query = default_query;
 
+		set_collection(collection);
+
 		// Reset and reload on search/sort change
 		$effect(() => {
 			this.search;
 			this.sort;
-			this.checked_set.clear();
+			this.on_query_change();
 			this.fetch_page(1);
 		});
 
 		// Realtime subscription
 		$effect(() => {
 			const unsub = this.pocketbase.collection(collection.id).subscribe('*', (event) => {
-				if (event.action === 'create') {
-					this.items = [event.record, ...this.items];
-					this.total_items += 1;
-				}
-				if (event.action === 'update') {
-					this.items = this.items.map((i) => (i.id === event.record.id ? event.record : i));
-				}
-				if (event.action === 'delete') {
-					this.items = this.items.filter((i) => i.id !== event.record.id);
-					this.total_items -= 1;
-					this.checked_set.delete(event.record.id);
-				}
+				this.handle_realtime_event(event);
 			});
 
 			return () => unsub.then((fn) => fn());
 		});
 	}
 
+	// Overrideable hooks
+	protected on_query_change() {}
+
+	protected handle_realtime_event(event: any) {
+		if (event.action === 'create') {
+			this.items = [event.record, ...this.items];
+			this.total_items += 1;
+		}
+		if (event.action === 'update') {
+			this.items = this.items.map((i) => (i.id === event.record.id ? event.record : i));
+		}
+		if (event.action === 'delete') {
+			this.items = this.items.filter((i) => i.id !== event.record.id);
+			this.total_items -= 1;
+		}
+	}
+
 	// — Build query —
-	private build_query(): RecordListOptions {
+	protected build_query(): RecordListOptions {
 		const query = { ...this.default_query };
 
 		if (this.sort) query.sort = this.sort;
-		if (this.relation_fields) query.expand = this.relation_fields;
+		if (this.relation_fields_query) {
+			query.expand = this.relation_fields_query.expand;
+
+			query.fields = `*,${this.relation_fields_query.fields}`;
+		}
 
 		const filters = [
 			query.filter,
@@ -97,7 +130,7 @@ export class CollectionList {
 		].filter(Boolean);
 
 		query.filter = filters.join(' && ');
-
+		console.log(this.relation_fields_query);
 		return query;
 	}
 
@@ -129,8 +162,30 @@ export class CollectionList {
 		const value = this.sort_param === field.name ? '-' + key : key;
 		goto(url_query_param(page.url.href, 'sort', value));
 	}
+}
 
-	// — Checkbox —
+export class EditorCollectionList extends CollectionList {
+	// — Checked rows —
+	checked_set = new SvelteSet<string>();
+
+	private toaster = use_toaster();
+
+	get all_checked() {
+		return this.checked_set.size === this.items.length && this.items.length > 0;
+	}
+
+	protected override on_query_change() {
+		this.checked_set.clear();
+	}
+
+	protected override handle_realtime_event(event: any) {
+		super.handle_realtime_event(event);
+		if (event.action === 'delete') {
+			this.checked_set.delete(event.record.id);
+		}
+	}
+
+	// — Checkbox Actions —
 	toggle_check_head() {
 		if (this.all_checked) {
 			this.checked_set.clear();
@@ -141,5 +196,34 @@ export class CollectionList {
 
 	toggle_check(id: string) {
 		this.checked_set.has(id) ? this.checked_set.delete(id) : this.checked_set.add(id);
+	}
+
+	async delete_selection() {
+		const confirmed = await confirm('Supprimer cette séléction ?');
+		if (!confirmed) return;
+
+		const ids = [...this.checked_set];
+		const chunks: string[][] = [];
+
+		for (let i = 0; i < ids.length; i += PER_PAGE) {
+			chunks.push(ids.slice(i, i + PER_PAGE));
+		}
+		try {
+			for (const chunk of chunks) {
+				await Promise.all(
+					chunk.map((id) => this.pocketbase.collection(this.collection.name).delete(id))
+				);
+			}
+			this.toaster.push('success', 'Séléction supprimée.');
+		} catch (err) {
+			if (err instanceof ClientResponseError) {
+				console.log(err.message);
+				this.toaster.push('error', JSON.stringify(err.message));
+			} else {
+				this.toaster.push('error');
+			}
+		} finally {
+			this.checked_set.clear();
+		}
 	}
 }

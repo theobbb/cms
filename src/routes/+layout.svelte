@@ -1,9 +1,5 @@
 <script lang="ts">
 	import '$lib/style/layout.css';
-	// import '$lib/style/fonts.css';
-	// import '$lib/style/typo.css';
-	// import '$lib/style/colors.css';
-	// import '$lib/style/markdown.css';
 
 	import favicon from '$lib/assets/favicon.svg';
 
@@ -23,7 +19,7 @@
 
 <ThemeHead />
 
-<div class="">
+<div class="text-base">
 	{@render children()}
 	<Toaster />
 	<DialogConfirm />
@@ -35,5 +31,5 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<!-- <link rel="icon" href="data:," /> -->
+	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>

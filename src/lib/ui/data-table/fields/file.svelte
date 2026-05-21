@@ -13,9 +13,9 @@
 	const collection = get_collection();
 </script>
 
-<div class="flex h-6 justify-start gap-1">
+<div class="flex flex-wrap justify-start gap-1">
 	{#each items as item, i (row.id + i)}
-		<div class="aspect-square">
+		<div class="aspect-square h-6">
 			<Media
 				src={pocketbase_file_url(app.pocketbase.url, collection.name, row.id, item)}
 				alt="item-{i}"

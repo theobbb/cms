@@ -61,9 +61,9 @@ export async function process_image(
 					(blob) => {
 						if (!blob) return resolve({ file, aspect_ratio });
 						if (blob.size <= max_size_mb * 1024 * 1024 || quality <= 0.3) {
-							const new_name = file.name.replace(/\.[^/.]+$/, '') + '.jpg';
+							const new_name = file.name.replace(/\.[^/.]+$/, '') + '.webp';
 							const compressed_file = new File([blob], new_name, {
-								type: 'image/jpeg',
+								type: 'image/webp',
 								lastModified: Date.now()
 							});
 							resolve({ file: compressed_file, aspect_ratio });
@@ -72,7 +72,7 @@ export async function process_image(
 							attempt_compression();
 						}
 					},
-					'image/jpeg',
+					'image/webp',
 					quality
 				);
 			};

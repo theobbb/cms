@@ -1,0 +1,9 @@
+dialogs:
+  deleteAccount:
+    title: Delete your account?
+    description: This action cannot be undone.
+    confirm: Delete forevers
+    cancel: Never mindd
+
+tooltips:
+  exportButton: Export your data as CSV

@@ -37,8 +37,8 @@ Le problème avec cette approche - et d'ailleurs le problème de ma vie - c'est 
 		{ name: 'bool', Component: Bool, value: false },
 		{ name: 'date', Component: DatePicker },
 		{ name: 'search', Component: Search },
-		{ name: 'relation', Component: Relation },
-		{ name: 'file', Component: File }
+		{ name: 'relation', Component: Relation }
+		// { name: 'file', Component: File }
 	];
 </script>
 

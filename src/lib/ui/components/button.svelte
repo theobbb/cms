@@ -23,7 +23,7 @@
 	export type Props = ButtonProps | LinkProps;
 
 	const cvx = use_cvx(
-		'peer inline-flex cursor-pointer items-center justify-center border transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 loading:cursor-wait loading:opacity-50',
+		'inline-flex cursor-pointer items-center justify-center border transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 loading:cursor-wait loading:opacity-50',
 		{
 			variant: {
 				default: 'bg-secondary hover:not-disabled:bg-foreground/15',
@@ -113,7 +113,7 @@
 {/snippet}
 
 <style>
-	button + :global(.tooltip) {
-		display: none !important;
+	:not(button:hover) + :global(.tooltip) {
+		opacity: 0 !important;
 	}
 </style>

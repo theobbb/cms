@@ -3,5 +3,5 @@
 </script>
 
 <div class="truncate text-ellipsis">
-	{row[name]}
+	{row[name]?.toString().slice(0, 36)}
 </div>

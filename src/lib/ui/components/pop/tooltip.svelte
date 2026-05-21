@@ -9,6 +9,12 @@
 	{...props}
 	class={[
 		cx,
-		'pointer-events-none bg-primary px-1.5 py-0.5 text-xs text-primary-foreground transition duration-100 select-none not-peer-hover:opacity-0'
+		'tooltip pointer-events-none bg-primary px-1.5 py-0.5 text-xs text-primary-foreground opacity-0 transition duration-100 select-none '
 	]}
 />
+
+<style>
+	:global([style*='anchor-name']:hover ~ *) {
+		opacity: 1;
+	}
+</style>
