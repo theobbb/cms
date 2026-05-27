@@ -13,6 +13,9 @@
 @custom-variant focus-visible (&:where(:focus-visible, .focus-visible));
 @custom-variant loading (&[aria-busy="true"]);
 
+:root {
+	--section-gap: 0.5rem;
+}
 @theme static inline {
 	--spacing-1x: calc(var(--spacing) * 1);
 	--spacing-2x: calc(var(--spacing) * 2);
@@ -90,8 +93,13 @@ input:-webkit-autofill:active {
 td,
 th {
 	user-select: none;
-	padding: 0.5rem 0.8rem;
-	max-width: 14rem;
+	padding: 0.5rem 1rem;
+	max-width: 16rem;
+	overflow-x: hidden;
+}
+td:not(.checkbox),
+th:not(.checkbox) {
+	min-width: 8rem;
 }
 td.checkbox,
 th.checkbox {

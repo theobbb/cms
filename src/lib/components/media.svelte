@@ -30,7 +30,7 @@
 			<video class="h-full w-full object-contain" src={url}></video>
 		{/if}
 	{:else}
-		<img loading="lazy" class={[thumbnail ? 'aspect-square max-h-6' : '']} src={url} {alt} />
+		<img loading="lazy" class={[thumbnail ? 'aspect-square h-12' : '']} src={url} {alt} />
 	{/if}
 {:else}
 	:(

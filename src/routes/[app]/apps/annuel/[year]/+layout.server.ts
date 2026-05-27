@@ -1,16 +1,6 @@
-export async function load({ params }) {
-	return {
-		header_links: [
-			{
-				name: 'Collections',
-				icon: 'icon-[ri--folder-2-line]',
-				href: `/${params.year}`
-			},
-			{
-				name: 'Années',
-				icon: 'icon-[ri--calendar-line]',
-				href: `/${params.year}/years`
-			}
-		]
-	};
+import { error } from '@sveltejs/kit';
+
+export async function load({ params, parent }) {
+	const { years } = await parent();
+	if (!years.find((y) => y.id == params.year)) error(404, 'Year not found');
 }

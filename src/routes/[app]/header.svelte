@@ -1,8 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import PopUser from './pop-user.svelte';
-
-	const { user } = $derived(page.data);
 
 	type Link = {
 		name: string;
@@ -67,7 +64,6 @@
 			</button> -->
 		</div>
 
-		<PopUser />
 		<!-- <a href="/profile" class="flex items-center gap-1">
 			<span class="icon-[ri--user-line]"></span>
 			{user?.name}

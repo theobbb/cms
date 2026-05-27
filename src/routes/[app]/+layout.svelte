@@ -24,9 +24,9 @@
 	init_header();
 </script>
 
-{#if !public_route}
+<!-- {#if !public_route}
 	<Header />
-{/if}
+{/if} -->
 {@render children()}
 
 <svelte:head>

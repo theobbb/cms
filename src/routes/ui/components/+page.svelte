@@ -2,13 +2,13 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte';
-	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
 
 	import Select from '$lib/ui/components/pop/select/select.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
 	import { use_toaster, type ToastType } from '$lib/components/toaster/toaster-context.svelte';
+	import PopConfirmCancel from '$lib/ui/templates/pop-confirm-cancel.svelte';
 
 	const toaster = use_toaster();
 	const toast_types: ToastType[] = ['loading', 'info', 'success', 'warning', 'error'];
@@ -28,7 +28,7 @@
 			</DialogHeader>
 
 			<div>
-				<ConfirmCancel confirm="Action" />
+				<PopConfirmCancel confirm="Action" />
 			</div>
 		</Dialog>
 	</div>

@@ -9,13 +9,13 @@
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import Dialog from '$lib/ui/components/pop/dialog/dialog.svelte';
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
-	import ConfirmCancel from '$lib/ui/templates/confirm-cancel.svelte';
 	import type { RecordModel } from 'pocketbase';
 	import Dropdown from './dropdown.svelte';
 	import DialogHeader from '$lib/ui/components/pop/dialog/dialog-header.svelte';
 	import DialogTitle from '$lib/ui/components/pop/dialog/dialog-title.svelte';
 	import DialogDescription from '$lib/ui/components/pop/dialog/dialog-description.svelte';
 	import { init_form_action } from '$lib/logic/form-action.svelte.js';
+	import PopConfirmCancel from '$lib/ui/templates/pop-confirm-cancel.svelte';
 
 	const { data } = $props();
 
@@ -119,7 +119,7 @@
 			</DialogHeader>
 
 			<Input name="id" label="année" required min={4} max={4} value={next_year} />
-			<ConfirmCancel confirm="Créer" />
+			<PopConfirmCancel confirm="Créer" />
 		</form>
 	</Dialog>
 {/if}

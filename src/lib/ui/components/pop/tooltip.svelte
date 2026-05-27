@@ -9,7 +9,7 @@
 	{...props}
 	class={[
 		cx,
-		'tooltip pointer-events-none bg-primary px-1.5 py-0.5 text-xs text-primary-foreground opacity-0 transition duration-100 select-none '
+		'tooltip pointer-events-none bg-primary px-1.5 py-0.5 font-sans text-xs text-primary-foreground opacity-0 transition duration-100 select-none'
 	]}
 />
 

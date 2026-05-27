@@ -4,7 +4,7 @@
 
 	const { pop, children }: { pop: Pop; open?: true; children: Snippet } = $props();
 
-	set_pop_context(pop);
+	set_pop_context(() => pop);
 
 	function open(el: HTMLElement) {
 		el.showPopover();

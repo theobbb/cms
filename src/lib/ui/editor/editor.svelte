@@ -21,6 +21,7 @@
 	import { FormDraft } from '$lib/logic/form-draft.svelte';
 	import Drawer from '$lib/components/drawer.svelte';
 	import type { Snippet } from 'svelte';
+	import { FIELD_ICONS } from '../components/field-icons';
 
 	const {
 		onsubmit: outer_onsubmit,
@@ -111,7 +112,7 @@
 <form {onsubmit} class="contents">
 	<Drawer size="lg">
 		{#snippet header()}
-			<div class="flex items-center justify-between gap-4">
+			<div class="flex items-center justify-between gap-4 py-4 text-xl">
 				<div class="">
 					{method == 'create' ? 'Nouveau' : 'Édition'}:
 					<span class="">{collection?.record_title || collection?.name}</span>
@@ -159,13 +160,20 @@
 		{:else}
 			<div class="flex flex-col gap-3x pt-1x pb-12">
 				{#each fields as field, i}
-					{@const Component = FieldComponents[field.type as keyof typeof FieldComponents] ?? null}
+					{@const field_type = field.type as keyof typeof FieldComponents}
+					{@const Component = FieldComponents[field_type] ?? null}
+					{@const id = `${field.name.toString()}-${props_id}`}
 					{#if Component}
 						<Component
 							record={update_record}
 							{...field}
 							value={update_record?.[field.name]}
-							id="{field.name.toString()}-{props_id}"
+							{id}
+							label_props={{
+								id,
+								label: field.label || field.name || '',
+								icon: FIELD_ICONS[field_type]
+							}}
 						/>
 					{:else}
 						type not implemented yet: {field.type} - for {field.name}
@@ -176,10 +184,12 @@
 		{/if}
 
 		{#snippet footer()}
-			<ConfirmCancel
-				confirm={method == 'create' ? 'Créer' : 'Enregistrer'}
-				onclose={editor.close}
-			/>
+			<div class="py-4">
+				<ConfirmCancel
+					confirm={method == 'create' ? 'Créer' : 'Enregistrer'}
+					onclose={editor.close}
+				/>
+			</div>
 		{/snippet}
 	</Drawer>
 </form>

@@ -8,4 +8,8 @@
 	const pop = get_pop_context();
 </script>
 
-<ConfirmCancel {...props} onclose={pop.close} />
+{#if pop}
+	<ConfirmCancel {...props} onclose={pop.close} />
+{:else}
+	pop context not found
+{/if}

@@ -63,15 +63,14 @@
 </script>
 
 <div class="mx-auto grid h-screen max-w-sm grid-rows-[1fr_auto] items-center">
-	<div class="flex flex-col justify-center gap-4x py-4x">
-		<div class="flex items-center justify-center gap-2 text-center text-2xl">
-			<div>{data.app.title}</div>
-			<div><Logo /></div>
-			Atelier
+	<div class="flex flex-col items-center justify-center gap-8 py-4x">
+		<div class="flex flex-col items-center justify-center gap-2 text-center">
+			<div class="text-4xl"><Logo /></div>
+			<div class="text-xl">{data.app.title}</div>
 		</div>
-		<div class="text-center text-sm text-balance">
+		<!-- <div class="text-center text-sm text-balance">
 			<div>{copy.auth.description}</div>
-		</div>
+		</div> -->
 
 		{#if register_user}
 			<Invitation name={register_user.name} />

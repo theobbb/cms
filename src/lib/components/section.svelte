@@ -3,13 +3,15 @@
 	import type { ClassValue } from 'svelte/elements';
 
 	const {
-		size = 'md',
+		size = 'full',
+		spacing_x = 3,
 		class: cx,
 		children,
 		header,
 		footer
 	}: {
 		size?: 'sm' | 'md' | 'lg' | 'full';
+		spacing_x?: number;
 		class?: ClassValue;
 		children: Snippet;
 		header?: Snippet;
@@ -17,16 +19,16 @@
 	} = $props();
 
 	const sizes = {
-		sm: 'flex-1 max-w-3xs',
-		md: 'flex-2 max-w-xs',
-		lg: 'flex-3 max-w-lg',
-		full: 'flex-3'
+		sm: 'w-2xs',
+		md: 'w-sm',
+		lg: 'w-xl',
+		full: 'w-full'
 	};
 </script>
 
 <section
-	class={['w-full flex-1 p-3x py-2x', sizes[size], cx]}
-	style="height: calc(100svh - var(--spacing)*9);"
+	class={['h-svh px-(--section-gap)', sizes[size], cx]}
+	style="height: 100svh; --section-gap: calc({spacing_x} * var(--spacing));"
 >
 	<div
 		class={[
@@ -41,15 +43,15 @@
 		]}
 	>
 		{#if header}
-			<header class="mb-4x">
+			<header class="border-b- -mx-(--section-gap) px-(--section-gap)">
 				{@render header()}
 			</header>
 		{/if}
-		<main class="-mx-3x min-h-0 overflow-y-auto px-3x">
+		<main class="-mx-(--section-gap) min-h-0 overflow-y-auto px-(--section-gap)">
 			{@render children()}
 		</main>
 		{#if footer}
-			<footer class="border-t pt-2x">
+			<footer class="-mx-(--section-gap) border-t px-(--section-gap)">
 				{@render footer()}
 			</footer>
 		{/if}

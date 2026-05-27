@@ -10,6 +10,7 @@
 	import Url from '$lib/ui/editor/fields/url.svelte';
 	import DatePicker from '$lib/ui/components/form/fields/date-picker.svelte';
 	import Search from '$lib/ui/components/search.svelte';
+	import Json from '$lib/ui/editor/fields/json.svelte';
 
 	const fields = [
 		{ name: 'string', Component: String, value: 'Business-focused optimal migration' },
@@ -36,8 +37,22 @@ Le problème avec cette approche - et d'ailleurs le problème de ma vie - c'est 
 		{ name: 'number', Component: Number, value: 69 },
 		{ name: 'bool', Component: Bool, value: false },
 		{ name: 'date', Component: DatePicker },
-		{ name: 'search', Component: Search },
-		{ name: 'relation', Component: Relation }
+		{
+			name: 'json',
+			Component: Json,
+			value: [
+				{
+					name: 'Instagram',
+					url: 'https://www.instagram.com/emilepainchaud.qc.ca/'
+				},
+				{
+					name: 'Behance',
+					url: 'https://www.behance.net/emilepainchaud'
+				}
+			]
+		},
+		{ name: 'search', Component: Search }
+		// { name: 'relation', Component: Relation }
 		// { name: 'file', Component: File }
 	];
 </script>

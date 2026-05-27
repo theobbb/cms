@@ -22,6 +22,7 @@
 		mimeTypes,
 		required,
 		record,
+		label_props,
 		collection: outer_collection,
 		children: outer_children,
 		onchange,
@@ -123,7 +124,7 @@
 	ondrop={on_drop}
 	role="presentation"
 >
-	<Label {id} label={label || name || ''} icon="icon-[ri--image-line]" />
+	<Label {...label_props} />
 
 	<SortableList
 		items={files}

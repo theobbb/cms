@@ -19,7 +19,7 @@
 		collection: CollectionModel;
 		query?: RecordListOptions;
 
-		wrapper?: Snippet<[{ header: Snippet; body: Snippet; footer: Snippet }]>;
+		wrapper?: Snippet<[{ header: Snippet; body: Snippet }]>;
 		onsubmit?: (ctx: EditorFormActionContext) => Promise<void | boolean>;
 	} = $props();
 
@@ -28,37 +28,7 @@
 </script>
 
 {#snippet header()}
-	<TableHeader title={collection.title || collection.name}>
-		<Button onclick={() => editor.open({ method: 'create' })}>+ Nouveau</Button>
-	</TableHeader>
-{/snippet}
-
-{#snippet footer()}
-	<div class="flex items-center justify-between">
-		<div>
-			Total: {list.total_items}
-			{#if list.items.length < list.total_items}
-				(affichage {list.items.length})
-			{/if}
-		</div>
-		{#if list.checked_set.size > 0}
-			<div class="-my-2x w-sm bg-surface px-3 py-2 text-surface-foreground">
-				<div class="flex items-center justify-between gap-2">
-					<div class="flex items-center gap-2">
-						<Button
-							icon="icon-[ri--close-line]"
-							variant="ghost"
-							onclick={() => list.checked_set.clear()}
-						/>
-						<div>{list.checked_set.size} séléctionné(s)</div>
-					</div>
-					<Button size="lg" variant="danger" onclick={() => list.delete_selection()}>
-						Supprimer
-					</Button>
-				</div>
-			</div>
-		{/if}
-	</div>
+	<TableHeader title={collection.title || collection.name} {list} {editor} />
 {/snippet}
 
 {#snippet body()}
@@ -104,11 +74,10 @@
 {/snippet}
 
 {#if wrapper}
-	{@render wrapper({ header, body, footer })}
+	{@render wrapper({ header, body })}
 {:else}
 	{@render header()}
 	{@render body()}
-	{@render footer()}
 {/if}
 
 {#if editor.current != null && page.url.searchParams.has('editor')}

@@ -14,7 +14,7 @@
 		children: Snippet;
 	} = $props();
 
-	set_pop_context(pop);
+	set_pop_context(() => pop);
 
 	type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
 

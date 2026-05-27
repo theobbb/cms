@@ -95,7 +95,7 @@
 	}
 </script>
 
-<Section size="full">
+<Section>
 	<div>Brouillons ({drafts.length})</div>
 	<div class="flex flex-col items-center gap-8">
 		{#each drafts as draft}

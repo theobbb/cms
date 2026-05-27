@@ -5,7 +5,6 @@
 	import Input from '$lib/ui/components/form/fields/input.svelte';
 	import { page } from '$app/state';
 	import Text from '$lib/ui/editor/fields/text.svelte';
-	import FileAttachment from '$lib/ui/editor/fields/file-attachment.svelte';
 	import PreviewFile from '../../../../../../public/annuel/[year]/projets/draft/preview-file.svelte';
 	import { seed_meta_file } from '../../../../../../public/annuel/[year]/projets/draft/files.svelte';
 	import { get_app } from '$lib/logic/ctx.svelte';

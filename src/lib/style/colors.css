@@ -30,6 +30,9 @@
 	--accent-foreground: oklch(32.613% 0.0435 250.528);
 	--accent-foreground-muted: oklch(42.663% 0.04714 250.109);
 
+	--active: oklch(0% 0 0 / 0.21);
+	--hover: oklch(0% 0 0 / 0.077);
+
 	--link: oklch(51.1% 0.262 276.966);
 
 	/* --- utils */
@@ -88,9 +91,12 @@
 	--secondary-foreground-muted: oklch(65% 0.0001 271.152);
 
 	--accent: oklch(40.449% 0.06713 251.208);
-	--accent-hover: oklch(55% 0.12 251.813 / 0.528);
+	--accent-hover: oklch(40.449% 0.06713 251.208 / 0.587);
 	--accent-foreground: oklch(92% 0.04 250.528);
 	--accent-foreground-muted: oklch(78% 0.05 250.109);
+
+	--active: oklch(100% 0.00011 271.152 / 0.15);
+	--hover: oklch(100% 0.00011 271.152 / 0.07);
 
 	--link: oklch(67.3% 0.182 276.935);
 
@@ -152,6 +158,9 @@
 	--color-accent-hover: var(--accent-hover);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-accent-foreground-muted: var(--accent-foreground-muted);
+
+	--color-active: var(--active);
+	--color-hover: var(--hover);
 
 	--color-link: var(--link);
 

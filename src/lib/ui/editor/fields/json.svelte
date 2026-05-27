@@ -2,7 +2,7 @@
 	import Json from '$lib/ui/components/form/fields/json.svelte';
 	import type { FieldProps } from '$config/field.types';
 
-	const { id, name, required, value = $bindable(''), label }: FieldProps<'text'> = $props();
+	const { id, name, required, value = $bindable(''), label_props }: FieldProps<'text'> = $props();
 </script>
 
-<Json {id} {name} label={label || name} {value} {required}></Json>
+<Json {name} {value} {required} {...label_props}></Json>

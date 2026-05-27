@@ -38,6 +38,7 @@ export function process_collection(
 	const mappedFields: CollectionField[] = collection.fields.map((field) => {
 		const override = overrides[field.name] || {};
 		const snippet_override = snippets[field.name];
+
 		return {
 			...field,
 			...override,

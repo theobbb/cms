@@ -24,17 +24,23 @@
 </script>
 
 <table class="w-full">
-	<thead class="sticky top-0 z-10 bg-background">
-		<tr class="border-b">
+	<thead class="">
+		<tr class="sticky top-0 z-10 bg-background">
 			{#if prefix_header}
 				{@render prefix_header()}
 			{/if}
 			{#each columns as column}
-				<th onclick={() => onsort?.(column)} class="group cursor-pointer text-left">
-					<div
-						class="-mx-2x flex min-h-8 items-center justify-between gap-2x px-2x font-normal group-hover:bg-accent-hover"
-					>
-						<div>{column.label || column.name}</div>
+				<th
+					onclick={() => onsort?.(column)}
+					class="cursor-pointer text-left whitespace-nowrap hover:bg-hover"
+				>
+					<div class="-mx-2x flex items-center justify-between gap-2x px-2x font-normal">
+						<div class="flex items-center gap-2">
+							{#if column.icon}
+								<div class={[column.icon, 'text-muted']}></div>
+							{/if}
+							<div>{column.label || column.name}</div>
+						</div>
 						{#if sort_param === column.name}
 							<div class="icon-[ri--arrow-up-line]"></div>
 						{:else if sort_param === '-' + column.name}
@@ -54,8 +60,8 @@
 				class={[
 					cx,
 					'border-b first:border-t',
-					props.onclick && 'action cursor-pointer hover:bg-accent-hover',
-					props.selected && 'bg-accent!'
+					props.onclick && 'action cursor-pointer hover:bg-hover',
+					props.selected && 'bg-active!'
 				]}
 			>
 				{#if prefix_cell}
@@ -71,6 +77,6 @@
 
 <style>
 	thead tr {
-		box-shadow: inset 0 -1px 0 var(--border);
+		box-shadow: inset 0 -1px 0 var(--color-border);
 	}
 </style>

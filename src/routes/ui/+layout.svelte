@@ -1,20 +1,19 @@
 <script lang="ts">
-	import Nav from '$lib/components/nav/nav.svelte';
+	import NavLink from '$lib/ui/components/nav/nav-link.svelte';
+	import Nav from '$lib/ui/components/nav/nav.svelte';
 
 	const { children } = $props();
 </script>
 
 <div class="fixed top-0 left-0 w-xs">
-	<Nav
-		links={[
-			{ name: 'text', slug: 'text' },
-			{ name: 'fields', slug: 'fields' },
-			{ name: 'colors', slug: 'colors' },
-			{ name: 'buttons', slug: 'buttons' },
-			{ name: 'components', slug: 'components' }
-		]}
-		base_path="/ui"
-	/>
+	<Nav param="ui">
+		<NavLink param="text">text</NavLink>
+		<NavLink param="fields">fields</NavLink>
+
+		<NavLink param="colors">colors</NavLink>
+		<NavLink param="buttons">buttons</NavLink>
+		<NavLink param="components">components</NavLink>
+	</Nav>
 </div>
 
 <div class="my-16 mr-8 ml-(--container-xs)">

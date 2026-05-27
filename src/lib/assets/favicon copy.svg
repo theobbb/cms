@@ -23,13 +23,10 @@
 			}
 		}
 	</style>
-
 	<g id="light-icon">
-		<path d="M8 6H13V14H1V4H6.25L8 6Z" fill="black" />
-		<path d="M10 4H15V12H3V2H8.25L10 4Z" fill="black" fill-opacity="0.5" />
+		<path d="M9 5H14V13H2V3H7.25L9 5Z" fill="black" />
 	</g>
 	<g id="dark-icon">
-		<path d="M8 6H13V14H1V4H6.25L8 6Z" fill="white" />
-		<path d="M10 4H15V12H3V2H8.25L10 4Z" fill="white" fill-opacity="0.5" />
+		<path d="M9 5H14V13H2V3H7.25L9 5Z" fill="white" style="pointer-events: auto" />
 	</g>
 </svg>

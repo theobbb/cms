@@ -12,6 +12,7 @@
 	} from 'pocketbase';
 	import type { Snippet } from 'svelte';
 	import { CollectionList } from './collection-list.svelte';
+	import { FIELD_ICONS } from '../components/field-icons';
 
 	const {
 		collection,
@@ -33,7 +34,15 @@
 		row_props?: (row: RecordModel) => Record<string, any>;
 	} = $props();
 
-	const columns = $derived(collection.fields.filter((f) => !f.hidden));
+	const columns = $derived(
+		collection.fields
+			.filter((f) => !f.hidden)
+			.map((f) => {
+				if (f.type == 'autodate') f.icon = FIELD_ICONS.date;
+				else f.icon = FIELD_ICONS[f.type as keyof typeof ColumnComponents];
+				return f;
+			})
+	);
 </script>
 
 <Table
@@ -46,8 +55,8 @@
 	{row_props}
 >
 	{#snippet cell(row, column)}
-		{@const type = column.type}
-		{@const Component = ColumnComponents[type as keyof typeof ColumnComponents] ?? null}
+		{@const type = column.type as keyof typeof ColumnComponents}
+		{@const Component = ColumnComponents[type] ?? null}
 
 		{#if column.snippet}
 			{@render column.snippet(row)}

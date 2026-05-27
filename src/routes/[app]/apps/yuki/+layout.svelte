@@ -1,18 +1,16 @@
 <script lang="ts">
-	import Nav from '$lib/components/nav/nav.svelte';
+	import NavFolder from '$lib/ui/components/nav/nav-folder.svelte';
+	import NavLink from '$lib/ui/components/nav/nav-link.svelte';
+	import Nav from '$lib/ui/components/nav/nav.svelte';
+	import Navigation from '$lib/ui/components/navigation.svelte';
 
 	const { children } = $props();
-
-	const links = [
-		{ name: 'Posts', slug: 'posts' },
-		{ name: 'Background', slug: 'background' },
-
-		{ name: 'Tags', slug: 'tags' },
-		{ name: 'Groupes', slug: 'groups' },
-		{ name: 'Global', slug: 'globals' }
-	];
 </script>
 
-<Nav {links} />
+<Nav>
+	<NavLink param="posts">Posts</NavLink>
+	<NavLink param="background">Background</NavLink>
+	<NavLink param="tags">Tags</NavLink>
+</Nav>
 
 {@render children()}

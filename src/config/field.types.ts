@@ -88,4 +88,5 @@ export type FieldType = keyof FieldConfig;
 export type FieldProps<T extends FieldType> = FieldBase<any, T> &
 	FieldConfig[T] & {
 		id: string;
+		label_props: { id: string; label: string; icon: string };
 	};

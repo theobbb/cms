@@ -1,4 +1,4 @@
-import { createContext } from 'svelte';
+import { getContext, setContext } from 'svelte';
 
 export class Pop<T = any> {
 	open = $state(false);
@@ -12,4 +12,13 @@ export class Pop<T = any> {
 	close = () => (this.open = false);
 }
 
-export const [get_pop_context, set_pop_context] = createContext<Pop>();
+const POP_KEY = Symbol('POP_KEY');
+
+export function set_pop_context(get_pop: () => Pop | null): Pop | null {
+	const pop = setContext(POP_KEY, get_pop());
+	return pop;
+}
+export function get_pop_context(): Pop | null {
+	const pop = getContext<Pop | null>(POP_KEY) || null;
+	return pop;
+}

@@ -4,13 +4,15 @@
 	import type { AnchorProps } from '../anchor.svelte';
 	import Anchor from '../anchor.svelte';
 	import { Pop } from '../pop-context.svelte';
+	import type { Snippet } from 'svelte';
 
 	type BaseItem = { label: string; icon?: string; class?: ClassValue; disabled?: boolean };
 
 	type Item =
 		| ({ type: 'button'; action: () => void } & BaseItem)
 		| ({ type: 'link'; href: string } & BaseItem)
-		| { type: 'divider' };
+		| { type: 'divider' }
+		| { type: 'snippet'; snippet: Snippet };
 </script>
 
 <script lang="ts">
@@ -35,9 +37,11 @@
 				{#each options as option}
 					{#if option.type == 'divider'}
 						<div class="my-1 border-t"></div>
+					{:else if option.type == 'snippet'}
+						{@render option.snippet()}
 					{:else}
 						<Button
-							class={[option.class, 'hover:bg-secondary mx-1 justify-start']}
+							class={[option.class, 'mx-1 justify-start py-1 hover:bg-secondary']}
 							variant="none"
 							href={option.type == 'link' ? option.href : undefined}
 							icon={option.icon}
