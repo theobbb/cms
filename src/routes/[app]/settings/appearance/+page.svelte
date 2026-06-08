@@ -22,7 +22,7 @@
 			<button
 				class={[
 					'min-h-12 cursor-pointer border',
-					theme.value == name ? 'bg-accent' : 'hover:bg-accent-hover'
+					theme.value == name ? 'bg-active' : 'hover:bg-hover'
 				]}
 				onclick={() => change_theme(name as ThemeValue)}
 			>

@@ -19,7 +19,7 @@
 	<a
 		{href}
 		class={[
-			'mb-0.5 flex items-center gap-2 px-2.5 py-0.5 duration-50   ',
+			'mb-0.5 flex items-center gap-2 px-2.5 py-0.5 duration-50',
 			isActive ? 'bg-active' : 'hover:bg-hover'
 		]}
 	>

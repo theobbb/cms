@@ -1,6 +1,8 @@
 import { process_collections } from '$config/utils';
 
-export async function load({ locals: { app, pocketbase, super_pocketbase, user, public_route } }) {
+export async function load({
+	locals: { app, pocketbase, super_pocketbase, session, user, public_route }
+}) {
 	//const super_pocketbase = await super_auth_pocketbase(app.pocketbase.url);
 
 	const collections = await super_pocketbase.collections.getFullList({
@@ -12,6 +14,7 @@ export async function load({ locals: { app, pocketbase, super_pocketbase, user, 
 		app,
 		...process_collections(collections),
 		user,
+		session,
 		server_auth: pocketbase.authStore.exportToCookie({ httpOnly: false }),
 		public_route,
 		header_links: [

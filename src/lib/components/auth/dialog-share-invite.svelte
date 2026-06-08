@@ -23,9 +23,7 @@
 
 	const toaster = use_toaster();
 
-	const invite_url = $derived(
-		`${page.url.origin}/auth?${type == 'user' ? 'register' : 'pair'}=${record.id}`
-	);
+	const invite_url = $derived(`${page.url.origin}/auth?register=${record.id}`);
 
 	async function copy_link() {
 		await navigator.clipboard.writeText(invite_url);

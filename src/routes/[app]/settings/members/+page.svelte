@@ -3,7 +3,7 @@
 	import { Pop } from '$lib/ui/components/pop/pop-context.svelte.js';
 	import type { RecordModel } from 'pocketbase';
 	import DialogInviteUser from './dialog-invite-user.svelte';
-	import { confirm } from '$lib/logic/confirm.svelte';
+
 	import { use_pocketbase } from '$lib/pocketbase.js';
 	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte.js';
 	import DialogShareInvite from '$lib/components/auth/dialog-share-invite.svelte';
@@ -14,6 +14,7 @@
 	import { process_collection } from '$config/utils';
 	import { use_copy } from '$lib/copy/index.js';
 	import SelectRole from './select-role.svelte';
+	import { confirm } from '$lib/logic/confirm.svelte.js';
 
 	const { data } = $props();
 
@@ -37,40 +38,41 @@
 		invite = record;
 		dialog_see_invite.show();
 	}
+
+	function is_verified(record: RecordModel) {
+		return record.expand?.sessions_via_user?.some((session: RecordModel) => session.verified);
+	}
 </script>
 
-<div class="flex-">
-	<div class="mx-auto max-w-5xl">
-		<Section size="full">
-			{#snippet header()}
-				<TableHeader title="Membres">
-					{#snippet action_bar()}
-						<Button onclick={dialog_new_invite.show} variant="action" size="lg">
-							+ {copy.members.invite_new_member_button}
-						</Button>
-					{/snippet}
-				</TableHeader>
+<Section spacing_x={6}>
+	{#snippet header()}
+		<TableHeader title="Membres">
+			{#snippet action_bar()}
+				<Button onclick={dialog_new_invite.show} variant="action" size="lg">
+					+ {copy.members.invite_new_member_button}
+				</Button>
 			{/snippet}
-			<TableCollection
-				collection={process_collection(data.collections.users, {
-					fields: {
-						hidden: 'updated,email,verified,created',
-						labels: {
-							name: 'nom'
-						},
-						snippets: {
-							name: { snippet: name },
-							status: { snippet: verified, index: 1 },
-							controls: { snippet: controls, index: 6 },
-							role: { snippet: role }
-						}
-					}
-				})}
-				query={{ sort: '-created' }}
-			/>
-		</Section>
-	</div>
-</div>
+		</TableHeader>
+	{/snippet}
+	<TableCollection
+		collection={process_collection(data.collections.users, {
+			fields: {
+				hidden: 'updated,email,verified,created',
+				labels: {
+					name: 'nom'
+				},
+				snippets: {
+					name: { snippet: name },
+					sessions: { snippet: sessions, index: 1 },
+					status: { snippet: verified, index: 2 },
+					controls: { snippet: controls, index: 6 },
+					role: { snippet: role }
+				}
+			}
+		})}
+		query={{ expand: 'sessions_via_user', sort: '-created' }}
+	/>
+</Section>
 
 {#snippet name(row: RecordModel)}
 	<div class="flex items-center gap-2">
@@ -81,9 +83,13 @@
 	</div>
 {/snippet}
 
+{#snippet sessions(row: RecordModel)}
+	{row.expand?.sessions_via_user?.length}
+{/snippet}
+
 {#snippet controls(row: RecordModel)}
 	<div class="flex items-center justify-end">
-		{#if !row.verified}
+		{#if !is_verified(row)}
 			<Button icon="icon-[ri--key-line]" variant="ghost" onclick={() => see_invite(row)} />
 			<Button
 				icon="icon-[ri--delete-bin-line]"
@@ -98,8 +104,10 @@
 
 {#snippet verified(row: RecordModel)}
 	<div>
-		{#if !row.verified}
-			<div class="w-fit bg-blue px-2 text-sm">En attente</div>
+		{#if is_verified(row)}
+			<div class="w-fit bg-green px-2 text-sm text-green-foreground">Vérifié</div>
+		{:else}
+			<div class="w-fit bg-blue px-2 text-sm text-blue-foreground">En attente</div>
 		{/if}
 	</div>
 {/snippet}

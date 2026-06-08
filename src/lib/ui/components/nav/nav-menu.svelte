@@ -25,6 +25,15 @@
 {:else}
 	<div class="mb-6">
 		<Button
+			class="m-1.5 flex cursor-pointer items-center gap-1.5 p-1 hover:underline"
+			style="anchor-name: --pop-menu;"
+			icon="icon-[ri--settings-line]"
+			variant="ghost"
+			size="lg"
+			tooltip="Paramètres"
+			href="/settings/profile"
+		/>
+		<!-- <Button
 			onclick={pop.show}
 			class="m-1.5 flex cursor-pointer items-center gap-1.5 p-1 hover:underline"
 			style="anchor-name: --pop-menu;"
@@ -60,7 +69,7 @@
 			top="bottom"
 			left="left"
 			class="mt-0.5"
-		/>
+		/> -->
 	</div>
 {/if}
 {#snippet log_out()}

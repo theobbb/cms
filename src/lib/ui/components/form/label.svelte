@@ -27,8 +27,8 @@
 		for={id}
 		class={[
 			linked ? '-mb-0.5 pb-0' : '',
-			'bg-surface flex h-8 w-full items-center gap-1 border border-b-0 px-2.5 whitespace-pre lowercase select-none',
-			error ? 'text-red-600' : 'text-surface-foreground/70'
+			'flex h-8 w-full items-center gap-1 border border-b-0 bg-surface px-2.5 whitespace-pre lowercase select-none',
+			error ? 'text-red-600' : 'text-muted'
 		]}
 	>
 		{#if icon}

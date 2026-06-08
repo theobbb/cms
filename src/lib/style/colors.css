@@ -30,8 +30,8 @@
 	--accent-foreground: oklch(32.613% 0.0435 250.528);
 	--accent-foreground-muted: oklch(42.663% 0.04714 250.109);
 
-	--active: oklch(0% 0 0 / 0.21);
-	--hover: oklch(0% 0 0 / 0.077);
+	--active: oklch(80.9% 0.105 251.813);
+	--hover: oklch(80.712% 0.10074 250.473 / 0.528);
 
 	--link: oklch(51.1% 0.262 276.966);
 

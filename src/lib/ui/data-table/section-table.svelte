@@ -4,8 +4,6 @@
 	import type { ComponentProps } from 'svelte';
 
 	const props: Omit<ComponentProps<typeof TableCollectionEditor>, 'wrapper'> = $props();
-
-	$inspect(props);
 </script>
 
 <TableCollectionEditor {...props}>

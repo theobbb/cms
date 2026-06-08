@@ -6,7 +6,7 @@ import { resolveAppKey } from './utils';
 export const global_routes = ['public', 'help', 'ui', 'api'];
 
 // Routes that exist in [app] root (not in /apps folder)
-const shared_routes = ['auth', 'settings', 'members', 'profile', 'stats'];
+const shared_routes = ['auth', 'settings'];
 
 export const reroute: Reroute = ({ url }) => {
 	const subdomain = resolveAppKey(url.hostname);

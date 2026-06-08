@@ -1,4 +1,4 @@
-import PocketBase, { type CollectionModel } from 'pocketbase';
+import PocketBase, { type CollectionModel, type RecordModel } from 'pocketbase';
 import type { App as AppConfig } from './config/apps';
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -10,6 +10,7 @@ declare global {
 			pocketbase: PocketBase;
 			super_pocketbase: PocketBase;
 			user: any;
+			session: any;
 			public_route: boolean;
 		}
 		interface PageData {

@@ -141,7 +141,7 @@ export class CollectionList {
 
 	// — Sorting —
 	set_sort(field: CollectionField) {
-		if (field.type === 'snippet') return;
+		if (field.snippet) return;
 		const key = String(field.name);
 		const value = this.sort_param === field.name ? '-' + key : key;
 		goto(url_query_param(page.url.href, 'sort', value));

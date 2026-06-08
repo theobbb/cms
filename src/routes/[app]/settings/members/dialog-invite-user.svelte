@@ -28,18 +28,25 @@
 			.filter((r) => (self_role == -1 ? true : parseInt(r.value) >= 0))
 	);
 
-	const onsubmit = form_action.submit(async ({ form_data }) => {
+	const onsubmit = form_action.submit(async () => {
+		const identity = Math.random().toString(36).slice(-12);
 		const temp_password = Math.random().toString(36).slice(-12);
 
-		const created = await form_action.pocketbase.collection('users').create({
+		const new_user = await form_action.pocketbase.collection('users').create({
 			name,
-			password: temp_password,
-			passwordConfirm: temp_password,
 			role
 		});
+
+		const session = await form_action.pocketbase.collection('sessions').create({
+			user: new_user.id,
+			identity,
+			password: temp_password,
+			passwordConfirm: temp_password
+		});
+
 		pop.close();
 		form_action.toaster.push('success', copy.members.dialog_invite_new_member.toast_sucess);
-		callback(created);
+		callback(session);
 	});
 </script>
 
@@ -58,8 +65,10 @@
 			required
 			bind:value={name}
 		/>
-		<div>role</div>
-		<Select name="role" bind:value={role} options={available_roles} />
+		<div class="space-y-1">
+			<div class="text-xs text-muted">role</div>
+			<Select name="role" bind:value={role} options={available_roles} />
+		</div>
 
 		<PopConfirmCancel confirm={copy.members.dialog_invite_new_member.confirm} />
 	</Dialog>

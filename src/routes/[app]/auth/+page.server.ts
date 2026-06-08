@@ -1,211 +1,89 @@
 import { dev } from '$app/environment';
-import { PASSKEY_AUTH_SECRET } from '$env/static/private';
-import { server } from '@passwordless-id/webauthn';
-import { fail, redirect, type Actions } from '@sveltejs/kit';
-import type { RecordModel } from 'pocketbase';
+import { error, fail, redirect, type Actions } from '@sveltejs/kit';
+import { UAParser } from 'ua-parser-js';
 
 const COOKIE_OPTIONS = {
 	path: '/',
 	httpOnly: true,
 	sameSite: 'strict',
 	secure: !dev,
-	maxAge: 60 * 60
+	maxAge: 60 * 60 * 24 * 365 // 1 year
 } as const;
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
-export async function load({ url, cookies, locals: { app, super_pocketbase } }) {
-	const register_id = url.searchParams.get('register');
-	const pair_id = url.searchParams.get('pair');
+export async function load({ locals: { super_pocketbase }, url }) {
+	const token = url.searchParams.get('register');
+	if (!token) return { user: null };
 
-	const challenge = server.randomChallenge();
-	const rpId = url.hostname;
+	try {
+		const session = await super_pocketbase
+			.collection('sessions')
+			.getFirstListItem(`id = "${token}" && verified = false`, { expand: 'user' });
 
-	// Registration Flow
-	if (register_id) {
-		try {
-			const register_user = await super_pocketbase.collection('users').getOne(register_id);
-
-			cookies.set('registration_challenge', challenge, COOKIE_OPTIONS);
-
-			const options = get_registration_options(challenge, rpId, app.title, register_user);
-
-			return { register: register_user, pair: null, options };
-		} catch (e) {
-			// Handle invalid user ID or verified user
-			return { register: null, options: null, error: 'Invalid registration link' };
-		}
+		return { user: session.expand?.user ?? null };
+	} catch {
+		return error(400, 'Invalid or expired invite link.');
 	}
-
-	// Device Connect Flow
-	if (pair_id) {
-		try {
-			const device_invite = await super_pocketbase
-				.collection('_passkey_invites')
-				.getOne(pair_id, { expand: 'user' });
-
-			const existing_user = await super_pocketbase.collection('users').getOne(device_invite.user);
-
-			cookies.set('registration_challenge', challenge, COOKIE_OPTIONS);
-			const options = get_registration_options(challenge, rpId, app.title, existing_user);
-
-			return { register: null, pair: device_invite, options };
-		} catch (e) {
-			return {
-				register: null,
-				pair: null,
-				options: null,
-				error: 'Invalid pairing link'
-			};
-		}
-	}
-
-	// Authentication Flow
-	cookies.set('authentication_challenge', challenge, COOKIE_OPTIONS);
-
-	return {
-		register: null,
-		pair: null,
-		options: {
-			challenge,
-			timeout: 60000,
-			userVerification: 'required',
-			rpId
-		} satisfies PublicKeyCredentialRequestOptionsJSON
-	};
 }
 
 export const actions: Actions = {
-	default: async ({ request, cookies, locals: { pocketbase, super_pocketbase }, url }) => {
-		const isRegistration = url.searchParams.has('register');
-		const isPairing = url.searchParams.has('pair');
-
-		const formData = await request.formData();
-		const credentialJSON = formData.get('credential') as string;
-		if (!credentialJSON) return fail(400, { message: 'Missing credentials' });
-
-		const device_name = formData.get('device_name') as string;
-
-		const credential = JSON.parse(credentialJSON);
-		const challengeKey =
-			isRegistration || isPairing ? 'registration_challenge' : 'authentication_challenge';
-		const challenge = cookies.get(challengeKey);
-
-		if (!challenge) return fail(400, { message: 'Session expired. Please refresh the page.' });
-
-		let userId: string;
+	default: async ({
+		request,
+		cookies,
+		locals: { pocketbase, super_pocketbase, ...locals },
+		url
+	}) => {
+		const token = url.searchParams.get('register');
+		if (!token) return fail(400, { error: 'No token provided.' });
 
 		try {
-			if (isRegistration) {
-				const invite_id = url.searchParams.get('register')!;
-				const user_invite = await super_pocketbase.collection('users').getOne(invite_id);
-
-				const verified = await server.verifyRegistration(credential, {
-					challenge,
-					origin: url.origin
-				});
-
-				//await super_pocketbase.collection('_user_invites').delete(invite_id);
-
-				const user = await super_pocketbase.collection('users').update(invite_id, {
-					password: PASSKEY_AUTH_SECRET,
-					passwordConfirm: PASSKEY_AUTH_SECRET,
-					verified: true
-				});
-
-				await save_passkey(super_pocketbase, user.id, verified, device_name);
-
-				userId = user.id;
-			} else if (isPairing) {
-				const pair_id = url.searchParams.get('pair')!;
-				const device_invite = await super_pocketbase.collection('_passkey_invites').getOne(pair_id);
-
-				const verified = await server.verifyRegistration(credential, {
-					challenge,
-					origin: url.origin
-				});
-
-				await super_pocketbase.collection('_passkey_invites').delete(pair_id);
-
-				await save_passkey(super_pocketbase, device_invite.user, verified, device_name);
-
-				userId = device_invite.user;
-			} else {
-				if (!/^[A-Za-z0-9_-]+$/.test(credential.id))
-					return fail(400, { message: 'Invalid credential' });
-				// Search for passkey by credential ID
-				const storedPasskey = await super_pocketbase
-					.collection('_passkeys')
-					.getFirstListItem(`credential_id = "${credential.id}"`)
-					.catch(() => {
-						throw new Error('Passkey not found');
-					});
-
-				await server.verifyAuthentication(
-					credential,
-					{
-						id: storedPasskey.credential_id,
-						publicKey: storedPasskey.public_key,
-						algorithm: storedPasskey.algorithm,
-						transports: storedPasskey.transports
-					},
-					{
-						challenge,
-						origin: url.origin,
-						userVerified: true
-					}
-				);
-
-				userId = storedPasskey.user;
+			// delete previous session
+			if (locals.session) {
+				pocketbase.collection('sessions').delete(locals.session.id);
 			}
 
-			cookies.delete(challengeKey, { path: '/' });
+			const session = await super_pocketbase
+				.collection('sessions')
+				.getFirstListItem(`id = "${token}" && verified = false`, { expand: 'user' });
 
-			const user = await super_pocketbase.collection('users').getOne(userId);
-			await pocketbase.collection('users').authWithPassword(user.name, PASSKEY_AUTH_SECRET);
+			// Auto-generate device label from user agent
+			const ua = new UAParser(request.headers.get('user-agent') ?? '');
+			const os = [ua.getOS().name, ua.getOS().version].filter(Boolean).join(' '); // "Windows 10"
+			const user_agent = [
+				ua.getBrowser().name, // "Firefox"
+				os // "Windows 10"
+			]
+				.filter(Boolean)
+				.join(', ');
 
-			throw redirect(303, '/');
-		} catch (err: any) {
-			// Do not leak internal server errors, but give hints
-			const msg = err.status === 303 ? 'Redirecting' : err.message || 'Authentication failed';
-			if (err.status === 303) throw err;
-			return fail(400, { message: msg });
+			const password = crypto.randomUUID();
+			await super_pocketbase.collection('sessions').update(session.id, {
+				verified: true,
+				password: password,
+				passwordConfirm: password,
+				user_agent,
+				origin: url.hostname,
+				last_seen: new Date().toISOString()
+			});
+
+			// Authenticate as this session row to get a JWT
+			await pocketbase.collection('sessions').authWithPassword(session.identity, password);
+
+			const cookie_header = pocketbase.authStore.exportToCookie({
+				secure: !dev,
+				httpOnly: true,
+				sameSite: 'Strict',
+				path: '/',
+				maxAge: COOKIE_OPTIONS.maxAge
+			});
+
+			cookies.set('pb_auth', cookie_header, COOKIE_OPTIONS);
+
+			redirect(303, '/');
+		} catch (e: any) {
+			if (e.status === 303) throw e;
+			console.log(e);
+			return fail(400, { error: 'Invalid or expired invite link.' });
 		}
 	}
 };
-
-function get_registration_options(
-	challenge: string,
-	rpId: string,
-	appTitle: string,
-	user: RecordModel
-): PublicKeyCredentialCreationOptionsJSON {
-	return {
-		challenge,
-		rp: { name: appTitle, id: rpId },
-		user: { id: user.id, name: user.name, displayName: user.name },
-		pubKeyCredParams: [
-			{ type: 'public-key', alg: -7 }, // ES256
-			{ type: 'public-key', alg: -257 } // RS256
-		],
-		timeout: 60000,
-		attestation: 'none',
-		authenticatorSelection: {
-			residentKey: 'required',
-			userVerification: 'required'
-		}
-	};
-}
-async function save_passkey(
-	super_pocketbase: any,
-	userId: string,
-	verified: Awaited<ReturnType<typeof server.verifyRegistration>>,
-	device_name: string
-) {
-	await super_pocketbase.collection('_passkeys').create({
-		user: userId,
-		device_name,
-		credential_id: verified.credential.id,
-		public_key: verified.credential.publicKey,
-		algorithm: verified.credential.algorithm,
-		transports: verified.credential.transports || []
-	});
-}

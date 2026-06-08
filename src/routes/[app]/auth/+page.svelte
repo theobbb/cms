@@ -1,65 +1,35 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { use_toaster } from '$lib/components/toaster/toaster-context.svelte';
-	import Button from '$lib/ui/components/button.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import Invitation from './invitation.svelte';
-	import Loader from '$lib/ui/components/loader.svelte';
-	import AboutPasskeys from '$lib/ui/templates/about-passkeys.svelte';
+	import { applyAction, deserialize, enhance } from '$app/forms';
+	import { page } from '$app/state';
 	import Logo from '$lib/assets/logo.svelte';
 	import { use_copy } from '$lib/copy/index.js';
-	import Input from '$lib/ui/components/form/fields/input.svelte';
+	import { init_form_action } from '$lib/logic/form-action.svelte.js';
+	import Button from '$lib/ui/components/button.svelte';
+	import Loader from '$lib/ui/components/loader.svelte';
+	import CardSession from '$lib/ui/templates/auth/card-session.svelte';
+	import type { ActionResult } from '@sveltejs/kit';
 
 	const { data } = $props();
-
 	const copy = use_copy();
-	const toaster = use_toaster();
 
-	const options = $derived(data.options);
+	const token = $derived(page.url.searchParams.get('register'));
 
-	const register_user = $derived(data.register);
-	const pair_invite = $derived(data.pair);
+	const form_action = init_form_action();
 
-	const is_new_credential = $derived(!!register_user || !!pair_invite);
-
-	let submitting = $state(false);
-
-	const onsubmit: SubmitFunction = async ({ formData, cancel }) => {
-		if (submitting) return;
-		submitting = true;
+	const onsubmit = form_action.submit(async ({ form_data }) => {
 		try {
-			if (!options) throw new Error('Initialization failed. Try refreshing.');
+			const response = await fetch(page.url.href, {
+				method: 'POST',
+				body: form_data
+			});
 
-			const publicKey = is_new_credential
-				? PublicKeyCredential.parseCreationOptionsFromJSON(
-						options as PublicKeyCredentialCreationOptionsJSON
-					)
-				: PublicKeyCredential.parseRequestOptionsFromJSON(
-						options as PublicKeyCredentialRequestOptionsJSON
-					);
-
-			const credential = is_new_credential
-				? await navigator.credentials.create({
-						publicKey: publicKey as PublicKeyCredentialCreationOptions
-					})
-				: await navigator.credentials.get({
-						publicKey: publicKey as PublicKeyCredentialRequestOptions
-					});
-
-			if (!credential) throw new Error('Login cancelled');
-			formData.set('credential', JSON.stringify((credential as any).toJSON()));
+			const result: ActionResult = deserialize(await response.text());
+			applyAction(result);
+			form_action.toaster.push('success', copy.auth.toaster_success);
 		} catch (err: any) {
-			submitting = false;
-			toaster.push('error');
-			cancel();
+			form_action.toaster.push('error');
 		}
-		return async ({ result, update }) => {
-			if (result.type === 'redirect') toaster.push('success', copy.auth.toaster_success);
-			else if (result.type === 'failure') toaster.push('error');
-			await update();
-			submitting = false;
-		};
-	};
+	});
 </script>
 
 <div class="mx-auto grid h-screen max-w-sm grid-rows-[1fr_auto] items-center">
@@ -68,9 +38,55 @@
 			<div class="text-4xl"><Logo /></div>
 			<div class="text-xl">{data.app.title}</div>
 		</div>
-		<!-- <div class="text-center text-sm text-balance">
-			<div>{copy.auth.description}</div>
-		</div> -->
+
+		{#if data.session}
+			<CardSession session={data.session} />
+			<div class="mt-2">Attention! Cette session sera écrasée si vous rejoignez celle-ci.</div>
+		{/if}
+
+		<div>
+			{#if token}
+				{data.user?.name}
+				<form
+					class="mt-2x flex w-full flex-col items-center justify-center gap-4"
+					method="POST"
+					{onsubmit}
+				>
+					<!-- {#if is_new_credential}
+					<div class="w-full">
+						<Input name="device_name" label="Identifiant de l’appareil" class="w-full" required />
+					</div>
+				{/if} -->
+					<Button
+						size="lg"
+						class="flex items-center"
+						type="submit"
+						disabled={form_action.submitting}
+					>
+						<div class="-ml-1 flex size-5 items-center justify-center">
+							{#if form_action.submitting}
+								<Loader />
+							{:else}
+								<div class="icon-[ri--key-line] text-xl"></div>
+							{/if}
+						</div>
+						Connexion
+					</Button>
+				</form>
+			{:else}
+				No token
+			{/if}
+		</div>
+	</div>
+</div>
+
+<!-- 
+<div class="mx-auto grid h-screen max-w-sm grid-rows-[1fr_auto] items-center">
+	<div class="flex flex-col items-center justify-center gap-8 py-4x">
+		<div class="flex flex-col items-center justify-center gap-2 text-center">
+			<div class="text-4xl"><Logo /></div>
+			<div class="text-xl">{data.app.title}</div>
+		</div>
 
 		{#if register_user}
 			<Invitation name={register_user.name} />
@@ -110,4 +126,4 @@
 			<AboutPasskeys />
 		</div>
 	</div>
-</div>
+</div> -->

@@ -1,0 +1,14 @@
+<script lang="ts">
+	import { process_collection } from '$config/utils.js';
+	import DataTable from '$lib/ui/data-table/section-table.svelte';
+
+	const { data } = $props();
+</script>
+
+<DataTable
+	collection={process_collection(data.collections.members, {
+		fields: {
+			overrides: { about: { type: 'markdown' }, body: { type: 'markdown' } }
+		}
+	})}
+/>

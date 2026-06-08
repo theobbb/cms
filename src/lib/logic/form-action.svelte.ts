@@ -19,7 +19,7 @@ export class FormAction {
 	pocketbase = use_pocketbase();
 
 	errors: Record<string, FormError> = $state({});
-	loading: boolean = $state(false);
+	submitting: boolean = $state(false);
 
 	canceled = $state(false);
 
@@ -40,7 +40,7 @@ export class FormAction {
 		return async (event: SubmitEvent & { currentTarget: EventTarget & HTMLFormElement }) => {
 			event.preventDefault();
 			this.errors = {};
-			this.loading = true;
+			this.submitting = true;
 
 			let _canceled = false;
 			const ctx: FormActionContext = {
@@ -62,7 +62,7 @@ export class FormAction {
 					this.toaster.push('error');
 				}
 			} finally {
-				this.loading = false;
+				this.submitting = false;
 			}
 		};
 	}

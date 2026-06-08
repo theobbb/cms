@@ -13,11 +13,6 @@ function isGlobalRoute(pathname: string): boolean {
 	return global_routes.includes(firstSegment);
 }
 
-// Helper to extract subdomain
-function getSubdomain(hostname: string): string {
-	return hostname.split('.')[0];
-}
-
 // Redirect duplicate app prefixes (e.g., /agraf/dashboard → /dashboard)
 const subdomain_redirect: Handle = async ({ event, resolve }) => {
 	if (isGlobalRoute(event.url.pathname)) return resolve(event);
@@ -42,39 +37,50 @@ const authentication: Handle = async ({ event, resolve }) => {
 
 	// 2. Initialize App Context & PocketBase (Runs for ALL routes on valid subdomains)
 	event.locals.app = apps[appKey];
-	event.locals.pocketbase = new PocketBase(event.locals.app.pocketbase.url);
 
-	// Super instance (singleton, reuses token until expiry)
+	event.locals.pocketbase = new PocketBase(event.locals.app.pocketbase.url);
 	event.locals.super_pocketbase = await super_auth_pocketbase(event.locals.app.pocketbase.url);
 
-	// 3. Load Auth from cookie (It's okay if this remains empty for public routes)
+	// Load session auth from cookie
 	const cookie = event.request.headers.get('cookie');
 	event.locals.pocketbase.authStore.loadFromCookie(cookie || '');
+
+	event.locals.session = null;
+	event.locals.user = null;
+
 	event.locals.user = event.locals.pocketbase.authStore.record;
 
-	// 4. Refresh auth if valid
 	try {
 		if (event.locals.pocketbase.authStore.isValid) {
-			await event.locals.pocketbase.collection('users').authRefresh();
+			// Refresh and expand the user relation in one call
+			await event.locals.pocketbase.collection('sessions').authRefresh({ expand: 'user' });
+
+			event.locals.session = event.locals.pocketbase.authStore.record;
+			event.locals.user = event.locals.session?.expand?.user ?? null;
+
+			// Update last_seen (fire and forget)
+			event.locals.super_pocketbase
+				.collection('sessions')
+				.update(event.locals.session.id, { last_seen: new Date().toISOString() })
+				.catch(() => {});
 		} else {
-			event.locals.user = null;
+			event.locals.pocketbase.authStore.clear();
 		}
-	} catch (_) {
+	} catch {
 		event.locals.pocketbase.authStore.clear();
-		event.locals.user = null;
 	}
 
 	const response = await resolve(event);
 
-	// 5. Set auth cookie
-	const cookieHeader = event.locals.pocketbase.authStore.exportToCookie({
-		secure: !dev,
-		httpOnly: false,
-		sameSite: 'Lax',
-		path: '/'
-	});
-
-	response.headers.append('set-cookie', cookieHeader);
+	response.headers.append(
+		'set-cookie',
+		event.locals.pocketbase.authStore.exportToCookie({
+			secure: !dev,
+			httpOnly: false,
+			sameSite: 'Lax',
+			path: '/'
+		})
+	);
 
 	return response;
 };

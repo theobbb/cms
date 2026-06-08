@@ -30,5 +30,12 @@ export const apps: Record<string, App> = {
 			url: 'https://api.yuki.3xw.ca'
 		},
 		aliases: ['atelier.yukitoshi.art']
+	},
+	lexpol: {
+		title: 'LexPol',
+		param: 'lexpol',
+		pocketbase: {
+			url: 'https://api.lexpol.3xw.ca'
+		}
 	}
 };

@@ -17,24 +17,35 @@
 	);
 </script>
 
-<Nav param={year}>
+<Nav>
 	<!-- <Select
 		options={year_options}
 		value={String(page.params.year)}
 		onchange={(option) => goto(`/${option.value}`)}
 	/> -->
-	<NavLabel>{year}</NavLabel>
+	<!-- <a
+		class="mb-0.5 flex items-center gap-1.5 px-2.5 py-0.5 duration-50"
+		href="{page.url.origin}?from=select"
+	>
+		<div class="icon-[ri--arrow-left-line]"></div>
+		<div>Années</div>
+	</a> -->
+	<NavLink param="">Années</NavLink>
 
-	<NavLink param="students">Finissant.es</NavLink>
-	<NavLink param="projects">Projets</NavLink>
+	<NavGap />
+	<NavLabel>{year}</NavLabel>
+	<NavLink param={year}>Configuration</NavLink>
+	<NavLink param="{year}/students">Finissant.es</NavLink>
+	<NavLink param="{year}/projects">Projets</NavLink>
 
 	<!-- <NavDivider /> -->
 
 	<!-- <NavLabel>Brouillons</NavLabel> -->
-	<NavFolder label="Brouillons" param="drafts">
+	<NavFolder label="Brouillons" param="{year}/drafts">
 		<NavLink param="students">Finissant.es</NavLink>
 		<NavLink param="projects">Projets</NavLink>
 	</NavFolder>
+
 	<NavGap />
 
 	<!-- <NavLink param="/drafts/students">Finissant.es</NavLink>
