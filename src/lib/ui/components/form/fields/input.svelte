@@ -9,7 +9,6 @@
 		name,
 		label = '',
 		label_icon,
-
 		required,
 		value = $bindable(),
 		...props

@@ -36,6 +36,7 @@ export const apps: Record<string, App> = {
 		param: 'lexpol',
 		pocketbase: {
 			url: 'https://api.lexpol.3xw.ca'
-		}
+		},
+		aliases: ['admin.lexpol.ca']
 	}
 };

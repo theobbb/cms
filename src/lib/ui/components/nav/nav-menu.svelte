@@ -31,6 +31,14 @@
 			variant="ghost"
 			size="lg"
 			tooltip="Paramètres"
+			tooltip_props={{
+				position_try: 'flip-inline',
+				top: 'center',
+				left: 'right',
+				right: undefined,
+				bottom: undefined,
+				class: 'translate-x-0 mx-1.5 -translate-y-1/2'
+			}}
 			href="/settings/profile"
 		/>
 		<!-- <Button

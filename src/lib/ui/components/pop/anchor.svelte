@@ -54,6 +54,6 @@
 	);
 </script>
 
-<div class={[cx, 'fixed z-50']} {style}>
+<div class={[cx, 'fixed z-5000']} {style}>
 	{@render children?.()}
 </div>

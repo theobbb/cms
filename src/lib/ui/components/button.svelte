@@ -1,5 +1,5 @@
 <script module>
-	import type { Snippet } from 'svelte';
+	import type { ComponentProps, Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 	import { use_cvx } from '$lib/utils/tailwind';
 	import Tooltip from './pop/tooltip.svelte';
@@ -12,6 +12,7 @@
 		size?: Size;
 		icon?: string;
 		tooltip?: string;
+		tooltip_props?: Partial<ComponentProps<typeof Tooltip>>;
 		loading?: boolean;
 		disabled?: boolean;
 		children?: Snippet;
@@ -23,7 +24,7 @@
 	export type Props = ButtonProps | LinkProps;
 
 	const cvx = use_cvx(
-		'inline-flex cursor-pointer items-center justify-center border transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 loading:cursor-wait loading:opacity-50',
+		'button inline-flex cursor-pointer items-center justify-center border transition-colors duration-100 disabled:cursor-not-allowed disabled:opacity-50 loading:cursor-wait loading:opacity-50',
 		{
 			variant: {
 				default: 'bg-secondary hover:not-disabled:bg-foreground/15',
@@ -56,6 +57,7 @@
 		disabled = false,
 		loading = false,
 		tooltip,
+		tooltip_props = {},
 		children,
 		...props
 	}: Props = $props();
@@ -100,7 +102,13 @@
 	</button>
 {/if}
 {#if tooltip}
-	<Tooltip anchor="--anchor-{props_id}" left="center" bottom="top" class="my-1.5 -translate-x-1/2">
+	<Tooltip
+		anchor="--anchor-{props_id}"
+		left="center"
+		bottom="top"
+		class="my-1.5 -translate-x-1/2"
+		{...tooltip_props}
+	>
 		{tooltip}
 	</Tooltip>
 {/if}
@@ -113,7 +121,7 @@
 {/snippet}
 
 <style>
-	:not(button:hover) + :global(.tooltip) {
+	:not(.button:hover) + :global(.tooltip) {
 		opacity: 0 !important;
 	}
 </style>

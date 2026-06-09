@@ -7,6 +7,7 @@
 	import Button from '$lib/ui/components/button.svelte';
 	import Loader from '$lib/ui/components/loader.svelte';
 	import CardSession from '$lib/ui/templates/auth/card-session.svelte';
+	import Warning from '$lib/ui/templates/flags/warning.svelte';
 	import type { ActionResult } from '@sveltejs/kit';
 
 	const { data } = $props();
@@ -33,50 +34,62 @@
 </script>
 
 <div class="mx-auto grid h-screen max-w-sm grid-rows-[1fr_auto] items-center">
-	<div class="flex flex-col items-center justify-center gap-8 py-4x">
+	<div class="flex flex-col items-center justify-center gap-12 py-4x">
 		<div class="flex flex-col items-center justify-center gap-2 text-center">
 			<div class="text-4xl"><Logo /></div>
 			<div class="text-xl">{data.app.title}</div>
 		</div>
 
-		{#if data.session}
-			<CardSession session={data.session} />
-			<div class="mt-2">Attention! Cette session sera écrasée si vous rejoignez celle-ci.</div>
-		{/if}
+		{#if token}
+			<div class="border-y pt-6 pb-8">
+				<div class="mb-0.5 text-xl">Bienvenue, {data.user?.name}</div>
+				<div class="mb-4 text-muted">Vous avez été invité·e à accéder au tableau de bord.</div>
+				<Warning>
+					Ce lien ne peut être utilisé qu'une seule fois — assurez-vous d'être sur votre ordinateur
+					avant de continuer.
+				</Warning>
+			</div>
 
-		<div>
-			{#if token}
-				{data.user?.name}
-				<form
-					class="mt-2x flex w-full flex-col items-center justify-center gap-4"
-					method="POST"
-					{onsubmit}
-				>
-					<!-- {#if is_new_credential}
+			{#if data.session}
+				<div>
+					<CardSession session={data.session} />
+
+					<div class="mt-2">
+						<Warning>Cette session sera écrasée si vous rejoignez celle-ci.</Warning>
+					</div>
+				</div>
+			{/if}
+
+			<form
+				class="mt-2x flex w-full flex-col items-center justify-center gap-4"
+				method="POST"
+				{onsubmit}
+			>
+				<!-- {#if is_new_credential}
 					<div class="w-full">
 						<Input name="device_name" label="Identifiant de l’appareil" class="w-full" required />
 					</div>
 				{/if} -->
-					<Button
-						size="lg"
-						class="flex items-center"
-						type="submit"
-						disabled={form_action.submitting}
-					>
-						<div class="-ml-1 flex size-5 items-center justify-center">
-							{#if form_action.submitting}
-								<Loader />
-							{:else}
-								<div class="icon-[ri--key-line] text-xl"></div>
-							{/if}
-						</div>
-						Connexion
-					</Button>
-				</form>
-			{:else}
-				No token
-			{/if}
-		</div>
+				<Button size="lg" class="flex items-center" type="submit" disabled={form_action.submitting}>
+					<div class="-ml-1 flex size-5 items-center justify-center">
+						{#if form_action.submitting}
+							<Loader />
+						{:else}
+							<div class="icon-[ri--key-line] text-xl"></div>
+						{/if}
+					</div>
+					Connexion
+				</Button>
+			</form>
+		{:else}
+			<div class="border-y pt-6 pb-7">
+				<div class="mb-1 text-xl">Lien invalide</div>
+				<div class="leading-snug text-muted">
+					Ce lien est introuvable ou a déjà été utilisé. Contactez votre administrateur pour
+					recevoir un nouvel accès.
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>
 

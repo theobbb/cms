@@ -24,10 +24,10 @@
 		<NavLink param="sessions">Sessions</NavLink>
 		<NavLink param="members">Membres</NavLink>
 		<NavGap />
-		<NavLabel>Système</NavLabel>
+		<!-- <NavLabel>Système</NavLabel>
 		<NavLink param="backups">Backups</NavLink>
 		<NavLink param="backups">Logs</NavLink>
-		<NavLink param="backups">Support</NavLink>
+		<NavLink param="backups">Support</NavLink> -->
 	</Nav>
 	<div class="mx-auto w-6xl">
 		{#if break_layout.includes(current)}

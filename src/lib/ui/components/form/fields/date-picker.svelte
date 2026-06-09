@@ -94,23 +94,32 @@
 	}
 </script>
 
-<div class="group relative flex w-full">
-	<div class="flex w-full" style="anchor-name: --anchor-{id};">
-		<Input {id} {name} value={inputValue} oninput={handleInput} placeholder="JJ/MM/YYYY" {label} />
+<div class="group relative">
+	<div style="anchor-name: --anchor-{id};">
+		<Input
+			{id}
+			{name}
+			value={inputValue}
+			oninput={handleInput}
+			placeholder="JJ/MM/YYYY"
+			{label}
+			class="w-full!"
+		/>
 	</div>
 
 	<div class={['not-group-focus-within:hidden focus:block', TEST_POP && 'block!']}>
-		<Anchor anchor="anchor-{id}" class="m-2">
-			<div class="w-64- border bg-surface p-3 text-sm text-surface-foreground">
+		<Anchor anchor="--anchor-{id}" class="my-2" left="left" top="bottom">
+			<div class=" cursor-default border bg-surface p-5 font-mono text-xs text-surface-foreground">
 				<div class="mb-4 flex items-center justify-between">
 					<div>
 						<Button
 							onclick={() => changeMonth(-1)}
 							variant="ghost"
 							icon="icon-[ri--arrow-left-s-line]"
+							tooltip="Mois précédent"
 						/>
 					</div>
-					<div class="flex text-sm">
+					<div class="flex">
 						{months[month]}
 						{year}
 					</div>
@@ -119,13 +128,14 @@
 							onclick={() => changeMonth(1)}
 							variant="ghost"
 							icon="icon-[ri--arrow-right-s-line]"
-						></Button>
+							tooltip="Mois suivant"
+						/>
 					</div>
 				</div>
 
-				<div class="grid grid-cols-7 gap-1">
+				<div class="grid grid-cols-7 gap-1.5">
 					{#each daysOfWeek as day}
-						<div class="py-1 text-center text-xs uppercase">{day[0]}</div>
+						<div class="py-1 text-center text-[0.75rem] text-muted uppercase">{day[0]}</div>
 					{/each}
 					<div class="col-span-full border-b"></div>
 
@@ -138,11 +148,11 @@
 							type="button"
 							onclick={() => selectDate(day)}
 							class={[
-								'w-full- flex size-7 items-center justify-center  ',
+								'flex size-7 cursor-pointer items-center justify-center',
 								isSelected(day)
-									? ' text-white- bg-active ring-2 '
-									: 'text-white/40-  hover:text-white/70- hover:bg-active-hover',
-								isToday(day) && 'ring-2'
+									? 'bg-active ring-2'
+									: 'text-white/40-  hover:text-white/70- hover:bg-hover',
+								isToday(day) && 'rounded-full bg-active'
 							]}
 						>
 							{day}
